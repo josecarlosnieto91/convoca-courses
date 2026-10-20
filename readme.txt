@@ -4,7 +4,7 @@ Tags: courses, elearning, lessons, certificate, enrollment
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.2
+Stable tag: 0.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,10 +23,16 @@ cobrar la matrícula; sin él, el curso es gratuito o se cobra fuera y se marca 
 
 * Cursos con módulos y lecciones ordenadas.
 * Lecciones de texto, de adjunto y de PDF.
-* Matrícula desde un formulario que funciona sin JavaScript.
+* Matrícula desde un formulario que funciona sin JavaScript (con o sin cobro).
 * Progreso por persona y por curso, con porcentaje y desbloqueo secuencial opcional.
 * Plazas opcionales con reserva atómica: dos personas no pueden coger la última a la vez.
 * Certificado al completar el curso y verificación pública en `/verificar-curso/?codigo=...`.
+
+**Cobro (opcional, con Convoca Gateway)**
+
+* Si Convoca Gateway está activo, el curso con precio crea el pago y manda a la pasarela; la
+  matrícula se activa al confirmarse el pago y se queda pendiente si el pago falla.
+* Sin gateway, el curso es gratuito o se cobra fuera y se marca a mano.
 
 **PRO**
 

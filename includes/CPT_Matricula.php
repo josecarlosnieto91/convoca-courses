@@ -95,6 +95,18 @@ class CPT_Matricula extends CPT_Base {
 					return in_array( $value, array( 'ninguno', 'manual', 'gateway' ), true ) ? $value : 'ninguno';
 				},
 			),
+			'pago_id'         => array(
+				'type'     => 'integer',
+				'sanitize' => static function ( $value ) {
+					return max( 0, (int) $value );
+				},
+			),
+			'payment_url'     => array(
+				'type'     => 'string',
+				'sanitize' => static function ( $value ) {
+					return esc_url_raw( (string) $value );
+				},
+			),
 			'referencia_pago' => array(
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {

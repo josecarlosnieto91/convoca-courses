@@ -67,6 +67,11 @@ final class Plugin {
 			Settings::register();
 		}
 
+		// Resultado del cobro: los ganchos que ya dispara Convoca Gateway. Si el gateway no está, no
+		// existen y no pasa nada; la matrícula se queda como esté.
+		add_action( 'convoca_payment_completed', array( Course_Payment::class, 'on_payment_completed' ), 10, 4 );
+		add_action( 'convoca_payment_failed', array( Course_Payment::class, 'on_payment_failed' ), 10, 2 );
+
 		add_action( 'before_delete_post', array( $this, 'cleanup_on_delete' ) );
 	}
 

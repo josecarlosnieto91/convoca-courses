@@ -18,6 +18,7 @@ use Convoca\Courses\CPT_Curso;
 use Convoca\Courses\CPT_Leccion;
 use Convoca\Courses\CPT_Modulo;
 use Convoca\Courses\Certificate;
+use Convoca\Courses\Course_Payment;
 use Convoca\Courses\Enrollment;
 use Convoca\Courses\Progress;
 
@@ -213,6 +214,79 @@ comprobar( 0 === Certificate::find_by_code( 'CC-INVENTADO' ), 'un código falso 
 $pdf = Certificate::pdf_path( $codigo );
 comprobar( '' !== $pdf && file_exists( $pdf ), 'el PDF del certificado se genera: ' . $pdf );
 
+echo "\n== Cobro con Convoca Gateway ==\n";
+comprobar( Course_Payment::gateway_available(), 'el gateway está disponible en este sitio' );
+comprobar( Course_Payment::needs_payment( 25.0, true ), 'un curso de pago con gateway necesita cobro' );
+comprobar( 1999 === Course_Payment::amount_cents( 19.99 ), 'el importe se convierte a céntimos sin perder uno' );
+
+// Curso de pago.
+$curso_pago = wp_insert_post(
+	array(
+		'post_type'    => 'convoca_curso',
+		'post_status'  => 'publish',
+		'post_title'   => 'Curso de pago (prueba)',
+		'post_content' => 'Curso con precio para comprobar el cobro.',
+	),
+	true
+);
+update_post_meta( $curso_pago, '_convoca_precio', 25.0 );
+update_post_meta( $curso_pago, '_convoca_moneda', 'EUR' );
+update_post_meta( $curso_pago, '_convoca_certificado', 0 );
+comprobar( Course_Payment::course_needs_payment( (int) $curso_pago ), 'el curso de pago se detecta como cobrable' );
+
+$matricula_pago = Enrollment::enroll( (int) $alumno_id, (int) $curso_pago, array( 'estado' => 'pendiente' ) );
+comprobar( ! is_wp_error( $matricula_pago ), 'la matrícula de pago se crea' );
+
+if ( ! is_wp_error( $matricula_pago ) ) {
+	$matricula_pago = (int) $matricula_pago;
+	comprobar( 'pendiente' === \Convoca\Courses\CPT_Matricula::status( $matricula_pago ), 'la matrícula nace pendiente' );
+	comprobar( ! Access::is_enrolled( (int) $alumno_id, (int) $curso_pago ), 'pendiente no da acceso al contenido' );
+
+	$pago = Course_Payment::create( $matricula_pago, (int) $curso_pago );
+	comprobar( ! is_wp_error( $pago ), 'se crea el pago en el gateway' );
+
+	if ( ! is_wp_error( $pago ) ) {
+		$pago_id = (int) $pago['pago_id'];
+		comprobar( $pago_id > 0, 'el gateway devuelve un pago con identificador' );
+		comprobar( 'pago' === get_post_type( $pago_id ), 'el pago existe como entrada del gateway' );
+		comprobar( 'courses' === (string) get_post_meta( $pago_id, '_convoca_origin', true ), 'el pago lleva el origen courses' );
+		comprobar( $matricula_pago === (int) get_post_meta( $pago_id, '_convoca_origin_id', true ), 'el pago apunta a la matrícula' );
+		comprobar( 2500 === (int) get_post_meta( $pago_id, '_convoca_amount_cents', true ), 'el importe llega al gateway en céntimos' );
+		comprobar( '' !== (string) $pago['payment_url'], 'hay enlace de pago' );
+		comprobar( '' !== Course_Payment::payment_url( $matricula_pago ), 'el enlace queda guardado en la matrícula' );
+
+		// Pago completado: el gateway dispara este gancho al confirmar.
+		do_action( 'convoca_payment_completed', $pago_id, 'courses', $matricula_pago, array( 'order_id' => 'PRUEBA-1' ) );
+		comprobar( 'activa' === \Convoca\Courses\CPT_Matricula::status( $matricula_pago ), 'el pago confirmado activa la matrícula' );
+		comprobar( Access::is_enrolled( (int) $alumno_id, (int) $curso_pago ), 'con el pago hecho hay acceso al curso' );
+		comprobar( 'PRUEBA-1' === \Convoca\Courses\CPT_Matricula::get_string( $matricula_pago, 'referencia_pago' ), 'se guarda la referencia del pago' );
+
+		// Un pago de OTRO origen no debe tocar esta matrícula.
+		$matricula_2 = Enrollment::enroll( (int) $alumno_id, (int) $curso_pago );
+		do_action( 'convoca_payment_completed', 999999, 'members', 424242, array() );
+		comprobar( is_wp_error( $matricula_2 ) && 'convoca_courses_already' === $matricula_2->get_error_code(), 'un pago de otro origen no altera matrículas de cursos' );
+
+		// Pago fallido: no activa nada.
+		$curso_pago2 = wp_insert_post(
+			array(
+				'post_type'   => 'convoca_curso',
+				'post_status' => 'publish',
+				'post_title'  => 'Curso de pago 2 (prueba)',
+			),
+			true
+		);
+		update_post_meta( $curso_pago2, '_convoca_precio', 10.0 );
+		$matricula_3 = Enrollment::enroll( (int) $alumno_id, (int) $curso_pago2, array( 'estado' => 'pendiente' ) );
+		if ( ! is_wp_error( $matricula_3 ) ) {
+			$pago3 = Course_Payment::create( (int) $matricula_3, (int) $curso_pago2 );
+			if ( ! is_wp_error( $pago3 ) ) {
+				do_action( 'convoca_payment_failed', (int) $pago3['pago_id'], 'SIS0051' );
+			}
+			comprobar( 'pendiente' === \Convoca\Courses\CPT_Matricula::status( (int) $matricula_3 ), 'un pago fallido deja la matrícula pendiente' );
+		}
+	}
+}
+
 echo "\n== Resumen ==\n";
 printf( "Comprobaciones: %d correctas, %d fallidas\n", $ok, count( $fallos ) );
 foreach ( $fallos as $fallo ) {
@@ -231,6 +305,7 @@ file_put_contents(
 			'pagina_indice'  => $pagina_indice,
 			'codigo'         => $codigo,
 			'lecciones'      => $lecciones,
+			'curso_pago'     => $curso_pago,
 			'alumno_id'      => $alumno_id,
 			'matricula_id'   => $matricula_id,
 			'pdf'            => $pdf,

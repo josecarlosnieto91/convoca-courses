@@ -3,6 +3,23 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.2.0] — 2026-10-20
+
+### Añadido
+
+- **Cobro de la matrícula con Convoca Gateway** (opcional): con precio > 0 y el gateway activo, la
+  matrícula nace `pendiente`, se crea el pago con origen `courses` y el formulario redirige a la
+  pasarela. El pago confirmado activa la matrícula (`convoca_payment_completed`); el fallido la deja
+  pendiente y anotado en el registro.
+- Aviso en la portada del curso con el estado del pago y enlace para completarlo si quedó a medias.
+- Estado de cobro en la columna de la lista de matrículas (`pendiente · pago #123`).
+- Cuatro pruebas unitarias nuevas de la decisión de cobro y del redondeo a céntimos.
+
+### Cambiado
+
+- Sin gateway activo, el comportamiento es el de siempre: matrícula gratuita o cobrada fuera y marcada
+  a mano.
+
 ## [0.1.2] — 2026-10-20
 
 ### Corregido
@@ -42,6 +59,7 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Shortcodes `[convoca_curso]`, `[convoca_curso_lecciones]` y `[convoca_curso_leccion]`.
 - `uninstall.php` que respeta la opción de conservar datos.
 
-[No publicado]: https://github.com/josecarlosnieto91/convoca-courses/compare/v0.1.1...HEAD
+[No publicado]: https://github.com/josecarlosnieto91/convoca-courses/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/josecarlosnieto91/convoca-courses/releases/tag/v0.2.0
 [0.1.1]: https://github.com/josecarlosnieto91/convoca-courses/releases/tag/v0.1.1
 [0.1.0]: https://github.com/josecarlosnieto91/convoca-courses/releases/tag/v0.1.0

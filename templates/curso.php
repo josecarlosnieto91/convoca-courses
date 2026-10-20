@@ -4,7 +4,7 @@
  *
  * @package Convoca\Courses
  *
- * @var array<string, mixed> $course_id, $title, $content, $price, $seats, $enrolled, $progress, $certificate, $modules, $logged_in, $enroll_url, $enroll_nonce.
+ * @var array<string, mixed> $course_id, $title, $content, $price, $seats, $enrolled, $progress, $certificate, $modules, $logged_in, $enroll_url, $enroll_nonce, $needs_payment, $enrollment_status, $payment_url.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -53,7 +53,18 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 		<?php echo wp_kses_post( (string) $content ); ?>
 	</div>
 
-	<?php if ( $enrolled ) : ?>
+	<?php if ( ! $enrolled && 'pendiente' === (string) $enrollment_status ) : ?>
+		<div class="convoca-courses-notice convoca-courses-notice--locked">
+			<p><?php esc_html_e( 'Tu matrícula está pendiente de pago.', 'convoca-courses' ); ?></p>
+			<?php if ( '' !== (string) $payment_url ) : ?>
+				<p>
+					<a class="convoca-courses__button" href="<?php echo esc_url( (string) $payment_url ); ?>">
+						<?php esc_html_e( 'Completar el pago', 'convoca-courses' ); ?>
+					</a>
+				</p>
+			<?php endif; ?>
+		</div>
+	<?php elseif ( $enrolled ) : ?>
 		<div class="convoca-courses__progress" role="status">
 			<div class="convoca-courses__bar">
 				<span style="width:<?php echo esc_attr( (string) (float) $progress['percent'] ); ?>%"></span>
@@ -75,7 +86,19 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 			<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_ENROLL ); ?>" />
 			<input type="hidden" name="course_id" value="<?php echo esc_attr( (string) (int) $course_id ); ?>" />
 			<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $enroll_nonce ); ?>" />
-			<button type="submit" class="convoca-courses__button"><?php esc_html_e( 'Matricularme', 'convoca-courses' ); ?></button>
+			<button type="submit" class="convoca-courses__button">
+				<?php
+				if ( $needs_payment && '' !== (string) $price ) {
+					printf(
+						/* translators: %s: course price. */
+						esc_html__( 'Comprar plaza — %s', 'convoca-courses' ),
+						esc_html( (string) $price )
+					);
+				} else {
+					esc_html_e( 'Matricularme', 'convoca-courses' );
+				}
+				?>
+			</button>
 		</form>
 	<?php else : ?>
 		<p class="convoca-courses__login">

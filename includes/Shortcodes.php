@@ -51,6 +51,10 @@ class Shortcodes {
 		$state   = Access::summary( $user_id, $course_id );
 		$free    = Enrollment::free_seats( $course_id );
 
+		$enrollment_id = Enrollment::find( $user_id, $course_id );
+		$status        = $enrollment_id > 0 ? CPT_Matricula::status( $enrollment_id ) : '';
+		$payment_url   = $enrollment_id > 0 ? Course_Payment::payment_url( $enrollment_id ) : '';
+
 		return Certificate::render_template(
 			'curso.php',
 			array(
@@ -66,6 +70,9 @@ class Shortcodes {
 				'logged_in'    => $user_id > 0,
 				'enroll_url'   => Handlers::enroll_form_action(),
 				'enroll_nonce' => Handlers::enroll_nonce(),
+				'needs_payment' => Course_Payment::course_needs_payment( $course_id ),
+				'enrollment_status' => $status,
+				'payment_url' => $payment_url,
 			),
 			false
 		);

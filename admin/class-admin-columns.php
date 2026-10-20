@@ -73,7 +73,11 @@ class Admin_Columns {
 				echo esc_html( $course_id > 0 ? (string) get_the_title( $course_id ) : '—' );
 				break;
 			case 'convoca_estado':
-				echo esc_html( CPT_Matricula::status( $post_id ) );
+				$label = CPT_Matricula::status( $post_id );
+				$pay   = Course_Payment::label( $post_id );
+				echo 'gateway' === CPT_Matricula::get_string( $post_id, 'pago' )
+					? esc_html( $label . ' · ' . $pay )
+					: esc_html( $label );
 				break;
 			case 'convoca_cert':
 				$code = CPT_Matricula::get_string( $post_id, 'cert_codigo' );

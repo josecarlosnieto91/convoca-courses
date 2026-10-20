@@ -65,6 +65,21 @@ class Utils {
 }
 
 /**
+ * Funciones activas del ecosistema.
+ */
+class Features {
+
+	/**
+	 * ¿Está operativo el gateway de pagos?
+	 *
+	 * @return bool
+	 */
+	public static function is_gateway_active(): bool {
+		return false;
+	}
+}
+
+/**
  * Gestor de licencias del núcleo.
  */
 class License_Manager {
@@ -103,4 +118,24 @@ class Logger {
 	 * @return void
 	 */
 	public static function error( string $message, string $context = 'General', ?int $object_id = null ): void {}
+
+	/**
+	 * Aviso.
+	 *
+	 * @param string   $message   Mensaje.
+	 * @param string   $context   Contexto.
+	 * @param int|null $object_id Objeto.
+	 * @return void
+	 */
+	public static function warning( string $message, string $context = 'General', ?int $object_id = null ): void {}
+
+	/**
+	 * Información.
+	 *
+	 * @param string   $message   Mensaje.
+	 * @param string   $context   Contexto.
+	 * @param int|null $object_id Objeto.
+	 * @return void
+	 */
+	public static function info( string $message, string $context = 'General', ?int $object_id = null ): void {}
 }

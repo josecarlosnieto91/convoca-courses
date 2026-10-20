@@ -108,13 +108,38 @@ class Handlers {
 			exit;
 		}
 
-		$result = Enrollment::enroll( get_current_user_id(), $course_id );
+		// Curso de pago con el gateway activo: la matrícula nace PENDIENTE y se manda a la pasarela.
+		// Sin gateway (o con precio 0) el flujo es el de siempre: matrícula activa al momento.
+		$needs_payment = Course_Payment::course_needs_payment( $course_id );
+
+		$result = Enrollment::enroll(
+			get_current_user_id(),
+			$course_id,
+			array(
+				'estado' => $needs_payment ? 'pendiente' : 'activa',
+			)
+		);
+
 		if ( is_wp_error( $result ) ) {
 			self::redirect_back( $course_id, 'error', $result->get_error_code() );
 			return;
 		}
 
-		self::redirect_back( $course_id, 'enrolled' );
+		if ( ! $needs_payment ) {
+			self::redirect_back( $course_id, 'enrolled' );
+			return;
+		}
+
+		$payment = Course_Payment::create( (int) $result, $course_id );
+
+		if ( is_wp_error( $payment ) ) {
+			// La matrícula queda pendiente y sin enlace: se avisa y se puede reintentar o cobrar a mano.
+			self::redirect_back( $course_id, 'payment_error' );
+			return;
+		}
+
+		wp_safe_redirect( (string) $payment['payment_url'] );
+		exit;
 	}
 
 	/**
@@ -259,6 +284,10 @@ class Handlers {
 				return __( 'Matrícula cancelada.', 'convoca-courses' );
 			case 'completed':
 				return __( 'Lección marcada como completada.', 'convoca-courses' );
+			case 'pending_payment':
+				return __( 'Matrícula reservada. Completa el pago para activarla.', 'convoca-courses' );
+			case 'payment_error':
+				return __( 'No se ha podido preparar el pago. La matrícula queda pendiente: inténtalo de nuevo o contacta con el centro.', 'convoca-courses' );
 			case 'nonce':
 				return __( 'La sesión ha caducado. Vuelve a intentarlo.', 'convoca-courses' );
 			case 'error':
