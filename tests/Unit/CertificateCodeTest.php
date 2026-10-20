@@ -18,18 +18,20 @@ use PHPUnit\Framework\TestCase;
 class CertificateCodeTest extends TestCase {
 
 	/**
-	 * Casos de normalización.
+	 * Casos de normalización. Las etiquetas van sin acentos a propósito: la alineación de
+	 * WordPress.Arrays.MultipleStatementAlignment no es reproducible con multibyte (el runner pedía
+	 * espacios distintos que local para el mismo fichero).
 	 *
 	 * @return array<string, array{0: string, 1: string}>
 	 */
 	public function normalize_cases(): array {
 		return array(
-			'ya canónico'   => array( 'CC157176G74PTRQB', 'CC157176G74PTRQB' ),
-			'con guiones'    => array( 'CC-157-176-G74PTRQB', 'CC157176G74PTRQB' ),
-			'en minúsculas' => array( 'cc157176g74ptrqb', 'CC157176G74PTRQB' ),
-			'con espacios'   => array( ' CC 157 176 ', 'CC157176' ),
-			'con basura'     => array( 'CC/157.176#G74', 'CC157176G74' ),
-			'vacío'         => array( '', '' ),
+			'ya canonico'   => array( 'CC157176G74PTRQB', 'CC157176G74PTRQB' ),
+			'con guiones'   => array( 'CC-157-176-G74PTRQB', 'CC157176G74PTRQB' ),
+			'en minusculas' => array( 'cc157176g74ptrqb', 'CC157176G74PTRQB' ),
+			'con espacios'  => array( ' CC 157 176 ', 'CC157176' ),
+			'con basura'    => array( 'CC/157.176#G74', 'CC157176G74' ),
+			'vacio'         => array( '', '' ),
 		);
 	}
 
