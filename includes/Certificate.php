@@ -71,6 +71,20 @@ class Certificate {
 	}
 
 	/**
+	 * Forma canónica de un código: mayúsculas y solo letras y números.
+	 *
+	 * La gente escribe el código como quiere (con guiones, con espacios, en minúsculas). La búsqueda
+	 * normaliza la entrada y el código se guarda ya normalizado, así que no puede haber dos formas del
+	 * mismo certificado.
+	 *
+	 * @param string $code Código tal cual lo escribe la persona.
+	 * @return string
+	 */
+	public static function normalize( string $code ): string {
+		return strtoupper( (string) preg_replace( '/[^A-Za-z0-9]/', '', $code ) );
+	}
+
+	/**
 	 * Genera el código público del certificado.
 	 *
 	 * @param int $course_id     Curso.
@@ -78,12 +92,14 @@ class Certificate {
 	 * @return string
 	 */
 	public static function generate_code( int $course_id, int $enrollment_id ): string {
-		$body = sprintf(
-			'%s-%d-%d-%s',
-			self::CODE_PREFIX,
-			$course_id,
-			$enrollment_id,
-			substr( strtoupper( wp_generate_password( 8, false, false ) ), 0, 8 )
+		$body = self::normalize(
+			sprintf(
+				'%s-%d-%d-%s',
+				self::CODE_PREFIX,
+				$course_id,
+				$enrollment_id,
+				substr( strtoupper( wp_generate_password( 8, false, false ) ), 0, 8 )
+			)
 		);
 
 		// Se comprueba que no exista ya: la numeración es única.
@@ -101,7 +117,7 @@ class Certificate {
 	 * @return int Identificador de la matrícula, 0 si no existe.
 	 */
 	public static function find_by_code( string $code ): int {
-		$code = strtoupper( trim( $code ) );
+		$code = self::normalize( $code );
 		if ( '' === $code ) {
 			return 0;
 		}
@@ -141,7 +157,7 @@ class Certificate {
 		$user      = get_userdata( $user_id );
 
 		return array(
-			'code'   => strtoupper( trim( $code ) ),
+			'code'   => self::normalize( $code ),
 			'course' => (string) get_the_title( $course_id ),
 			'person' => $user ? (string) $user->display_name : '',
 			'date'   => (string) CPT_Matricula::get_string( $enrollment_id, 'cert_fecha' ),

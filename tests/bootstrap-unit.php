@@ -153,4 +153,59 @@ if ( ! function_exists( 'wp_salt' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_posts' ) ) {
+	/**
+	 * Emula get_posts() sobre los mapas que fija la prueba: filtra por tipo y por meta_query.
+	 *
+	 * Es lo mínimo para poder probar una búsqueda por meta sin base de datos. Si la búsqueda real
+	 * cambia de forma, esta prueba deja de valer y hay que ampliar el doble.
+	 *
+	 * @param array<string, mixed> $args Argumentos.
+	 * @return array<int, int>|array<int, object>
+	 */
+	function get_posts( $args = array() ) {
+		$types = isset( $GLOBALS['convoca_test_post_types'] ) ? $GLOBALS['convoca_test_post_types'] : array();
+		$meta  = isset( $GLOBALS['convoca_test_meta'] ) ? $GLOBALS['convoca_test_meta'] : array();
+		$ids   = array();
+
+		foreach ( $types as $post_id => $type ) {
+			if ( isset( $args['post_type'] ) && $args['post_type'] !== $type ) {
+				continue;
+			}
+
+			$matches = true;
+			if ( isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) ) {
+				foreach ( $args['meta_query'] as $condition ) {
+					if ( ! is_array( $condition ) || ! isset( $condition['key'] ) ) {
+						continue;
+					}
+					$stored = isset( $meta[ $post_id ][ $condition['key'] ] ) ? (string) $meta[ $post_id ][ $condition['key'] ] : '';
+					if ( $stored !== (string) $condition['value'] ) {
+						$matches = false;
+						break;
+					}
+				}
+			}
+
+			if ( $matches ) {
+				$ids[] = $post_id;
+			}
+		}
+
+		if ( isset( $args['fields'] ) && 'ids' === $args['fields'] ) {
+			return $ids;
+		}
+
+		return array_map(
+			static function ( $id ) {
+				$post            = new \stdClass();
+				$post->ID        = $id;
+				$post->post_type = get_post_type( $id );
+				return $post;
+			},
+			$ids
+		);
+	}
+}
+
 require_once __DIR__ . '/../vendor/autoload.php';

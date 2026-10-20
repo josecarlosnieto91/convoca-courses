@@ -40,6 +40,11 @@ class Installer {
 		self::create_tables();
 		self::add_capabilities();
 
+		// Los tipos de contenido tienen que existir ANTES de reescribir las reglas: si no, el flush
+		// de la activación se guarda sin las URLs de /cursos/ y el archivo del curso da 404 hasta que
+		// alguien vuelve a guardar los enlaces permanentes.
+		Plugin::instance()->register_types();
+
 		Verification::register_rewrite();
 		flush_rewrite_rules();
 

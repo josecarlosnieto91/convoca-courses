@@ -11,12 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- variables inyectadas por Certificate::render_template().
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- variables inyectadas por \Convoca\Courses\Certificate::render_template().
 $convoca_courses_message = '';
 // Aviso de solo lectura: no cambia estado, así que no lleva nonce.
 // phpcs:disable WordPress.Security.NonceVerification.Recommended
 if ( isset( $_GET['convoca_msg'] ) ) {
-	$convoca_courses_message = Handlers::message( sanitize_key( wp_unslash( (string) $_GET['convoca_msg'] ) ) );
+	$convoca_courses_message = \Convoca\Courses\Handlers::message( sanitize_key( wp_unslash( (string) $_GET['convoca_msg'] ) ) );
 }
 // phpcs:enable WordPress.Security.NonceVerification.Recommended
 ?>
@@ -72,7 +72,7 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 		</div>
 	<?php elseif ( $logged_in ) : ?>
 		<form class="convoca-courses__form" method="post" action="<?php echo esc_url( (string) $enroll_url ); ?>">
-			<input type="hidden" name="action" value="<?php echo esc_attr( Handlers::ACTION_ENROLL ); ?>" />
+			<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_ENROLL ); ?>" />
 			<input type="hidden" name="course_id" value="<?php echo esc_attr( (string) (int) $course_id ); ?>" />
 			<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $enroll_nonce ); ?>" />
 			<button type="submit" class="convoca-courses__button"><?php esc_html_e( 'Matricularme', 'convoca-courses' ); ?></button>

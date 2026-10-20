@@ -104,15 +104,22 @@ abstract class CPT_Base {
 	 * @return array<string, string>
 	 */
 	protected static function capabilities(): array {
+		// Con map_meta_cap hay que declarar TODAS las primitivas: las que falten hacen que
+		// map_meta_cap() se llame sin post y WordPress avise en el log en cada comprobación.
 		return array(
-			'edit_post'          => 'convoca_manage_courses',
-			'read_post'          => 'read',
-			'delete_post'        => 'convoca_manage_courses',
-			'edit_posts'         => 'convoca_manage_courses',
-			'edit_others_posts'  => 'convoca_manage_courses',
-			'publish_posts'      => 'convoca_manage_courses',
-			'read_private_posts' => 'convoca_manage_courses',
-			'delete_posts'       => 'convoca_manage_courses',
+			'edit_post'              => 'convoca_manage_courses',
+			'read_post'              => 'read',
+			'delete_post'            => 'convoca_manage_courses',
+			'edit_posts'             => 'convoca_manage_courses',
+			'edit_others_posts'      => 'convoca_manage_courses',
+			'edit_private_posts'     => 'convoca_manage_courses',
+			'edit_published_posts'   => 'convoca_manage_courses',
+			'publish_posts'          => 'convoca_manage_courses',
+			'read_private_posts'     => 'convoca_manage_courses',
+			'delete_posts'           => 'convoca_manage_courses',
+			'delete_others_posts'    => 'convoca_manage_courses',
+			'delete_private_posts'   => 'convoca_manage_courses',
+			'delete_published_posts' => 'convoca_manage_courses',
 		);
 	}
 

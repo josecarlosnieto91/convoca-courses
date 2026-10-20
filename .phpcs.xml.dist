@@ -7,6 +7,12 @@
   <exclude-pattern>*/node_modules/*</exclude-pattern>
   <exclude-pattern>*/languages/*</exclude-pattern>
   <exclude-pattern>stubs/*</exclude-pattern>
+  <!--
+    dev-tools/: guiones de verificación manual contra un WordPress real (siembra de datos, sondas).
+    Escriben por pantalla a propósito y no viajan en el paquete (ver .distignore). El plugin en sí
+    (includes/, admin/, templates/, uninstall.php) sí pasa el estándar completo.
+  -->
+  <exclude-pattern>dev-tools/*</exclude-pattern>
 
   <arg name="extensions" value="php"/>
   <arg value="sp"/>

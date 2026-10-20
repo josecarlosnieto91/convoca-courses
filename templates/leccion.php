@@ -74,7 +74,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p class="convoca-courses__badge"><?php esc_html_e( 'Lección completada', 'convoca-courses' ); ?></p>
 		<?php else : ?>
 			<form class="convoca-courses__form" method="post" action="<?php echo esc_url( (string) $complete_url ); ?>">
-				<input type="hidden" name="action" value="<?php echo esc_attr( Handlers::ACTION_COMPLETE ); ?>" />
+				<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_COMPLETE ); ?>" />
 				<input type="hidden" name="lesson_id" value="<?php echo esc_attr( (string) (int) $lesson_id ); ?>" />
 				<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $complete_nonce ); ?>" />
 				<button type="submit" class="convoca-courses__button"><?php esc_html_e( 'Marcar como completada', 'convoca-courses' ); ?></button>
