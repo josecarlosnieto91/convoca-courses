@@ -13,7 +13,7 @@ namespace {
 
 	define( 'ABSPATH', __DIR__ . '/../' );
 	define( 'DAY_IN_SECONDS', 86400 );
-	define( 'CONVOCA_COURSES_VERSION', '0.2.0' );
+	define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
 	define( 'CONVOCA_COURSES_DB_VERSION', '1.0.0' );
 	define( 'CONVOCA_COURSES_FILE', __DIR__ . '/../convoca-courses.php' );
 	define( 'CONVOCA_COURSES_DIR', __DIR__ . '/../' );
@@ -28,7 +28,9 @@ namespace {
 		'available'  => true,
 		'calls'      => array(),
 		'fail_next'  => false,
-		'core_calls' => 0,
+		'core_calls'    => 0,
+		'receipt'       => '',
+		'receipt_calls' => 0,
 	);
 
 	if ( ! class_exists( 'WP_Error' ) ) {
@@ -609,6 +611,18 @@ namespace Convoca\Core {
 			}
 
 			return \Convoca\Gateway\convoca_gateway_create_payment( $args );
+		}
+
+		/**
+		 * URL del recibo (doblada).
+		 *
+		 * @param int $pago_id Identificador del pago.
+		 * @return string
+		 */
+		public static function receipt_url( int $pago_id ): string {
+			unset( $pago_id );
+			$GLOBALS['cc_gateway']['receipt_calls']++;
+			return (string) ( $GLOBALS['cc_gateway']['receipt'] ?? '' );
 		}
 
 		/**

@@ -54,6 +54,7 @@ class Shortcodes {
 		$enrollment_id = Enrollment::find( $user_id, $course_id );
 		$status        = $enrollment_id > 0 ? CPT_Matricula::status( $enrollment_id ) : '';
 		$payment_url   = $enrollment_id > 0 ? Course_Payment::payment_url( $enrollment_id ) : '';
+		$receipt_url   = $enrollment_id > 0 ? Course_Payment::receipt_url( $enrollment_id ) : '';
 
 		return Certificate::render_template(
 			'curso.php',

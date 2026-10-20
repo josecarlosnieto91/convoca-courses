@@ -4,7 +4,7 @@
  *
  * @package Convoca\Courses
  *
- * @var array<string, mixed> $course_id, $title, $content, $price, $seats, $enrolled, $progress, $certificate, $modules, $logged_in, $enroll_url, $enroll_nonce, $needs_payment, $enrollment_status, $payment_url.
+ * @var array<string, mixed> $course_id, $title, $content, $price, $seats, $enrolled, $progress, $certificate, $modules, $logged_in, $enroll_url, $enroll_nonce, $needs_payment, $enrollment_status, $payment_url, $receipt_url.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -80,6 +80,13 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 				);
 				?>
 			</p>
+			<?php if ( '' !== (string) $receipt_url ) : ?>
+				<p>
+					<a href="<?php echo esc_url( (string) $receipt_url ); ?>" target="_blank" rel="noopener">
+						<?php esc_html_e( 'Ver el recibo del pago', 'convoca-courses' ); ?>
+					</a>
+				</p>
+			<?php endif; ?>
 		</div>
 	<?php elseif ( $logged_in ) : ?>
 		<form class="convoca-courses__form" method="post" action="<?php echo esc_url( (string) $enroll_url ); ?>">

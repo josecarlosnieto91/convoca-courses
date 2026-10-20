@@ -48,10 +48,12 @@ class CoursePurchaseTest extends TestCase {
 		$GLOBALS['cc_actions'] = array();
 		$GLOBALS['cc_next_id'] = 100;
 		$GLOBALS['cc_gateway'] = array(
-			'available'  => true,
-			'calls'      => array(),
-			'fail_next'  => false,
-			'core_calls' => 0,
+			'available'     => true,
+			'calls'         => array(),
+			'fail_next'     => false,
+			'core_calls'    => 0,
+			'receipt'       => '',
+			'receipt_calls' => 0,
 		);
 
 		$this->course_id = wp_insert_post(
@@ -230,6 +232,37 @@ class CoursePurchaseTest extends TestCase {
 		$payment = Course_Payment::create( $this->enroll_pending(), $this->course_id );
 		$this->assertInstanceOf( \WP_Error::class, $payment );
 		$this->assertCount( 0, $GLOBALS['cc_gateway']['calls'], 'no se llama a la pasarela' );
+	}
+
+	/**
+	 * El recibo se lee por la fachada del núcleo, no llamando al gateway.
+	 *
+	 * @return void
+	 */
+	public function test_receipt_url_comes_from_the_core_facade(): void {
+		$enrollment_id = $this->enroll_pending();
+		$payment       = Course_Payment::create( $enrollment_id, $this->course_id );
+
+		$GLOBALS['cc_gateway']['receipt'] = 'https://pago.example.org/recibo/' . $payment['pago_id'];
+
+		$this->assertSame(
+			'https://pago.example.org/recibo/' . $payment['pago_id'],
+			Course_Payment::receipt_url( $enrollment_id ),
+			'el recibo sale de la fachada del núcleo'
+		);
+		$this->assertSame( 1, $GLOBALS['cc_gateway']['receipt_calls'], 'se pregunta una vez' );
+	}
+
+	/**
+	 * Sin pago no hay recibo que pedir.
+	 *
+	 * @return void
+	 */
+	public function test_no_receipt_without_payment(): void {
+		$enrollment_id = $this->enroll_pending();
+
+		$this->assertSame( '', Course_Payment::receipt_url( $enrollment_id ) );
+		$this->assertSame( 0, $GLOBALS['cc_gateway']['receipt_calls'] ?? 0, 'no se consulta la fachada' );
 	}
 
 	/**

@@ -27,3 +27,19 @@ function convoca_gateway_create_payment( array $args ) {
 
 	return $result;
 }
+
+/**
+ * Generador de la URL del recibo de un pago.
+ */
+class Receipt_Generator {
+
+	/**
+	 * URL pública del recibo.
+	 *
+	 * @param int $pago_id Identificador del pago.
+	 * @return string
+	 */
+	public static function receipt_url( int $pago_id ): string {
+		return '';
+	}
+}

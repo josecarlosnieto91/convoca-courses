@@ -165,6 +165,34 @@ class Course_Payment {
 	}
 
 	/**
+	 * URL del recibo del pago de una matrícula.
+	 *
+	 * Se lee por la fachada del núcleo (`Convoca\Core\Payments::receipt_url()`), y solo si no está
+	 * se llama al generador del gateway. Sin pago, o sin recibo, devuelve cadena vacía: la plantilla
+	 * simplemente no pinta el enlace.
+	 *
+	 * @param int $enrollment_id Matrícula.
+	 * @return string
+	 */
+	public static function receipt_url( int $enrollment_id ): string {
+		$pago_id = CPT_Matricula::get_int( $enrollment_id, 'pago_id', 0 );
+
+		if ( $pago_id <= 0 ) {
+			return '';
+		}
+
+		if ( class_exists( '\Convoca\Core\Payments' ) && method_exists( '\Convoca\Core\Payments', 'receipt_url' ) ) {
+			return (string) \Convoca\Core\Payments::receipt_url( $pago_id );
+		}
+
+		if ( class_exists( '\Convoca\Gateway\Receipt_Generator' ) && method_exists( '\Convoca\Gateway\Receipt_Generator', 'receipt_url' ) ) {
+			return (string) \Convoca\Gateway\Receipt_Generator::receipt_url( $pago_id );
+		}
+
+		return '';
+	}
+
+	/**
 	 * Pago completado: activa la matrícula.
 	 *
 	 * El gateway llama aquí por `convoca_payment_completed`. Solo se atiende el origen propio: si el

@@ -34,3 +34,9 @@ parameters:
         -
             message: '#Call to function method_exists\(\) with .* will always evaluate to true#'
             path: includes/Video.php
+        # Los guardas method_exists sobre la fachada del núcleo y el generador del gateway se quedan
+        # aunque el stub los haga "siempre verdaderos": en runtime puede haber un núcleo o un gateway
+        # anteriores sin ese método, y sin guarda el recibo pasaría de no pintarse a un fatal.
+        -
+            message: '#Call to function method_exists\(\) with .* will always evaluate to (true|false)#'
+            path: includes/Course_Payment.php

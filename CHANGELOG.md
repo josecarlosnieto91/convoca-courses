@@ -3,6 +3,15 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.2.1] — 2026-10-20
+
+### Añadido
+
+- Enlace **«Ver el recibo del pago»** en la portada del curso cuando la matrícula está pagada. El
+  recibo se lee por la fachada del núcleo (`Convoca\Core\Payments::receipt_url()`), así que el módulo
+  no depende del generador de recibos del gateway.
+- Dos pruebas de integración más del recibo (sale de la fachada; sin pago no se consulta).
+
 ## [0.2.0] — 2026-10-20
 
 ### Añadido
