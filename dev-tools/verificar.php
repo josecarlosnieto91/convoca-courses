@@ -166,6 +166,29 @@ comprobar( Access::is_enrolled( (int) $alumno_id, (int) $curso_id ), 'la persona
 $duplicada = Enrollment::enroll( (int) $alumno_id, (int) $curso_id );
 comprobar( is_wp_error( $duplicada ) && 'convoca_courses_already' === $duplicada->get_error_code(), 'no se puede matricular dos veces' );
 
+echo "\n== Preparar la prueba web (persona sin matrícula) ==\n";
+// La prueba por HTTP tiene que empezar siempre desde el mismo sitio: persona creada, sin matrícula y
+// sin progreso en este curso. Si no, la segunda pasada comprueba otra cosa y miente.
+$web_user = username_exists( 'alumno2-prueba' );
+if ( ! $web_user ) {
+	$web_user = wp_insert_user(
+		array(
+			'user_login' => 'alumno2-prueba',
+			'user_pass'  => 'Prueba-Segura-2026',
+			'user_email' => 'alumno2@example.org',
+			'role'       => 'subscriber',
+		)
+	);
+}
+comprobar( is_int( $web_user ) && $web_user > 0, 'existe la persona de la prueba web' );
+
+$previa = Enrollment::find( (int) $web_user, (int) $curso_id );
+if ( $previa > 0 ) {
+	wp_delete_post( $previa, true );
+}
+Progress::delete_for_course( (int) $curso_id );
+comprobar( 0 === Enrollment::find( (int) $web_user, (int) $curso_id ), 'la persona de la prueba web empieza sin matrícula' );
+
 echo "\n== Progreso ==\n";
 Progress::complete( (int) $alumno_id, (int) $curso_id, (int) $lecciones[0] );
 $parcial = Progress::for_course( (int) $alumno_id, (int) $curso_id );
@@ -207,6 +230,7 @@ file_put_contents(
 			'pagina_leccion' => $pagina_leccion,
 			'pagina_indice'  => $pagina_indice,
 			'codigo'         => $codigo,
+			'lecciones'      => $lecciones,
 			'alumno_id'      => $alumno_id,
 			'matricula_id'   => $matricula_id,
 			'pdf'            => $pdf,

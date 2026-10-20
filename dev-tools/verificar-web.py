@@ -4,7 +4,8 @@
 Hace lo que haría una persona: inicia sesión, abre la portada del curso, se matricula con el
 formulario, abre una lección, la marca como completada. Todo por HTTP y sin ejecutar JavaScript.
 """
-import http.cookiejar
+import json
+import pathlib
 import re
 import sys
 
@@ -13,8 +14,14 @@ import requests
 BASE = "http://localhost:8080"
 USER = "alumno2-prueba"
 PASSWORD = "Prueba-Segura-2026"
-COURSE_PAGE = 193
-LESSON_PAGE = 194
+
+# Los identificadores salen de lo que acaba de sembrar dev-tools/verificar.php: fijarlos a mano en
+# este fichero es exactamente cómo se escriben pruebas que pasan sin comprobar nada.
+DATOS = json.loads((pathlib.Path(__file__).parent / "resultado.json").read_text(encoding="utf-8"))
+COURSE_ID = int(DATOS["curso_id"])
+COURSE_PAGE = int(DATOS["pagina_curso"])
+LESSON_PAGE = int(DATOS["pagina_leccion"])
+LESSON_ID = int(DATOS["lecciones"][0])
 
 ok = 0
 fallos = []
@@ -64,16 +71,18 @@ r = session.post(
     f"{BASE}/wp-admin/admin-post.php",
     data={
         "action": "convoca_courses_enroll",
-        "course_id": str(177),
+        "course_id": str(COURSE_ID),
         "_convoca_nonce": nonce,
     },
+    headers={"Referer": f"{BASE}/?page_id={COURSE_PAGE}"},
     timeout=20,
     allow_redirects=False,
 )
 check(r.status_code in (301, 302, 303), f"la matrícula redirige (HTTP {r.status_code})")
 check("convoca_msg=enrolled" in r.headers.get("Location", ""), "el aviso es «enrolled»")
 
-r = session.get(f"{BASE}/?page_id={COURSE_PAGE}", timeout=20)
+# Se sigue la redirección de verdad: es lo que hace el navegador.
+r = session.get(r.headers["Location"], timeout=20)
 check("Matrícula realizada" in r.text, "la portada muestra el aviso de matrícula")
 check("de 12 lecciones completadas" in r.text, "la portada muestra el progreso")
 
@@ -91,9 +100,10 @@ r = session.post(
     f"{BASE}/wp-admin/admin-post.php",
     data={
         "action": "convoca_courses_complete",
-        "lesson_id": "178",
+        "lesson_id": str(LESSON_ID),
         "_convoca_nonce": nonce,
     },
+    headers={"Referer": f"{BASE}/?page_id={LESSON_PAGE}"},
     timeout=20,
     allow_redirects=False,
 )
@@ -108,7 +118,7 @@ r = session.post(
     f"{BASE}/wp-admin/admin-post.php",
     data={
         "action": "convoca_courses_enroll",
-        "course_id": "177",
+        "course_id": str(COURSE_ID),
         "_convoca_nonce": "nonce-falso",
     },
     timeout=20,

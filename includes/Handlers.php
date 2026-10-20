@@ -222,10 +222,18 @@ class Handlers {
 	 * @return void
 	 */
 	private static function redirect_back( int $course_id, string $message, string $detail = '' ): void {
-		$target = $course_id > 0 ? (string) get_permalink( $course_id ) : '';
+		// Primero se vuelve a la página desde la que se envió el formulario: es la que tiene los
+		// shortcodes, así que es la única donde el aviso y el progreso se ven. El permalink del curso
+		// es el respaldo (y el destino cuando no hay referente, como en un enlace directo).
+		$referer = wp_get_referer();
+		if ( $referer ) {
+			$target = (string) wp_validate_redirect( $referer, '' );
+		} else {
+			$target = '';
+		}
+
 		if ( '' === $target ) {
-			$referer = wp_get_referer();
-			$target  = $referer ? $referer : home_url( '/' );
+			$target = $course_id > 0 ? (string) get_permalink( $course_id ) : home_url( '/' );
 		}
 
 		$args = array( 'convoca_msg' => $message );
