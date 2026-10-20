@@ -105,6 +105,31 @@ jobs:
           name: phpunit-report-${{ matrix.php }}
           path: build/
 
+  integration:
+    name: Integración (compra de curso · mock del gateway)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+      # Compra de un curso contra un mock de Convoca Gateway: pago aprobado, rechazado y
+      # confirmación por webhook (incluido el duplicado y el de otro origen).
+      - name: Compra de curso (mock de convoca-gateway)
+        run: vendor/bin/phpunit -c phpunit-integration.xml
+
   plugin-check:
     name: Plugin Check (PCP · versiones fijadas)
     runs-on: ubuntu-latest

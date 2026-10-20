@@ -13,6 +13,13 @@
     (includes/, admin/, templates/, uninstall.php) sí pasa el estándar completo.
   -->
   <exclude-pattern>dev-tools/*</exclude-pattern>
+  <!--
+    tests/bootstrap-integration.php: arnés de las pruebas de integración. Declara tres espacios de
+    nombres (WordPress, Convoca\Core y Convoca\Gateway) y varios dobles en un solo fichero **a
+    propósito**, porque tiene que definir símbolos que en producción vienen de otros plugins. Las
+    pruebas de integración en sí (tests/Integration/) sí pasan el estándar completo.
+  -->
+  <exclude-pattern>tests/bootstrap-integration.php</exclude-pattern>
 
   <arg name="extensions" value="php"/>
   <arg value="sp"/>

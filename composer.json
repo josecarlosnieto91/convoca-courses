@@ -33,10 +33,12 @@
         "phpcbf": "phpcbf --standard=.phpcs.xml.dist",
         "phpstan": "phpstan analyse --configuration=phpstan.neon --memory-limit=2G",
         "phpunit": "phpunit -c phpunit-unit.xml",
+        "phpunit:integration": "phpunit -c phpunit-integration.xml",
         "test": [
             "@phpcs",
             "@phpstan",
-            "@phpunit"
+            "@phpunit",
+            "@phpunit:integration"
         ]
     }
 }
