@@ -18,17 +18,22 @@ class ProgressTest extends TestCase {
 	/**
 	 * Casos de porcentaje.
 	 *
+	 * Las etiquetas van sin acentos a propósito: WordPress.Arrays.MultipleStatementAlignment cuenta
+	 * bytes y caracteres de forma distinta según la versión de PHP, así que una etiqueta acentuada hace
+	 * que la alineación deje de ser reproducible entre el runner y local (medido: el runner pedía un
+	 * espacio más en las seis entradas del array).
+	 *
 	 * @return array<string, array{0: int, 1: int, 2: float}>
 	 */
 	public function percent_cases(): array {
 		return array(
-			'sin lecciones'            => array( 0, 0, 0.0 ),
-			'ninguna completada'       => array( 0, 12, 0.0 ),
-			'la mitad exacta'          => array( 6, 12, 50.0 ),
-			'todas completadas'        => array( 12, 12, 100.0 ),
-			'un tercio redondeado'     => array( 1, 3, 33.3 ),
-			'más completadas que hay' => array( 99, 12, 100.0 ),
-			'negativas se recortan'    => array( -3, 10, 0.0 ),
+			'sin lecciones'           => array( 0, 0, 0.0 ),
+			'ninguna completada'      => array( 0, 12, 0.0 ),
+			'la mitad exacta'         => array( 6, 12, 50.0 ),
+			'todas completadas'       => array( 12, 12, 100.0 ),
+			'un tercio redondeado'    => array( 1, 3, 33.3 ),
+			'mas completadas que hay' => array( 99, 12, 100.0 ),
+			'negativas se recortan'   => array( -3, 10, 0.0 ),
 		);
 	}
 
