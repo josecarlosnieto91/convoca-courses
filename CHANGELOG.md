@@ -3,6 +3,17 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.1.1] — 2026-10-20
+
+### Corregido
+
+- El CSS del componente fija su propio color en cada elemento de texto: el tema del sitio pintaba los
+  `<li>` y los enlaces por su cuenta y dejaba el título de la lección en gris claro sobre blanco y el
+  texto del botón en naranja claro sobre naranja.
+- El botón sube de especificidad (clase repetida, sin `!important`) para que el tema no le cambie el
+  color, y se añade `:focus-visible` con contorno visible.
+- Los stubs de PHPStan dejan de viajar en el paquete de distribución.
+
 ## [No publicado]
 
 ## [0.1.0] — 2026-10-20
@@ -21,5 +32,6 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Shortcodes `[convoca_curso]`, `[convoca_curso_lecciones]` y `[convoca_curso_leccion]`.
 - `uninstall.php` que respeta la opción de conservar datos.
 
-[No publicado]: https://github.com/josecarlosnieto91/convoca-courses/compare/v0.1.0...HEAD
+[No publicado]: https://github.com/josecarlosnieto91/convoca-courses/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/josecarlosnieto91/convoca-courses/releases/tag/v0.1.1
 [0.1.0]: https://github.com/josecarlosnieto91/convoca-courses/releases/tag/v0.1.0
