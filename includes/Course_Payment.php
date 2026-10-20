@@ -124,7 +124,14 @@ class Course_Payment {
 			$args['method'] = $method;
 		}
 
-		$payment = \Convoca\Gateway\convoca_gateway_create_payment( $args );
+		// Se cobra por la fachada del núcleo cuando está: así el módulo no depende de las clases de
+		// otro plugin, y el día que el gateway cambie no hay que tocar esto. El respaldo directo a la
+		// función del gateway es para un núcleo anterior a `Convoca\Core\Payments`.
+		if ( class_exists( '\Convoca\Core\Payments' ) && \Convoca\Core\Payments::is_available() ) {
+			$payment = \Convoca\Core\Payments::create( $args );
+		} else {
+			$payment = \Convoca\Gateway\convoca_gateway_create_payment( $args );
+		}
 
 		if ( is_wp_error( $payment ) ) {
 			if ( class_exists( '\Convoca\Core\Logger' ) ) {
