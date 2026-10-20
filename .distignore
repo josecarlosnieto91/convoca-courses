@@ -12,6 +12,7 @@ composer.lock
 node_modules/
 tests/
 dev-tools/
+stubs/
 vendor/
 *.md
 *.xml
