@@ -1,0 +1,107 @@
+<?php
+/**
+ * Plantilla: pantalla de ajustes.
+ *
+ * @package Convoca\Courses
+ *
+ * @var array<string, mixed> $group, $page, $config, $pro, $keep_data, $video_option, $keep_option.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
+<div class="wrap convoca-courses-admin">
+	<h1><?php esc_html_e( 'Ajustes de Convoca Courses', 'convoca-courses' ); ?></h1>
+
+	<?php if ( ! $pro ) : ?>
+		<div class="notice notice-info">
+			<p><?php esc_html_e( 'Las lecciones de vídeo son una función PRO. Sin licencia, los cursos funcionan con texto, adjuntos y PDF.', 'convoca-courses' ); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<form method="post" action="options.php">
+		<?php settings_fields( (string) $group ); ?>
+
+		<h2><?php esc_html_e( 'Vídeo (PRO)', 'convoca-courses' ); ?></h2>
+		<p class="description">
+			<?php esc_html_e( 'El vídeo no se aloja en este plugin: se firma una URL de corta duración contra un almacenamiento compatible con S3 (R2, B2, Wasabi, MinIO).', 'convoca-courses' ); ?>
+		</p>
+
+		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row"><label for="convoca-endpoint"><?php esc_html_e( 'Endpoint', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="url" class="regular-text" id="convoca-endpoint"
+						name="<?php echo esc_attr( (string) $video_option ); ?>[endpoint]"
+						value="<?php echo esc_attr( (string) $config['endpoint'] ); ?>"
+						placeholder="https://s3.example.org" />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-bucket"><?php esc_html_e( 'Bucket', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="text" class="regular-text" id="convoca-bucket"
+						name="<?php echo esc_attr( (string) $video_option ); ?>[bucket]"
+						value="<?php echo esc_attr( (string) $config['bucket'] ); ?>" />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-region"><?php esc_html_e( 'Región', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="text" class="regular-text" id="convoca-region"
+						name="<?php echo esc_attr( (string) $video_option ); ?>[region]"
+						value="<?php echo esc_attr( (string) $config['region'] ); ?>" placeholder="auto" />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-key"><?php esc_html_e( 'Clave de acceso', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="text" class="regular-text" id="convoca-key" autocomplete="off"
+						name="<?php echo esc_attr( (string) $video_option ); ?>[key]"
+						value="<?php echo esc_attr( (string) $config['key'] ); ?>" />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-secret"><?php esc_html_e( 'Secreto', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="password" class="regular-text" id="convoca-secret" autocomplete="new-password"
+						name="<?php echo esc_attr( (string) $video_option ); ?>[secret]" value="" />
+					<p class="description"><?php esc_html_e( 'Se guarda cifrado. Déjalo vacío para conservar el actual.', 'convoca-courses' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-prefix"><?php esc_html_e( 'Prefijo de objetos', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="text" class="regular-text" id="convoca-prefix"
+						name="<?php echo esc_attr( (string) $video_option ); ?>[path_prefix]"
+						value="<?php echo esc_attr( (string) $config['path_prefix'] ); ?>" placeholder="cursos/2026" />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Estilo de ruta', 'convoca-courses' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="<?php echo esc_attr( (string) $video_option ); ?>[path_style]" value="1" <?php checked( (bool) $config['path_style'] ); ?> />
+						<?php esc_html_e( 'Usar estilo de ruta (bucket en la ruta). Desmarca para estilo virtual-host.', 'convoca-courses' ); ?>
+					</label>
+				</td>
+			</tr>
+		</table>
+
+		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
+		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Al desinstalar', 'convoca-courses' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="<?php echo esc_attr( (string) $keep_option ); ?>" value="1" <?php checked( (bool) $keep_data ); ?> />
+						<?php esc_html_e( 'Conservar cursos, matrículas y progreso al desinstalar el plugin.', 'convoca-courses' ); ?>
+					</label>
+				</td>
+			</tr>
+		</table>
+
+		<?php submit_button(); ?>
+	</form>
+</div>

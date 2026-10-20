@@ -1,0 +1,186 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Sintaxis de todos los ficheros PHP
+        run: |
+          set -e
+          find . -name '*.php' -not -path './vendor/*' -not -path './node_modules/*' -print0 \
+            | xargs -0 -n1 -P4 php -l > /tmp/lint.txt 2>&1 || { cat /tmp/lint.txt; exit 1; }
+          grep -c 'No syntax errors detected' /tmp/lint.txt
+
+  phpcs:
+    name: PHPCS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+      - name: Estándar de código (0 avisos, 0 errores)
+        run: vendor/bin/phpcs --standard=.phpcs.xml.dist --report=full
+
+  phpstan:
+    name: PHPStan (nivel 5)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+      - run: vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=2G --no-progress
+
+  phpunit:
+    name: PHPUnit ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}-
+            ${{ runner.os }}-composer-
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+      - name: Pruebas unitarias
+        run: vendor/bin/phpunit -c phpunit-unit.xml --log-junit build/junit-${{ matrix.php }}.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phpunit-report-${{ matrix.php }}
+          path: build/
+
+  plugin-check:
+    name: Plugin Check (PCP · versiones fijadas)
+    runs-on: ubuntu-latest
+    env:
+      # Versiones FIJADAS a propósito: al subirlas hay que volver a medir.
+      WP_VERSION: '7.1.3'
+      PLUGIN_CHECK_VERSION: '2.1.0'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2, wp-cli
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+      - name: Build clean plugin dir (as published)
+        # Replica el paquete de distribución: fuera el tooling de desarrollo, dentro vendor.
+        # Se quita 'Requires Plugins' SOLO en el build-dir porque la action de PCP intenta
+        # instalar la dependencia desde wp.org y convoca-core aún no está publicado.
+        run: |
+          mkdir -p build-dir
+          rsync -a --exclude-from=.distignore ./ build-dir/convoca-courses/
+          cp -r vendor build-dir/convoca-courses/
+          find build-dir/convoca-courses -name '.htaccess' -delete
+          sed -i '/Requires Plugins:/d' build-dir/convoca-courses/convoca-courses.php
+          ls build-dir/convoca-courses/
+      - name: Traer las piezas fijadas (WordPress y Plugin Check), con cache
+        id: piezas
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pcp-archivos
+          key: pcp-courses-wp${{ env.WP_VERSION }}-plugincheck${{ env.PLUGIN_CHECK_VERSION }}
+      - name: Descargar las piezas (solo si no están en cache)
+        if: steps.piezas.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/pcp-archivos"
+          traer() {
+            if ! curl -fL --retry 5 --retry-all-errors --retry-delay 3 -o "$2" "$1"; then
+              echo "::error title=Infraestructura, no el repositorio::No se pudo traer $1. Este rojo NO dice nada del código."
+              exit 1
+            fi
+          }
+          traer "https://wordpress.org/wordpress-${WP_VERSION}.zip" "$RUNNER_TEMP/pcp-archivos/wordpress.zip"
+          traer "https://downloads.wordpress.org/plugin/plugin-check.${PLUGIN_CHECK_VERSION}.zip" "$RUNNER_TEMP/pcp-archivos/plugin-check.zip"
+      - name: Preparar el WordPress de pruebas
+        run: |
+          mkdir -p "$RUNNER_TEMP/wp"
+          unzip -oq "$RUNNER_TEMP/pcp-archivos/wordpress.zip" -d "$RUNNER_TEMP/wp"
+          cp -r build-dir/convoca-courses "$RUNNER_TEMP/wp/wordpress/wp-content/plugins/convoca-courses"
+          wp config create --path="$RUNNER_TEMP/wp/wordpress" --dbname=wordpress \
+            --dbuser=root --dbpass=root --dbhost=127.0.0.1
+          wp core install --path="$RUNNER_TEMP/wp/wordpress" --url=http://localhost:8880 \
+            --title=Convoca --admin_user=admin --admin_password=NoEsUnSecreto123 \
+            --admin_email=ci@example.org --skip-email
+      - name: Run Plugin Check (WordPress.org, versión fijada)
+        run: |
+          wp plugin install "$RUNNER_TEMP/pcp-archivos/plugin-check.zip" --activate --path="$RUNNER_TEMP/wp/wordpress"
+          wp plugin activate convoca-courses --path="$RUNNER_TEMP/wp/wordpress"
+          wp plugin check convoca-courses \
+            --path="$RUNNER_TEMP/wp/wordpress" \
+            --categories=plugin_repo,security

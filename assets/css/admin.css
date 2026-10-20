@@ -1,0 +1,20 @@
+/**
+ * Convoca Courses — estilos del panel.
+ */
+
+.convoca-courses-metabox th {
+	width: 180px;
+}
+
+.convoca-courses-admin__warning {
+	color: #b45309;
+	font-weight: 600;
+}
+
+.convoca-courses-admin h2 {
+	margin-top: 2rem;
+}
+
+.convoca-courses-admin .form-table th {
+	width: 220px;
+}

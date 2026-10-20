@@ -1,0 +1,334 @@
+/**
+ * Convoca Courses — estilos públicos.
+ *
+ * Paleta de la marca Convoca con variables para que un tema pueda sobrescribirla sin editar el plugin.
+ */
+
+.convoca-courses {
+	--cc-accent: #ff8700;
+	--cc-accent-dark: #e67600;
+	--cc-ink: #1a1d24;
+	--cc-ink-soft: #4a5160;
+	--cc-surface: #ffffff;
+	--cc-surface-alt: #f4f6f8;
+	--cc-border: #e2e8f0;
+	--cc-ok: #22c55e;
+	--cc-error: #dc2626;
+	--cc-radius: 12px;
+
+	box-sizing: border-box;
+	color: var(--cc-ink);
+	font-size: 1rem;
+	line-height: 1.6;
+	max-width: 100%;
+}
+
+.convoca-courses *,
+.convoca-courses *::before,
+.convoca-courses *::after {
+	box-sizing: inherit;
+}
+
+.convoca-courses__header {
+	border-bottom: 1px solid var(--cc-border);
+	margin-bottom: 1.5rem;
+	padding-bottom: 1rem;
+}
+
+.convoca-courses__title {
+	color: var(--cc-ink);
+	font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+	line-height: 1.2;
+	margin: 0 0 0.75rem;
+}
+
+.convoca-courses__subtitle {
+	color: var(--cc-ink);
+	font-size: 1.15rem;
+	margin: 2rem 0 1rem;
+}
+
+.convoca-courses__facts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.5rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.convoca-courses__facts li {
+	color: var(--cc-ink-soft);
+	font-size: 0.925rem;
+}
+
+.convoca-courses__label {
+	color: var(--cc-ink);
+	font-weight: 600;
+}
+
+.convoca-courses__content > *:first-child {
+	margin-top: 0;
+}
+
+.convoca-courses__content a {
+	color: var(--cc-accent-dark);
+}
+
+/* Progreso */
+
+.convoca-courses__progress {
+	background: var(--cc-surface-alt);
+	border: 1px solid var(--cc-border);
+	border-radius: var(--cc-radius);
+	margin: 1.5rem 0;
+	padding: 1rem 1.25rem;
+}
+
+.convoca-courses__progress p {
+	margin: 0.5rem 0 0;
+}
+
+.convoca-courses__bar {
+	background: #dfe4ea;
+	border-radius: 999px;
+	height: 10px;
+	overflow: hidden;
+	width: 100%;
+}
+
+.convoca-courses__bar span {
+	background: linear-gradient(90deg, var(--cc-accent), var(--cc-accent-dark));
+	display: block;
+	height: 100%;
+	transition: width 0.4s ease;
+}
+
+/* Módulos y lecciones */
+
+.convoca-courses__modules {
+	counter-reset: cc-module;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.convoca-courses__module {
+	background: var(--cc-surface);
+	border: 1px solid var(--cc-border);
+	border-radius: var(--cc-radius);
+	margin-bottom: 1rem;
+	padding: 1rem 1.25rem;
+}
+
+.convoca-courses__module h4 {
+	color: var(--cc-ink);
+	font-size: 1.05rem;
+	margin: 0 0 0.75rem;
+}
+
+.convoca-courses__lessons {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.convoca-courses__lesson {
+	align-items: center;
+	border-top: 1px solid var(--cc-border);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	padding: 0.6rem 0;
+}
+
+.convoca-courses__lesson:first-child {
+	border-top: 0;
+}
+
+.convoca-courses__lesson-number {
+	align-items: center;
+	background: var(--cc-surface-alt);
+	border-radius: 50%;
+	color: var(--cc-ink-soft);
+	display: inline-flex;
+	font-size: 0.8rem;
+	height: 1.75rem;
+	justify-content: center;
+	min-width: 1.75rem;
+}
+
+.convoca-courses__lesson-title {
+	flex: 1 1 auto;
+	font-weight: 500;
+}
+
+.convoca-courses__lesson-type {
+	color: var(--cc-ink-soft);
+	font-size: 0.8rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.convoca-courses__lesson.is-completed .convoca-courses__lesson-title {
+	color: var(--cc-ink-soft);
+	text-decoration: line-through;
+}
+
+.convoca-courses__lesson.is-locked {
+	opacity: 0.55;
+}
+
+.convoca-courses__badge {
+	background: rgba(34, 197, 94, 0.12);
+	border-radius: 999px;
+	color: #166534;
+	display: inline-block;
+	font-size: 0.78rem;
+	font-weight: 600;
+	padding: 0.15rem 0.6rem;
+}
+
+.convoca-courses__badge--locked {
+	background: rgba(148, 163, 184, 0.18);
+	color: #475569;
+}
+
+/* Formularios y botones */
+
+.convoca-courses__form {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin: 1rem 0;
+}
+
+.convoca-courses__form label {
+	flex: 1 1 12rem;
+	font-weight: 600;
+}
+
+.convoca-courses__form input[type="text"] {
+	border: 1px solid var(--cc-border);
+	border-radius: 8px;
+	flex: 1 1 12rem;
+	padding: 0.5rem 0.75rem;
+}
+
+.convoca-courses__button {
+	background: var(--cc-accent);
+	border: 0;
+	border-radius: 8px;
+	color: #1a1d24;
+	cursor: pointer;
+	display: inline-block;
+	font-weight: 600;
+	line-height: 1.2;
+	padding: 0.65rem 1.25rem;
+	text-decoration: none;
+	transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.convoca-courses__button:hover,
+.convoca-courses__button:focus {
+	background: var(--cc-accent-dark);
+	color: #ffffff;
+}
+
+.convoca-courses__button:active {
+	transform: translateY(1px);
+}
+
+.convoca-courses__login {
+	margin: 1.25rem 0;
+}
+
+/* Avisos */
+
+.convoca-courses-notice {
+	background: var(--cc-surface-alt);
+	border-left: 4px solid var(--cc-accent);
+	border-radius: 8px;
+	margin: 1rem 0;
+	padding: 0.85rem 1.1rem;
+}
+
+.convoca-courses-notice--ok {
+	background: rgba(34, 197, 94, 0.1);
+	border-left-color: var(--cc-ok);
+}
+
+.convoca-courses-notice--error {
+	background: rgba(220, 38, 38, 0.08);
+	border-left-color: var(--cc-error);
+}
+
+.convoca-courses-notice--locked {
+	background: rgba(148, 163, 184, 0.14);
+	border-left-color: #94a3b8;
+}
+
+/* Vídeo y adjuntos */
+
+.convoca-courses__video {
+	background: #000000;
+	border-radius: var(--cc-radius);
+	margin: 1.25rem 0;
+	overflow: hidden;
+}
+
+.convoca-courses__video video {
+	display: block;
+	height: auto;
+	max-width: 100%;
+	width: 100%;
+}
+
+.convoca-courses__attachment {
+	margin: 1.25rem 0;
+}
+
+.convoca-courses__footer {
+	align-items: center;
+	border-top: 1px solid var(--cc-border);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-content: space-between;
+	margin-top: 2rem;
+	padding-top: 1rem;
+}
+
+/* Página de verificación */
+
+.convoca-courses-verify {
+	background: var(--cc-surface-alt, #f4f6f8);
+	margin: 0;
+	padding: 2.5rem 1rem;
+}
+
+.convoca-courses--verify {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	margin: 0 auto;
+	max-width: 42rem;
+	padding: 2rem;
+}
+
+.convoca-courses--verify .convoca-courses__title {
+	margin-bottom: 1.5rem;
+}
+
+@media (max-width: 600px) {
+	.convoca-courses__footer {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.convoca-courses__button {
+		text-align: center;
+		width: 100%;
+	}
+}

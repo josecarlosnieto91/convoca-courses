@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<ruleset name="Convoca Courses">
+  <description>WordPress Coding Standards para Convoca Courses. Configuración única del repo.</description>
+
+  <file>.</file>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/languages/*</exclude-pattern>
+  <exclude-pattern>stubs/*</exclude-pattern>
+
+  <arg name="extensions" value="php"/>
+  <arg value="sp"/>
+  <arg name="parallel" value="8"/>
+
+  <config name="minimum_supported_wp_version" value="6.4"/>
+  <config name="testVersion" value="8.1-"/>
+
+  <rule ref="WordPress"/>
+
+  <!--
+    Exclusiones con motivo escrito. No es un silenciador: cada una está razonada y versionada.
+
+    Files.FileName: los ficheros de includes/ siguen PSR-4 (el nombre coincide con la clase), que es
+      la convención del ecosistema Convoca y lo que exige el autoload de Composer. WPCS pediría
+      minúsculas con guiones y PSR-4 dejaría de resolver en Linux (sensible a mayúsculas).
+    WP.I18n (text_domain): el proyecto tiene un único dominio, fijado aquí.
+  -->
+  <rule ref="WordPress.Files.FileName">
+    <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+    <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+  </rule>
+
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array">
+        <element value="convoca-courses"/>
+      </property>
+    </properties>
+  </rule>
+
+  <!--
+    Plantillas: se incluyen para que también pasen el estándar, pero emiten HTML por diseño, así que
+    las reglas de salida se aplican sobre el valor ya escapado (esc_html/esc_attr/esc_url).
+  -->
+  <rule ref="WordPress.Security.EscapeOutput">
+    <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
+  </rule>
+</ruleset>

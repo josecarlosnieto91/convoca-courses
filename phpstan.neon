@@ -1,0 +1,34 @@
+parameters:
+    level: 5
+    paths:
+        - ./
+    excludePaths:
+        analyseAndScan:
+            - vendor
+            - node_modules (?)
+            - tests
+            # Las plantillas reciben sus variables con extract() desde un array tipado que construye la
+            # clase: PHPStan no puede seguirlo y las marca todas como indefinidas. Se quedan fuera del
+            # análisis estático, no de la revisión: pasan PHPCS y se ejercitan en el WordPress real.
+            - templates
+    bootstrapFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - phpstan-bootstrap.php
+        - stubs/convoca-core.stub.php
+    ignoreErrors:
+        # require_once de wp-admin/includes/upgrade.php (dbDelta): el bootstrap fija ABSPATH=/tmp/wp,
+        # que no existe fuera de un WordPress real. La ruta es correcta en runtime.
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-admin/#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Installer.php
+        # Los stubs declaran la API actual del núcleo. En runtime puede haber una versión anterior
+        # sin algún método; los guardas con method_exists() existen justo para no provocar un fatal
+        # en una instalación con el núcleo viejo, así que se mantienen aunque el stub los haga
+        # "siempre verdaderos".
+        -
+            message: '#Call to function method_exists\(\) with .* will always evaluate to true#'
+            path: includes/License.php
+        -
+            message: '#Call to function method_exists\(\) with .* will always evaluate to true#'
+            path: includes/Video.php
