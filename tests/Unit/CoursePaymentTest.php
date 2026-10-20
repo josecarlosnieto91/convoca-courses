@@ -23,12 +23,12 @@ class CoursePaymentTest extends TestCase {
 	 */
 	public function needs_payment_cases(): array {
 		return array(
-			'gratuito con gateway'   => array( 0.0, true, false ),
-			'gratuito sin gateway'   => array( 0.0, false, false ),
-			'de pago con gateway'    => array( 25.0, true, true ),
-			'de pago sin gateway'    => array( 25.0, false, false ),
-			'precio negativo'        => array( -5.0, true, false ),
-			'precio muy bajo'        => array( 0.01, true, true ),
+			'gratuito con gateway' => array( 0.0, true, false ),
+			'gratuito sin gateway' => array( 0.0, false, false ),
+			'de pago con gateway'  => array( 25.0, true, true ),
+			'de pago sin gateway'  => array( 25.0, false, false ),
+			'precio negativo'      => array( -5.0, true, false ),
+			'precio muy bajo'      => array( 0.01, true, true ),
 		);
 	}
 
@@ -47,17 +47,18 @@ class CoursePaymentTest extends TestCase {
 	}
 
 	/**
-	 * Casos de redondeo a céntimos.
+	 * Casos de redondeo a céntimos. Etiquetas sin acentos: la alineación de phpcs no es reproducible
+	 * con multibyte y el runner pediría otros espacios que local.
 	 *
 	 * @return array<string, array{0: float, 1: int}>
 	 */
 	public function amount_cases(): array {
 		return array(
-			'cero'            => array( 0.0, 0 ),
-			'entero'          => array( 25.0, 2500 ),
-			'con decimales'   => array( 19.99, 1999 ),
-			'medio céntimo'   => array( 0.005, 1 ),
-			'otro con céntimos' => array( 120.5, 12050 ),
+			'cero'                => array( 0.0, 0 ),
+			'entero'              => array( 25.0, 2500 ),
+			'con decimales'       => array( 19.99, 1999 ),
+			'medio centimo'       => array( 0.005, 1 ),
+			'otro con centimos'   => array( 120.5, 12050 ),
 			'negativo se recorta' => array( -10.0, 0 ),
 		);
 	}

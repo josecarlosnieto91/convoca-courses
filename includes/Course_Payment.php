@@ -163,9 +163,9 @@ class Course_Payment {
 	 * El gateway llama aquí por `convoca_payment_completed`. Solo se atiende el origen propio: si el
 	 * pago es de una inscripción o de una cuota, este módulo no toca nada.
 	 *
-	 * @param int    $pago_id   Identificador del pago.
-	 * @param string $origin    Origen del pago.
-	 * @param int    $origin_id Identificador en el origen (aquí, la matrícula).
+	 * @param int                  $pago_id   Identificador del pago.
+	 * @param string               $origin    Origen del pago.
+	 * @param int                  $origin_id Identificador en el origen (aquí, la matrícula).
 	 * @param array<string, mixed> $meta Meta del pago.
 	 * @return void
 	 */
