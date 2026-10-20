@@ -3,6 +3,16 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.1.2] — 2026-10-20
+
+### Corregido
+
+- Modo oscuro: el componente declara su propia paleta y, cuando el sitio está en oscuro, cambia los
+  valores. Antes mezclaba tarjetas blancas con textos claros sobre fondo oscuro (contraste medido de
+  1,13:1 en las etiquetas).
+- El título del módulo sube de especificidad para que el tema no lo deje en naranja sobre blanco
+  (1,9:1).
+
 ## [0.1.1] — 2026-10-20
 
 ### Corregido
