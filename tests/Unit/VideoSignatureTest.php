@@ -78,7 +78,7 @@ class VideoSignatureTest extends TestCase {
 	 * @return void
 	 */
 	public function test_without_configuration_returns_empty(): void {
-		$config = $this->config();
+		$config           = $this->config();
 		$config['bucket'] = '';
 
 		$this->assertSame( '', Video::presigned_url( $config, 'test.txt', 900, 1700000000 ) );
@@ -91,7 +91,7 @@ class VideoSignatureTest extends TestCase {
 	 * @return void
 	 */
 	public function test_path_style_puts_the_bucket_in_the_path(): void {
-		$config = $this->config();
+		$config               = $this->config();
 		$config['path_style'] = true;
 
 		$url = Video::presigned_url( $config, 'leccion.mp4', 900, 1700000000 );
@@ -104,7 +104,7 @@ class VideoSignatureTest extends TestCase {
 	 * @return void
 	 */
 	public function test_prefix_is_applied(): void {
-		$config = $this->config();
+		$config                = $this->config();
 		$config['path_prefix'] = 'cursos/2026/';
 		$config['path_style']  = true;
 

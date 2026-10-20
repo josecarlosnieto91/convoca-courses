@@ -63,32 +63,32 @@ class CPT_Curso extends CPT_Base {
 	 */
 	protected static function meta(): array {
 		return array(
-			'precio'                 => array(
+			'precio'                => array(
 				'type'     => 'number',
 				'sanitize' => static function ( $value ) {
 					return max( 0.0, (float) $value );
 				},
 			),
-			'moneda'                 => array(
+			'moneda'                => array(
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
 					$value = strtoupper( substr( (string) $value, 0, 3 ) );
 					return '' === $value ? 'EUR' : $value;
 				},
 			),
-			'plazas'                 => array(
+			'plazas'                => array(
 				'type'     => 'integer',
 				'sanitize' => static function ( $value ) {
 					return max( 0, (int) $value );
 				},
 			),
-			'certificado'            => array(
+			'certificado'           => array(
 				'type'     => 'boolean',
 				'sanitize' => static function ( $value ) {
 					return (bool) $value;
 				},
 			),
-			'desbloqueo_secuencial'  => array(
+			'desbloqueo_secuencial' => array(
 				'type'     => 'boolean',
 				'sanitize' => static function ( $value ) {
 					return (bool) $value;

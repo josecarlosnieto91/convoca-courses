@@ -43,10 +43,10 @@ class Admin_Columns {
 
 		unset( $columns['date'] );
 
-		$columns['convoca_persona']  = __( 'Persona', 'convoca-courses' );
-		$columns['convoca_curso']    = __( 'Curso', 'convoca-courses' );
-		$columns['convoca_estado']   = __( 'Estado', 'convoca-courses' );
-		$columns['convoca_cert']     = __( 'Certificado', 'convoca-courses' );
+		$columns['convoca_persona'] = __( 'Persona', 'convoca-courses' );
+		$columns['convoca_curso']   = __( 'Curso', 'convoca-courses' );
+		$columns['convoca_estado']  = __( 'Estado', 'convoca-courses' );
+		$columns['convoca_cert']    = __( 'Certificado', 'convoca-courses' );
 
 		if ( '' !== $date ) {
 			$columns['date'] = $date;
@@ -121,7 +121,7 @@ class Admin_Columns {
 	 * @return array<string, string>
 	 */
 	public function curso_columns( array $columns ): array {
-		$columns['convoca_precio']    = __( 'Precio', 'convoca-courses' );
+		$columns['convoca_precio']     = __( 'Precio', 'convoca-courses' );
 		$columns['convoca_matriculas'] = __( 'Matrículas', 'convoca-courses' );
 
 		return $columns;

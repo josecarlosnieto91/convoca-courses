@@ -35,17 +35,17 @@ class CPT_Matricula extends CPT_Base {
 	 */
 	protected static function args(): array {
 		return array(
-			'labels'             => self::labels( __( 'Matrícula', 'convoca-courses' ), __( 'Matrículas', 'convoca-courses' ) ),
-			'public'             => false,
-			'show_ui'            => true,
-			'show_in_menu'       => 'edit.php?post_type=' . CPT_Curso::TYPE,
-			'show_in_rest'       => false,
-			'supports'           => array( 'title' ),
-			'capability_type'    => 'post',
-			'capabilities'       => self::capabilities(),
-			'map_meta_cap'       => true,
-			'publicly_queryable' => false,
-			'has_archive'        => false,
+			'labels'              => self::labels( __( 'Matrícula', 'convoca-courses' ), __( 'Matrículas', 'convoca-courses' ) ),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => 'edit.php?post_type=' . CPT_Curso::TYPE,
+			'show_in_rest'        => false,
+			'supports'            => array( 'title' ),
+			'capability_type'     => 'post',
+			'capabilities'        => self::capabilities(),
+			'map_meta_cap'        => true,
+			'publicly_queryable'  => false,
+			'has_archive'         => false,
 			'exclude_from_search' => true,
 		);
 	}

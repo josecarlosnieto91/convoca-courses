@@ -60,7 +60,7 @@ if ( ! function_exists( 'number_format_i18n' ) ) {
 
 if ( ! function_exists( 'wp_parse_url' ) ) {
 	/**
-	 * parse_url de WordPress.
+	 * Envoltorio de parse_url, como en WordPress.
 	 *
 	 * @param string $url       URL.
 	 * @param int    $component Componente.

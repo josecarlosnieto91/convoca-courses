@@ -78,6 +78,7 @@ class ManifestTest extends TestCase {
 	public function test_rule_zero_no_entity_names(): void {
 		// El patrón se arma por trozos a propósito: si estuviera escrito entero, esta misma prueba
 		// sería la única infractora de la regla que vigila.
+		// phpcs:ignore Generic.Strings.UnnecessaryStringConcat.Found -- la concatenación es el mecanismo: el patrón no puede aparecer escrito entero.
 		$forbidden = '/' . implode( '|', array( 'sa' . 'via', 'bio' . 'devas', 'lu' . 'gg', 'josecnr91' . '@' ) ) . '/i';
 		$offenders = array();
 

@@ -16,6 +16,7 @@ if ( ! $convoca_courses_keep ) {
 
 	// Entradas del módulo y su meta.
 	$convoca_courses_types = array( 'convoca_curso', 'convoca_modulo', 'convoca_leccion', 'convoca_matricula' );
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery -- desinstalación: hay que localizar las entradas del módulo antes de borrarlas.
 	$convoca_courses_posts = $wpdb->get_col(
 		$wpdb->prepare(
 			"SELECT ID FROM {$wpdb->posts} WHERE post_type IN ( %s, %s, %s, %s )",
@@ -25,6 +26,8 @@ if ( ! $convoca_courses_keep ) {
 			$convoca_courses_types[3]
 		)
 	);
+
+	// phpcs:enable WordPress.DB.DirectDatabaseQuery
 
 	foreach ( (array) $convoca_courses_posts as $convoca_courses_post_id ) {
 		wp_delete_post( (int) $convoca_courses_post_id, true );

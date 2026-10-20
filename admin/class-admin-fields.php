@@ -80,13 +80,13 @@ class Admin_Fields {
 		Certificate::render_template(
 			'metabox-curso.php',
 			array(
-				'post_id'      => (int) $post->ID,
-				'precio'       => CPT_Curso::price( (int) $post->ID ),
-				'moneda'       => CPT_Curso::currency( (int) $post->ID ),
-				'plazas'       => CPT_Curso::seats( (int) $post->ID ),
-				'certificado'  => CPT_Curso::issues_certificate( (int) $post->ID ),
-				'secuencial'   => CPT_Curso::is_sequential( (int) $post->ID ),
-				'prefix'       => $prefix,
+				'post_id'     => (int) $post->ID,
+				'precio'      => CPT_Curso::price( (int) $post->ID ),
+				'moneda'      => CPT_Curso::currency( (int) $post->ID ),
+				'plazas'      => CPT_Curso::seats( (int) $post->ID ),
+				'certificado' => CPT_Curso::issues_certificate( (int) $post->ID ),
+				'secuencial'  => CPT_Curso::is_sequential( (int) $post->ID ),
+				'prefix'      => $prefix,
 			)
 		);
 	}
@@ -103,12 +103,12 @@ class Admin_Fields {
 		Certificate::render_template(
 			'metabox-modulo.php',
 			array(
-				'post_id'    => (int) $post->ID,
-				'curso_id'   => CPT_Modulo::course_id( (int) $post->ID ),
-				'orden'      => CPT_Base::get_int( (int) $post->ID, 'orden', 0 ),
-				'cursos'     => $this->courses_options(),
-				'prefix'     => CPT_Base::META_PREFIX,
-				'aviso'      => $this->hierarchy_errors_for( (int) $post->ID ),
+				'post_id'  => (int) $post->ID,
+				'curso_id' => CPT_Modulo::course_id( (int) $post->ID ),
+				'orden'    => CPT_Base::get_int( (int) $post->ID, 'orden', 0 ),
+				'cursos'   => $this->courses_options(),
+				'prefix'   => CPT_Base::META_PREFIX,
+				'aviso'    => $this->hierarchy_errors_for( (int) $post->ID ),
 			)
 		);
 	}
@@ -125,19 +125,19 @@ class Admin_Fields {
 		Certificate::render_template(
 			'metabox-leccion.php',
 			array(
-				'post_id'      => (int) $post->ID,
-				'modulo_id'    => CPT_Leccion::module_id( (int) $post->ID ),
-				'tipo'         => CPT_Leccion::type( (int) $post->ID ),
-				'orden'        => CPT_Base::get_int( (int) $post->ID, 'orden', 0 ),
-				'duracion'     => CPT_Base::get_int( (int) $post->ID, 'duracion', 0 ),
-				'adjunto_id'   => CPT_Base::get_int( (int) $post->ID, 'adjunto_id', 0 ),
-				'video_url'    => CPT_Base::get_string( (int) $post->ID, 'video_url' ),
-				'video_key'    => CPT_Base::get_string( (int) $post->ID, 'video_key' ),
-				'tipos'        => CPT_Leccion::TYPES,
-				'modulos'      => $this->modules_options(),
-				'prefix'       => CPT_Base::META_PREFIX,
-				'pro'          => License::has_pro(),
-				'aviso'        => $this->hierarchy_errors_for( (int) $post->ID ),
+				'post_id'    => (int) $post->ID,
+				'modulo_id'  => CPT_Leccion::module_id( (int) $post->ID ),
+				'tipo'       => CPT_Leccion::type( (int) $post->ID ),
+				'orden'      => CPT_Base::get_int( (int) $post->ID, 'orden', 0 ),
+				'duracion'   => CPT_Base::get_int( (int) $post->ID, 'duracion', 0 ),
+				'adjunto_id' => CPT_Base::get_int( (int) $post->ID, 'adjunto_id', 0 ),
+				'video_url'  => CPT_Base::get_string( (int) $post->ID, 'video_url' ),
+				'video_key'  => CPT_Base::get_string( (int) $post->ID, 'video_key' ),
+				'tipos'      => CPT_Leccion::TYPES,
+				'modulos'    => $this->modules_options(),
+				'prefix'     => CPT_Base::META_PREFIX,
+				'pro'        => License::has_pro(),
+				'aviso'      => $this->hierarchy_errors_for( (int) $post->ID ),
 			)
 		);
 	}
@@ -190,11 +190,11 @@ class Admin_Fields {
 		$prefix = CPT_Base::META_PREFIX;
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
-		$price     = isset( $_POST[ 'convoca_precio' ] ) ? (float) wp_unslash( (string) $_POST[ 'convoca_precio' ] ) : 0.0;
-		$currency  = isset( $_POST[ 'convoca_moneda' ] ) ? sanitize_text_field( wp_unslash( (string) $_POST[ 'convoca_moneda' ] ) ) : 'EUR';
-		$seats     = isset( $_POST[ 'convoca_plazas' ] ) ? (int) $_POST[ 'convoca_plazas' ] : 0;
-		$cert      = ! empty( $_POST[ 'convoca_certificado' ] );
-		$sequential = ! empty( $_POST[ 'convoca_secuencial' ] );
+		$price      = isset( $_POST['convoca_precio'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_precio'] ) ) : 0.0;
+		$currency   = isset( $_POST['convoca_moneda'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_moneda'] ) ) : 'EUR';
+		$seats      = isset( $_POST['convoca_plazas'] ) ? absint( wp_unslash( (string) $_POST['convoca_plazas'] ) ) : 0;
+		$cert       = ! empty( $_POST['convoca_certificado'] );
+		$sequential = ! empty( $_POST['convoca_secuencial'] );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		update_post_meta( $post_id, $prefix . 'precio', max( 0.0, $price ) );
@@ -214,8 +214,8 @@ class Admin_Fields {
 		$prefix = CPT_Base::META_PREFIX;
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
-		$course_id = isset( $_POST[ 'convoca_curso_id' ] ) ? (int) $_POST[ 'convoca_curso_id' ] : 0;
-		$order     = isset( $_POST[ 'convoca_orden' ] ) ? (int) $_POST[ 'convoca_orden' ] : 0;
+		$course_id = isset( $_POST['convoca_curso_id'] ) ? absint( wp_unslash( (string) $_POST['convoca_curso_id'] ) ) : 0;
+		$order     = isset( $_POST['convoca_orden'] ) ? absint( wp_unslash( (string) $_POST['convoca_orden'] ) ) : 0;
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		update_post_meta( $post_id, $prefix . 'orden', $order );
@@ -239,13 +239,13 @@ class Admin_Fields {
 		$prefix = CPT_Base::META_PREFIX;
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
-		$module_id    = isset( $_POST[ 'convoca_modulo_id' ] ) ? (int) $_POST[ 'convoca_modulo_id' ] : 0;
-		$type         = isset( $_POST[ 'convoca_tipo' ] ) ? sanitize_text_field( wp_unslash( (string) $_POST[ 'convoca_tipo' ] ) ) : 'texto';
-		$order        = isset( $_POST[ 'convoca_orden' ] ) ? (int) $_POST[ 'convoca_orden' ] : 0;
-		$duration     = isset( $_POST[ 'convoca_duracion' ] ) ? (int) $_POST[ 'convoca_duracion' ] : 0;
-		$attachment   = isset( $_POST[ 'convoca_adjunto_id' ] ) ? (int) $_POST[ 'convoca_adjunto_id' ] : 0;
-		$video_url    = isset( $_POST[ 'convoca_video_url' ] ) ? esc_url_raw( wp_unslash( (string) $_POST[ 'convoca_video_url' ] ) ) : '';
-		$video_key    = isset( $_POST[ 'convoca_video_key' ] ) ? sanitize_text_field( wp_unslash( (string) $_POST[ 'convoca_video_key' ] ) ) : '';
+		$module_id  = isset( $_POST['convoca_modulo_id'] ) ? absint( wp_unslash( (string) $_POST['convoca_modulo_id'] ) ) : 0;
+		$type       = isset( $_POST['convoca_tipo'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_tipo'] ) ) : 'texto';
+		$order      = isset( $_POST['convoca_orden'] ) ? absint( wp_unslash( (string) $_POST['convoca_orden'] ) ) : 0;
+		$duration   = isset( $_POST['convoca_duracion'] ) ? absint( wp_unslash( (string) $_POST['convoca_duracion'] ) ) : 0;
+		$attachment = isset( $_POST['convoca_adjunto_id'] ) ? absint( wp_unslash( (string) $_POST['convoca_adjunto_id'] ) ) : 0;
+		$video_url  = isset( $_POST['convoca_video_url'] ) ? esc_url_raw( wp_unslash( (string) $_POST['convoca_video_url'] ) ) : '';
+		$video_key  = isset( $_POST['convoca_video_key'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_video_key'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		update_post_meta( $post_id, $prefix . 'tipo', in_array( $type, CPT_Leccion::TYPES, true ) ? $type : 'texto' );
@@ -292,7 +292,8 @@ class Admin_Fields {
 			return;
 		}
 
-		$post_id = isset( $_GET['post'] ) ? (int) $_GET['post'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo lectura de la pantalla actual.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo lectura de la pantalla actual.
+		$post_id = isset( $_GET['post'] ) ? absint( wp_unslash( (string) $_GET['post'] ) ) : 0;
 		$errors  = $this->hierarchy_errors_for( $post_id );
 		if ( empty( $errors ) ) {
 			return;

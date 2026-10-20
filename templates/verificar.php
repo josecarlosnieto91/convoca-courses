@@ -28,6 +28,7 @@ $convoca_courses_blog = (string) get_bloginfo( 'name' );
 		);
 		?>
 	</title>
+	<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- página autónoma sin tema ni wp_head: no hay cola de estilos donde encolarla. ?>
 	<link rel="stylesheet" href="<?php echo esc_url( CONVOCA_COURSES_URL . 'assets/css/courses.css?ver=' . CONVOCA_COURSES_VERSION ); ?>" />
 </head>
 <body class="convoca-courses-verify">
@@ -53,7 +54,19 @@ $convoca_courses_blog = (string) get_bloginfo( 'name' );
 					<li><span class="convoca-courses__label"><?php esc_html_e( 'Entidad', 'convoca-courses' ); ?></span> <?php echo esc_html( (string) $data['center'] ); ?></li>
 				</ul>
 				<p>
-					<a class="convoca-courses__button" href="<?php echo esc_url( add_query_arg( array( 'codigo' => (string) $data['code'], 'formato' => 'pdf' ), home_url( '/verificar-curso/' ) ) ); ?>" target="_blank" rel="noopener">
+					<a class="convoca-courses__button" href="
+					<?php
+					echo esc_url(
+						add_query_arg(
+							array(
+								'codigo'  => (string) $data['code'],
+								'formato' => 'pdf',
+							),
+							home_url( '/verificar-curso/' )
+						)
+					);
+					?>
+																" target="_blank" rel="noopener">
 						<?php esc_html_e( 'Ver el certificado en PDF', 'convoca-courses' ); ?>
 					</a>
 				</p>

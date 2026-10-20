@@ -124,11 +124,11 @@ class Settings {
 		Certificate::render_template(
 			'ajustes.php',
 			array(
-				'group'      => self::GROUP,
-				'page'       => self::PAGE,
-				'config'     => $config,
-				'pro'        => $pro,
-				'keep_data'  => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
+				'group'        => self::GROUP,
+				'page'         => self::PAGE,
+				'config'       => $config,
+				'pro'          => $pro,
+				'keep_data'    => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
 				'video_option' => Video::OPTION,
 				'keep_option'  => Installer::KEEP_DATA_OPTION,
 			)

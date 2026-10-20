@@ -185,7 +185,7 @@ class Certificate {
 		try {
 			$dompdf = new \Dompdf\Dompdf(
 				array(
-					'isRemoteEnabled' => false,
+					'isRemoteEnabled'      => false,
 					'isHtml5ParserEnabled' => true,
 				)
 			);
@@ -211,10 +211,10 @@ class Certificate {
 	 *
 	 * @param string              $template Nombre del fichero en templates/.
 	 * @param array<string,mixed> $vars     Variables disponibles en la plantilla.
-	 * @param bool                $echo     Si se imprime (true) o se devuelve (false).
+	 * @param bool                $print_html Si se imprime (true) o se devuelve (false).
 	 * @return string
 	 */
-	public static function render_template( string $template, array $vars, bool $echo = true ): string {
+	public static function render_template( string $template, array $vars, bool $print_html = true ): string {
 		$file = CONVOCA_COURSES_DIR . 'templates/' . $template;
 		if ( ! file_exists( $file ) ) {
 			return '';
@@ -227,7 +227,7 @@ class Certificate {
 		include $file;
 		$html = (string) ob_get_clean();
 
-		if ( $echo ) {
+		if ( $print_html ) {
 			// La plantilla ya escapa cada dato.
 			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML construido por la plantilla, escapado campo a campo.
 		}

@@ -13,9 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- variables inyectadas por Certificate::render_template().
 $convoca_courses_message = '';
-if ( isset( $_GET['convoca_msg'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- aviso de solo lectura.
+// Aviso de solo lectura: no cambia estado, así que no lleva nonce.
+// phpcs:disable WordPress.Security.NonceVerification.Recommended
+if ( isset( $_GET['convoca_msg'] ) ) {
 	$convoca_courses_message = Handlers::message( sanitize_key( wp_unslash( (string) $_GET['convoca_msg'] ) ) );
 }
+// phpcs:enable WordPress.Security.NonceVerification.Recommended
 ?>
 <div class="convoca-courses convoca-courses--course">
 

@@ -39,12 +39,12 @@ if ( file_exists( $convoca_courses_autoload ) ) {
 }
 
 spl_autoload_register(
-	function ( $class ) {
+	function ( $class_name ) {
 		$prefix = 'Convoca\\Courses\\';
-		if ( 0 !== strpos( $class, $prefix ) ) {
+		if ( 0 !== strpos( $class_name, $prefix ) ) {
 			return;
 		}
-		$relative = substr( $class, strlen( $prefix ) );
+		$relative = substr( $class_name, strlen( $prefix ) );
 		$file     = __DIR__ . '/includes/' . str_replace( '\\', '/', $relative ) . '.php';
 		if ( file_exists( $file ) ) {
 			require_once $file;

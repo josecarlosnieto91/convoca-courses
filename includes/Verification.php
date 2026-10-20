@@ -52,7 +52,7 @@ class Verification {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- consulta pública de solo lectura.
-		$code   = isset( $_GET['codigo'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['codigo'] ) ) : '';
+		$code = isset( $_GET['codigo'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['codigo'] ) ) : '';
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- idem.
 		$format = isset( $_GET['formato'] ) ? sanitize_key( wp_unslash( (string) $_GET['formato'] ) ) : '';
 

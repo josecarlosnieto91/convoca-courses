@@ -121,13 +121,13 @@ abstract class CPT_Base {
 	 *
 	 * @param int    $post_id Identificador del post.
 	 * @param string $key     Clave sin prefijo.
-	 * @param int    $default Valor por defecto.
+	 * @param int    $fallback Valor por defecto.
 	 * @return int
 	 */
-	public static function get_int( int $post_id, string $key, int $default = 0 ): int {
+	public static function get_int( int $post_id, string $key, int $fallback = 0 ): int {
 		$value = get_post_meta( $post_id, self::META_PREFIX . $key, true );
 		if ( '' === $value || null === $value || false === $value ) {
-			return $default;
+			return $fallback;
 		}
 		return (int) $value;
 	}
@@ -137,13 +137,13 @@ abstract class CPT_Base {
 	 *
 	 * @param int    $post_id Identificador del post.
 	 * @param string $key     Clave sin prefijo.
-	 * @param string $default Valor por defecto.
+	 * @param string $fallback Valor por defecto.
 	 * @return string
 	 */
-	public static function get_string( int $post_id, string $key, string $default = '' ): string {
+	public static function get_string( int $post_id, string $key, string $fallback = '' ): string {
 		$value = get_post_meta( $post_id, self::META_PREFIX . $key, true );
 		if ( '' === $value || null === $value || false === $value ) {
-			return $default;
+			return $fallback;
 		}
 		return (string) $value;
 	}
@@ -153,13 +153,13 @@ abstract class CPT_Base {
 	 *
 	 * @param int    $post_id Identificador del post.
 	 * @param string $key     Clave sin prefijo.
-	 * @param bool   $default Valor por defecto.
+	 * @param bool   $fallback Valor por defecto.
 	 * @return bool
 	 */
-	public static function get_bool( int $post_id, string $key, bool $default = false ): bool {
+	public static function get_bool( int $post_id, string $key, bool $fallback = false ): bool {
 		$value = get_post_meta( $post_id, self::META_PREFIX . $key, true );
 		if ( '' === $value || null === $value || false === $value ) {
-			return $default;
+			return $fallback;
 		}
 		return (bool) $value;
 	}
@@ -169,13 +169,13 @@ abstract class CPT_Base {
 	 *
 	 * @param int    $post_id Identificador del post.
 	 * @param string $key     Clave sin prefijo.
-	 * @param float  $default Valor por defecto.
+	 * @param float  $fallback Valor por defecto.
 	 * @return float
 	 */
-	public static function get_float( int $post_id, string $key, float $default = 0.0 ): float {
+	public static function get_float( int $post_id, string $key, float $fallback = 0.0 ): float {
 		$value = get_post_meta( $post_id, self::META_PREFIX . $key, true );
 		if ( '' === $value || null === $value || false === $value ) {
-			return $default;
+			return $fallback;
 		}
 		return (float) $value;
 	}

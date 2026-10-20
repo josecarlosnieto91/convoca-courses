@@ -55,44 +55,44 @@ class CPT_Leccion extends CPT_Base {
 	 */
 	protected static function meta(): array {
 		return array(
-			'modulo_id'   => array(
+			'modulo_id'  => array(
 				'type'     => 'integer',
 				'sanitize' => static function ( $value ) {
 					return max( 0, (int) $value );
 				},
 			),
-			'tipo'        => array(
+			'tipo'       => array(
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
 					$value = (string) $value;
 					return in_array( $value, CPT_Leccion::TYPES, true ) ? $value : 'texto';
 				},
 			),
-			'orden'       => array(
+			'orden'      => array(
 				'type'     => 'integer',
 				'sanitize' => static function ( $value ) {
 					return (int) $value;
 				},
 			),
-			'duracion'    => array(
+			'duracion'   => array(
 				'type'     => 'integer',
 				'sanitize' => static function ( $value ) {
 					return max( 0, (int) $value );
 				},
 			),
-			'adjunto_id'  => array(
+			'adjunto_id' => array(
 				'type'     => 'integer',
 				'sanitize' => static function ( $value ) {
 					return max( 0, (int) $value );
 				},
 			),
-			'video_url'   => array(
+			'video_url'  => array(
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
 					return esc_url_raw( (string) $value );
 				},
 			),
-			'video_key'   => array(
+			'video_key'  => array(
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
 					return sanitize_text_field( (string) $value );

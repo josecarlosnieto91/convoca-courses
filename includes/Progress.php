@@ -39,6 +39,7 @@ class Progress {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery -- tabla propia del plugin, sin API de WP para ella.
 		$result = $wpdb->query(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- el nombre de tabla es propio y no puede ir como marcador; los valores van preparados.
 				"INSERT IGNORE INTO {$table} (course_id, user_id, lesson_id, completed_at) VALUES (%d, %d, %d, %s)",
 				$course_id,
 				$user_id,

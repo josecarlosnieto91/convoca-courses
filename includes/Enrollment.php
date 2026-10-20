@@ -150,7 +150,7 @@ class Enrollment {
 			}
 		}
 
-		$user = get_userdata( $user_id );
+		$user  = get_userdata( $user_id );
 		$title = sprintf(
 			/* translators: 1: course title, 2: user display name. */
 			__( '%1$s — %2$s', 'convoca-courses' ),

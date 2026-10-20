@@ -31,7 +31,7 @@ class HierarchyTest extends TestCase {
 			30 => CPT_Leccion::TYPE,
 			40 => CPT_Matricula::TYPE,
 		);
-		$GLOBALS['convoca_test_meta'] = array();
+		$GLOBALS['convoca_test_meta']       = array();
 	}
 
 	/**

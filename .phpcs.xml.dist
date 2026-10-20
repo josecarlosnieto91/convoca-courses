@@ -39,6 +39,28 @@
   </rule>
 
   <!--
+    Capabilities propias del módulo: WPCS no las conoce y las marcaría como desconocidas en cada
+    add_submenu_page()/current_user_can(). Se declaran aquí para que el aviso real siga vivo.
+  -->
+  <rule ref="WordPress.WP.Capabilities">
+    <properties>
+      <property name="custom_capabilities" type="array">
+        <element value="convoca_manage_courses"/>
+        <element value="convoca_enroll_courses"/>
+        <element value="convoca_view_certificates"/>
+      </property>
+    </properties>
+  </rule>
+
+  <!--
+    Listados del catálogo del curso (selector de curso/módulo, lecciones de un curso): necesitan el
+    conjunto completo, no una página de archivo. WPCS avisa por paginación alta en cada uno.
+  -->
+  <rule ref="WordPress.WP.PostsPerPage">
+    <exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page"/>
+  </rule>
+
+  <!--
     Plantillas: se incluyen para que también pasen el estándar, pero emiten HTML por diseño, así que
     las reglas de salida se aplican sobre el valor ya escapado (esc_html/esc_attr/esc_url).
   -->
