@@ -1,0 +1,544 @@
+# Copyright (C) 2026 Jose Carlos Nieto Ramos
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Convoca Courses 0.2.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: English (United States)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-20T00:00:00+00:00\n"
+"PO-Revision-Date: 2026-10-20T00:00:00+00:00\n"
+"X-Generator: manual\n"
+"X-Domain: convoca-courses\n"
+
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:83
+#, php-format
+msgid "Todos: %s"
+msgstr "All: %s"
+
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:85
+#, php-format
+msgid "Añadir %s"
+msgstr "Add %s"
+
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:87
+#, php-format
+msgid "Editar %s"
+msgstr "Edit %s"
+
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:89
+#, php-format
+msgid "Nuevo %s"
+msgstr "New %s"
+
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:91
+#, php-format
+msgid "Ver %s"
+msgstr "View %s"
+
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:93
+#, php-format
+msgid "Buscar %s"
+msgstr "Search %s"
+
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:95
+#, php-format
+msgid "No hay %s"
+msgstr "No %s yet"
+
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:97
+#, php-format
+msgid "No hay %s en la papelera"
+msgstr "No %s in the trash"
+
+#: includes/CPT_Curso.php:42 admin/class-admin-columns.php:47
+#: templates/verificar.php:51 templates/metabox-modulo.php:16
+msgid "Curso"
+msgstr "Course"
+
+#: includes/CPT_Curso.php:42
+msgid "Cursos"
+msgstr "Courses"
+
+#: includes/CPT_Modulo.php:31 admin/class-admin-columns.php:93
+#: templates/metabox-leccion.php:16
+msgid "Módulo"
+msgstr "Module"
+
+#: includes/CPT_Modulo.php:31
+msgid "Módulos"
+msgstr "Modules"
+
+#: includes/CPT_Leccion.php:36
+msgid "Lección"
+msgstr "Lesson"
+
+#: includes/CPT_Leccion.php:36
+msgid "Lecciones"
+msgstr "Lessons"
+
+#: includes/CPT_Matricula.php:38
+msgid "Matrícula"
+msgstr "Enrolment"
+
+#: includes/CPT_Matricula.php:38 admin/class-admin-columns.php:125
+msgid "Matrículas"
+msgstr "Enrolments"
+
+#: includes/Hierarchy.php:119
+msgid "La lección no cuelga de ningún módulo."
+msgstr "The lesson is not attached to any module."
+
+#: includes/Hierarchy.php:124
+msgid "El módulo de la lección no existe."
+msgstr "The lesson's module does not exist."
+
+#: includes/Hierarchy.php:129
+msgid "El módulo de la lección no cuelga de ningún curso."
+msgstr "The lesson's module is not attached to any course."
+
+#: includes/Enrollment.php:120
+msgid "Hay que iniciar sesión para matricularse."
+msgstr "You need to log in to enrol."
+
+#: includes/Enrollment.php:125
+msgid "El curso no existe o no está publicado."
+msgstr "The course does not exist or is not published."
+
+#: includes/Enrollment.php:135
+msgid "Ya estás matriculado en este curso."
+msgstr "You are already enrolled in this course."
+
+#: includes/Enrollment.php:145
+msgid "No se ha podido reservar la plaza. Inténtalo de nuevo en unos segundos."
+msgstr "The place could not be reserved. Please try again in a few seconds."
+
+#: includes/Enrollment.php:149
+msgid "No quedan plazas en este curso."
+msgstr "There are no places left in this course."
+
+#. translators: 1: course title, 2: user display name.
+#: includes/Enrollment.php:156
+#, php-format
+msgid "%1$s — %2$s"
+msgstr "%1$s — %2$s"
+
+#: includes/Verification.php:87
+msgid "El certificado no está disponible en PDF."
+msgstr "The certificate is not available as a PDF."
+
+#: includes/Shortcodes.php:244
+msgid "No se ha encontrado el curso o la lección indicados."
+msgstr "The requested course or lesson could not be found."
+
+#: includes/Handlers.php:205
+msgid "No tienes acceso a este vídeo."
+msgstr "You do not have access to this video."
+
+#: includes/Handlers.php:210
+msgid "El vídeo no está configurado."
+msgstr "The video is not configured."
+
+#: includes/Handlers.php:249
+msgid "Matrícula realizada. Ya puedes empezar el curso."
+msgstr "Enrolment complete. You can start the course now."
+
+#: includes/Handlers.php:251
+msgid "Matrícula cancelada."
+msgstr "Enrolment cancelled."
+
+#: includes/Handlers.php:253
+msgid "Lección marcada como completada."
+msgstr "Lesson marked as completed."
+
+#: includes/Handlers.php:255
+msgid "La sesión ha caducado. Vuelve a intentarlo."
+msgstr "Your session has expired. Please try again."
+
+#: includes/Handlers.php:257
+msgid "No se ha podido completar la operación."
+msgstr "The operation could not be completed."
+
+#: includes/Settings.php:47 templates/ajustes.php:15
+msgid "Ajustes de Convoca Courses"
+msgstr "Convoca Courses settings"
+
+#: includes/Settings.php:48
+msgid "Ajustes"
+msgstr "Settings"
+
+#: includes/Settings.php:118
+msgid "No tienes permisos para ver esta página."
+msgstr "You do not have permission to view this page."
+
+#: admin/class-admin-fields.php:43
+msgid "Datos del curso"
+msgstr "Course details"
+
+#: admin/class-admin-fields.php:52
+msgid "Datos del módulo"
+msgstr "Module details"
+
+#: admin/class-admin-fields.php:61
+msgid "Datos de la lección"
+msgstr "Lesson details"
+
+#: admin/class-admin-fields.php:279
+msgid "Falta la relación de jerarquía: un módulo tiene que colgar de un curso y una lección de un módulo. La entrada se ha guardado sin relación."
+msgstr "The hierarchy is incomplete: a module must belong to a course and a lesson to a module. The entry was saved without the relationship."
+
+#: admin/class-admin-fields.php:324
+msgid "El módulo no cuelga de ningún curso."
+msgstr "The module is not attached to any course."
+
+#: admin/class-admin-fields.php:336
+msgid "— Selecciona un curso —"
+msgstr "— Select a course —"
+
+#: admin/class-admin-fields.php:397
+msgid "Módulos sin curso"
+msgstr "Modules without a course"
+
+#: admin/class-admin-columns.php:46 templates/verificar.php:52
+msgid "Persona"
+msgstr "Person"
+
+#: admin/class-admin-columns.php:48
+msgid "Estado"
+msgstr "Status"
+
+#: admin/class-admin-columns.php:49 templates/curso.php:47
+#: templates/metabox-curso.php:34
+msgid "Certificado"
+msgstr "Certificate"
+
+#: admin/class-admin-columns.php:92 templates/leccion.php:18
+msgid "Tipo"
+msgstr "Type"
+
+#: admin/class-admin-columns.php:124 templates/curso.php:34
+#: templates/metabox-curso.php:16
+msgid "Precio"
+msgstr "Price"
+
+#: admin/class-admin-columns.php:141
+msgid "Gratis"
+msgstr "Free"
+
+#: templates/curso.php:37 templates/metabox-curso.php:26
+msgid "Plazas"
+msgstr "Places"
+
+#: templates/curso.php:40
+msgid "sin límite"
+msgstr "no limit"
+
+#: templates/curso.php:47
+msgid "sí"
+msgstr "yes"
+
+#. translators: 1: completed lessons, 2: total lessons, 3: percentage.
+#: templates/curso.php:65 templates/lecciones.php:26
+#, php-format
+msgid "%1$d de %2$d lecciones completadas (%3$s %%)."
+msgstr "%1$d of %2$d lessons completed (%3$s %%)."
+
+#: templates/curso.php:78
+msgid "Matricularme"
+msgstr "Enrol me"
+
+#: templates/curso.php:83
+msgid "Inicia sesión para matricularte"
+msgstr "Log in to enrol"
+
+#: templates/curso.php:89
+msgid "Contenido del curso"
+msgstr "Course content"
+
+#: templates/lecciones.php:37
+msgid "Este curso todavía no tiene lecciones publicadas."
+msgstr "This course has no published lessons yet."
+
+#: templates/lecciones.php:49
+msgid "completada"
+msgstr "completed"
+
+#: templates/lecciones.php:51
+msgid "bloqueada"
+msgstr "locked"
+
+#: templates/leccion.php:21
+msgid "Duración"
+msgstr "Duration"
+
+#. translators: %d: minutes.
+#: templates/leccion.php:25
+#, php-format
+msgid "%d min"
+msgstr "%d min"
+
+#: templates/leccion.php:37
+msgid "El vídeo de esta lección requiere una licencia PRO activa. El resto del curso sigue disponible."
+msgstr "This lesson's video requires an active PRO licence. The rest of the course is still available."
+
+#: templates/leccion.php:43
+msgid "Tu navegador no puede reproducir este vídeo."
+msgstr "Your browser cannot play this video."
+
+#: templates/leccion.php:44
+msgid "Descargar el vídeo"
+msgstr "Download the video"
+
+#: templates/leccion.php:48
+msgid "El vídeo de esta lección todavía no está configurado."
+msgstr "This lesson's video is not configured yet."
+
+#: templates/leccion.php:62
+msgid "Abrir el PDF de la lección"
+msgstr "Open the lesson PDF"
+
+#: templates/leccion.php:63
+msgid "Descargar el adjunto"
+msgstr "Download the attachment"
+
+#: templates/leccion.php:68
+msgid "Esta lección todavía no tiene el fichero adjunto."
+msgstr "This lesson has no attached file yet."
+
+#: templates/leccion.php:74
+msgid "Lección completada"
+msgstr "Lesson completed"
+
+#: templates/leccion.php:80
+msgid "Marcar como completada"
+msgstr "Mark as completed"
+
+#: templates/leccion.php:85
+msgid "Volver al curso"
+msgstr "Back to the course"
+
+#: templates/leccion-bloqueada.php:19
+msgid "Esta lección se abre cuando completes las anteriores."
+msgstr "This lesson unlocks when you complete the previous ones."
+
+#: templates/leccion-bloqueada.php:21
+msgid "Necesitas matricularte en el curso para ver esta lección."
+msgstr "You need to enrol in the course to see this lesson."
+
+#: templates/leccion-bloqueada.php:26
+msgid "Ir a la portada del curso"
+msgstr "Go to the course page"
+
+#. translators: %s: site name.
+#: templates/verificar.php:26
+#, php-format
+msgid "Verificación de certificado — %s"
+msgstr "Certificate verification — %s"
+
+#: templates/verificar.php:36
+msgid "Verificación de certificado"
+msgstr "Certificate verification"
+
+#: templates/verificar.php:39
+msgid "Código del certificado"
+msgstr "Certificate code"
+
+#: templates/verificar.php:41
+msgid "Verificar"
+msgstr "Verify"
+
+#: templates/verificar.php:45
+msgid "Introduce el código que aparece en el certificado para comprobar que es auténtico."
+msgstr "Enter the code printed on the certificate to check that it is genuine."
+
+#: templates/verificar.php:48
+msgid "Certificado válido."
+msgstr "Valid certificate."
+
+#: templates/verificar.php:50
+msgid "Código"
+msgstr "Code"
+
+#: templates/verificar.php:53
+msgid "Fecha"
+msgstr "Date"
+
+#: templates/verificar.php:54
+msgid "Entidad"
+msgstr "Organisation"
+
+#: templates/verificar.php:70
+msgid "Ver el certificado en PDF"
+msgstr "View the certificate as PDF"
+
+#: templates/verificar.php:76
+msgid "No existe ningún certificado con ese código."
+msgstr "No certificate exists with that code."
+
+#: templates/certificado.php:32
+msgid "Certificado de aprovechamiento"
+msgstr "Certificate of completion"
+
+#: templates/certificado.php:34
+msgid "Se certifica que"
+msgstr "This certifies that"
+
+#: templates/certificado.php:36
+msgid "ha completado el curso"
+msgstr "has completed the course"
+
+#. translators: %s: issue date.
+#: templates/certificado.php:43
+#, php-format
+msgid "Fecha de emisión: %s"
+msgstr "Issue date: %s"
+
+#. translators: %s: verification URL.
+#: templates/certificado.php:54
+#, php-format
+msgid "Verificable en %s"
+msgstr "Verifiable at %s"
+
+#: templates/ajustes.php:19
+msgid "Las lecciones de vídeo son una función PRO. Sin licencia, los cursos funcionan con texto, adjuntos y PDF."
+msgstr "Video lessons are a PRO feature. Without a licence, courses work with text, attachments and PDF."
+
+#: templates/ajustes.php:26
+msgid "Vídeo (PRO)"
+msgstr "Video (PRO)"
+
+#: templates/ajustes.php:28
+msgid "El vídeo no se aloja en este plugin: se firma una URL de corta duración contra un almacenamiento compatible con S3 (R2, B2, Wasabi, MinIO)."
+msgstr "The video is not hosted by this plugin: a short-lived signed URL is generated against S3-compatible storage (R2, B2, Wasabi, MinIO)."
+
+#: templates/ajustes.php:33
+msgid "Endpoint"
+msgstr "Endpoint"
+
+#: templates/ajustes.php:42
+msgid "Bucket"
+msgstr "Bucket"
+
+#: templates/ajustes.php:50
+msgid "Región"
+msgstr "Region"
+
+#: templates/ajustes.php:58
+msgid "Clave de acceso"
+msgstr "Access key"
+
+#: templates/ajustes.php:66
+msgid "Secreto"
+msgstr "Secret"
+
+#: templates/ajustes.php:70
+msgid "Se guarda cifrado. Déjalo vacío para conservar el actual."
+msgstr "Stored encrypted. Leave empty to keep the current one."
+
+#: templates/ajustes.php:74
+msgid "Prefijo de objetos"
+msgstr "Object prefix"
+
+#: templates/ajustes.php:82
+msgid "Estilo de ruta"
+msgstr "Path style"
+
+#: templates/ajustes.php:86
+msgid "Usar estilo de ruta (bucket en la ruta). Desmarca para estilo virtual-host."
+msgstr "Use path style (bucket in the path). Uncheck for virtual-host style."
+
+#: templates/ajustes.php:92
+msgid "Datos"
+msgstr "Data"
+
+#: templates/ajustes.php:95
+msgid "Al desinstalar"
+msgstr "On uninstall"
+
+#: templates/ajustes.php:99
+msgid "Conservar cursos, matrículas y progreso al desinstalar el plugin."
+msgstr "Keep courses, enrolments and progress when the plugin is uninstalled."
+
+#: templates/metabox-curso.php:22
+msgid "Deja 0 para un curso gratuito. Moneda en tres letras (EUR, USD)."
+msgstr "Leave 0 for a free course. Three-letter currency (EUR, USD)."
+
+#: templates/metabox-curso.php:30
+msgid "0 significa sin límite. Con plazas limitadas, dos personas no pueden coger la última a la vez."
+msgstr "0 means no limit. With limited places, two people cannot take the last one at the same time."
+
+#: templates/metabox-curso.php:38
+msgid "Emitir certificado al completar el 100 % del curso"
+msgstr "Issue a certificate when the course reaches 100%"
+
+#: templates/metabox-curso.php:43
+msgid "Desbloqueo"
+msgstr "Unlocking"
+
+#: templates/metabox-curso.php:47
+msgid "Desbloqueo secuencial: cada lección se abre al completar la anterior"
+msgstr "Sequential unlocking: each lesson opens when the previous one is completed"
+
+#: templates/metabox-modulo.php:31 templates/metabox-leccion.php:51
+msgid "Orden"
+msgstr "Order"
+
+#: templates/metabox-modulo.php:35
+msgid "Número dentro del curso. Los módulos se muestran de menor a mayor."
+msgstr "Number within the course. Modules are shown from lowest to highest."
+
+#: templates/metabox-leccion.php:19
+msgid "— Selecciona un módulo —"
+msgstr "— Select a module —"
+
+#: templates/metabox-leccion.php:36
+msgid "Tipo de lección"
+msgstr "Lesson type"
+
+#: templates/metabox-leccion.php:46
+msgid "El tipo «video» necesita licencia PRO: sin ella la lección se muestra sin vídeo."
+msgstr "The \"video\" type needs a PRO licence: without it the lesson is shown without video."
+
+#: templates/metabox-leccion.php:58
+msgid "Duración (min)"
+msgstr "Duration (min)"
+
+#: templates/metabox-leccion.php:65
+msgid "Adjunto o PDF"
+msgstr "Attachment or PDF"
+
+#: templates/metabox-leccion.php:69
+msgid "Identificador del fichero en la biblioteca de medios."
+msgstr "File ID in the media library."
+
+#: templates/metabox-leccion.php:73
+msgid "URL externa de vídeo"
+msgstr "External video URL"
+
+#: templates/metabox-leccion.php:77
+msgid "Alternativa al almacenamiento propio: URL directa de vídeo."
+msgstr "Alternative to own storage: a direct video URL."
+
+#: templates/metabox-leccion.php:81
+msgid "Objeto en el almacenamiento"
+msgstr "Object in storage"
+
+#: templates/metabox-leccion.php:85
+msgid "Ruta del objeto dentro del bucket. Se sirve con URL firmada de corta duración."
+msgstr "Object path inside the bucket. Served with a short-lived signed URL."
+
+#: convoca-courses.php:92
+msgid "Convoca Courses necesita el plugin Convoca Core activo para funcionar."
+msgstr "Convoca Courses needs the Convoca Core plugin to be active."

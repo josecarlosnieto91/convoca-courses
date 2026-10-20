@@ -3,6 +3,15 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.2.2] — 2026-10-20
+
+### Añadido
+
+- **Traducción completa al inglés (`en_US`)**: 124 cadenas, con `.po` y `.mo` versionados y
+  compilados con `msgfmt -c`. Sin esto el módulo se vende en un directorio internacional con la
+  interfaz solo en castellano. Quedan los textos de la interfaz; el contenido de los cursos lo pone
+  cada sitio.
+
 ## [0.2.1] — 2026-10-20
 
 ### Añadido
