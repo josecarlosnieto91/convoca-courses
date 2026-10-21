@@ -8,3 +8,6 @@ phpunit.xml
 auth.json
 build/
 build-dir/
+
+# Artefactos de la puerta de cobertura (clover, junit): no se versionan.
+/build/
