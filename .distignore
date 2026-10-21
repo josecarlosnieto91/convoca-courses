@@ -19,3 +19,5 @@ vendor/
 *.dist
 bin/
 docs/
+# Política del proyecto: los .htaccess no viajan (el empaquetador ya los quita).
+.htaccess
