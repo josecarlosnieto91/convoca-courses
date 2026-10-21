@@ -79,7 +79,7 @@ class ManifestTest extends TestCase {
 		// El patrón se arma por trozos a propósito: si estuviera escrito entero, esta misma prueba
 		// sería la única infractora de la regla que vigila.
 		// phpcs:ignore Generic.Strings.UnnecessaryStringConcat.Found -- la concatenación es el mecanismo: el patrón no puede aparecer escrito entero.
-		$forbidden = '/' . implode( '|', array( 'sa' . 'via', 'bio' . 'devas', 'lu' . 'gg', 'josecnr91' . '@' ) ) . '/i';
+		$forbidden = '/' . implode( '|', array( 'sa' . 'via', 'bio' . 'devas', 'lu' . 'gg', 'josecnr91' . '@' ) ) . '/i'; // higiene-ignore: la prueba comprueba que ese usuario no aparezca.
 		$offenders = array();
 
 		foreach ( $this->text_files() as $relative ) {
