@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Configuración canónica del repo: la usan la puerta local (`~/.hermes/scripts/ci-local.sh`) y el
-     job de cobertura, que necesitan una suite unitaria y un filtro de cobertura en el mismo fichero.
-     Es la misma suite que `phpunit-unit.xml` (que el CI sigue invocando explícitamente) con
-     `defaultTestSuite="unit"` para que `phpunit` a secas no intente la integración, que necesita
-     WordPress. PHPUnit 9.6: el filtro va en <coverage><include>, no en <source>. -->
+<!-- Configuración canónica del repo desde el 21-10-2026: PHPUnit 10.5 (antes 9.6, el único plugin
+     del ecosistema que se había quedado atrás). Aquí vive la suite unitaria y el filtro de cobertura,
+     así que no hay que elegir entre "el fichero que corre el CI" y "el que mide la cobertura".
+     La integración tiene su propio fichero porque necesita otro bootstrap (mock del gateway). -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          bootstrap="tests/bootstrap-unit.php"
          defaultTestSuite="unit"
          backupGlobals="false"
          colors="true"
-         cacheResult="false"
+         cacheDirectory=".phpunit.cache"
          beStrictAboutTestsThatDoNotTestAnything="true"
          failOnWarning="true"
          failOnRisky="true">
@@ -19,9 +18,9 @@
       <directory suffix="Test.php">./tests/Unit</directory>
     </testsuite>
   </testsuites>
-  <coverage>
+  <source>
     <include>
       <directory suffix=".php">./includes</directory>
     </include>
-  </coverage>
+  </source>
 </phpunit>

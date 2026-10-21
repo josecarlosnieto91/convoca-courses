@@ -21,7 +21,7 @@ class CoursePaymentTest extends TestCase {
 	 *
 	 * @return array<string, array{0: float, 1: bool, 2: bool}>
 	 */
-	public function needs_payment_cases(): array {
+	public static function needs_payment_cases(): array {
 		return array(
 			'gratuito con gateway' => array( 0.0, true, false ),
 			'gratuito sin gateway' => array( 0.0, false, false ),
@@ -52,7 +52,7 @@ class CoursePaymentTest extends TestCase {
 	 *
 	 * @return array<string, array{0: float, 1: int}>
 	 */
-	public function amount_cases(): array {
+	public static function amount_cases(): array {
 		return array(
 			'cero'                => array( 0.0, 0 ),
 			'entero'              => array( 25.0, 2500 ),

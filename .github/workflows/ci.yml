@@ -98,7 +98,7 @@ jobs:
         with:
           dependency-versions: highest
       - name: Pruebas unitarias
-        run: vendor/bin/phpunit -c phpunit-unit.xml --log-junit build/junit-${{ matrix.php }}.xml
+        run: vendor/bin/phpunit -c phpunit.xml.dist --log-junit build/junit-${{ matrix.php }}.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:

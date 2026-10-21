@@ -24,7 +24,7 @@ class CertificateCodeTest extends TestCase {
 	 *
 	 * @return array<string, array{0: string, 1: string}>
 	 */
-	public function normalize_cases(): array {
+	public static function normalize_cases(): array {
 		return array(
 			'ya canonico'   => array( 'CC157176G74PTRQB', 'CC157176G74PTRQB' ),
 			'con guiones'   => array( 'CC-157-176-G74PTRQB', 'CC157176G74PTRQB' ),

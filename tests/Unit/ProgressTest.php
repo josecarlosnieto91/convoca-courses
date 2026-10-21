@@ -25,7 +25,7 @@ class ProgressTest extends TestCase {
 	 *
 	 * @return array<string, array{0: int, 1: int, 2: float}>
 	 */
-	public function percent_cases(): array {
+	public static function percent_cases(): array {
 		return array(
 			'sin lecciones'           => array( 0, 0, 0.0 ),
 			'ninguna completada'      => array( 0, 12, 0.0 ),
