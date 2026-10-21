@@ -69,8 +69,11 @@ final class Plugin {
 
 		// Resultado del cobro: los ganchos que ya dispara Convoca Gateway. Si el gateway no está, no
 		// existen y no pasa nada; la matrícula se queda como esté.
-		add_action( 'convoca_payment_completed', array( Course_Payment::class, 'on_payment_completed' ), 10, 4 );
-		add_action( 'convoca_payment_failed', array( Course_Payment::class, 'on_payment_failed' ), 10, 2 );
+		// Los nombres vigentes: los viejos (`convoca_payment_*`) los sigue disparando el gateway por
+		// compatibilidad, y escuchar ahí suelta un aviso de hook deprecado en CADA pago. Lo cazó el
+		// chequeo diario de contratos de Andromeda (21/10), no el CI de este repo.
+		add_action( 'convoca_gateway_payment_completed', array( Course_Payment::class, 'on_payment_completed' ), 10, 4 );
+		add_action( 'convoca_gateway_payment_failed', array( Course_Payment::class, 'on_payment_failed' ), 10, 2 );
 
 		add_action( 'before_delete_post', array( $this, 'cleanup_on_delete' ) );
 	}

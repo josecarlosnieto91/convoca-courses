@@ -680,7 +680,7 @@ namespace Convoca\Gateway {
 	 * @return void
 	 */
 	function mock_webhook_completed( $pago_id, $origin, $origin_id, $meta = array() ) {
-		do_action( 'convoca_payment_completed', $pago_id, $origin, $origin_id, $meta );
+		do_action( 'convoca_gateway_payment_completed', $pago_id, $origin, $origin_id, $meta );
 	}
 
 	/**
@@ -691,6 +691,6 @@ namespace Convoca\Gateway {
 	 * @return void
 	 */
 	function mock_webhook_failed( $pago_id, $code ) {
-		do_action( 'convoca_payment_failed', $pago_id, $code );
+		do_action( 'convoca_gateway_payment_failed', $pago_id, $code );
 	}
 }

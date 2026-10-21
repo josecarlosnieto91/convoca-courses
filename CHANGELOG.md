@@ -3,6 +3,15 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.2.3] — 2026-10-21
+
+### Arreglado
+
+- **Los oyentes del cobro usaban los nombres de gancho antiguos** (`convoca_payment_completed` y
+  `convoca_payment_failed`). El gateway los sigue disparando por compatibilidad, así que **cada pago
+  soltaba un aviso de hook deprecado**. Ahora escucha `convoca_gateway_payment_completed` y
+  `convoca_gateway_payment_failed`, que es lo que dispara el gateway.
+
 ## [0.2.2] — 2026-10-20
 
 ### Añadido

@@ -195,7 +195,7 @@ class Course_Payment {
 	/**
 	 * Pago completado: activa la matrícula.
 	 *
-	 * El gateway llama aquí por `convoca_payment_completed`. Solo se atiende el origen propio: si el
+	 * El gateway llama aquí por `convoca_gateway_payment_completed`. Solo se atiende el origen propio: si el
 	 * pago es de una inscripción o de una cuota, este módulo no toca nada.
 	 *
 	 * @param int                  $pago_id   Identificador del pago.

@@ -256,14 +256,14 @@ if ( ! is_wp_error( $matricula_pago ) ) {
 		comprobar( '' !== Course_Payment::payment_url( $matricula_pago ), 'el enlace queda guardado en la matrícula' );
 
 		// Pago completado: el gateway dispara este gancho al confirmar.
-		do_action( 'convoca_payment_completed', $pago_id, 'courses', $matricula_pago, array( 'order_id' => 'PRUEBA-1' ) );
+		do_action( 'convoca_gateway_payment_completed', $pago_id, 'courses', $matricula_pago, array( 'order_id' => 'PRUEBA-1' ) );
 		comprobar( 'activa' === \Convoca\Courses\CPT_Matricula::status( $matricula_pago ), 'el pago confirmado activa la matrícula' );
 		comprobar( Access::is_enrolled( (int) $alumno_id, (int) $curso_pago ), 'con el pago hecho hay acceso al curso' );
 		comprobar( 'PRUEBA-1' === \Convoca\Courses\CPT_Matricula::get_string( $matricula_pago, 'referencia_pago' ), 'se guarda la referencia del pago' );
 
 		// Un pago de OTRO origen no debe tocar esta matrícula.
 		$matricula_2 = Enrollment::enroll( (int) $alumno_id, (int) $curso_pago );
-		do_action( 'convoca_payment_completed', 999999, 'members', 424242, array() );
+		do_action( 'convoca_gateway_payment_completed', 999999, 'members', 424242, array() );
 		comprobar( is_wp_error( $matricula_2 ) && 'convoca_courses_already' === $matricula_2->get_error_code(), 'un pago de otro origen no altera matrículas de cursos' );
 
 		// Pago fallido: no activa nada.
@@ -280,7 +280,7 @@ if ( ! is_wp_error( $matricula_pago ) ) {
 		if ( ! is_wp_error( $matricula_3 ) ) {
 			$pago3 = Course_Payment::create( (int) $matricula_3, (int) $curso_pago2 );
 			if ( ! is_wp_error( $pago3 ) ) {
-				do_action( 'convoca_payment_failed', (int) $pago3['pago_id'], 'SIS0051' );
+				do_action( 'convoca_gateway_payment_failed', (int) $pago3['pago_id'], 'SIS0051' );
 			}
 			comprobar( 'pendiente' === \Convoca\Courses\CPT_Matricula::status( (int) $matricula_3 ), 'un pago fallido deja la matrícula pendiente' );
 		}
