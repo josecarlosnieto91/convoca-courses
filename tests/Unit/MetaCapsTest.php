@@ -56,9 +56,10 @@ final class MetaCapsTest extends TestCase {
 		$tipos = array( CPT_Curso::class, CPT_Modulo::class, CPT_Leccion::class, CPT_Matricula::class, CPT_Examen::class, CPT_Tarea::class );
 
 		foreach ( $tipos as $clase ) {
+			// Sin setAccessible(): desde PHP 8.1 la reflexión llega a los métodos protegidos y la
+			// llamada está deprecada (salía como deprecation con el PHP 8.5 local).
 			$metodo = new \ReflectionMethod( $clase, 'capabilities' );
-			$metodo->setAccessible( true );
-			$caps = $metodo->invoke( null );
+			$caps   = $metodo->invoke( null );
 
 			foreach ( array( 'edit_post', 'read_post', 'delete_post' ) as $por_entrada ) {
 				$this->assertArrayHasKey( $por_entrada, $caps, $clase . ' no declara ' . $por_entrada );

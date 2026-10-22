@@ -443,6 +443,32 @@ namespace {
 	}
 
 	/**
+	 * Doble de get_role(): el arnés no tiene roles.
+	 *
+	 * Devolver null deja `Installer::add_capabilities()` sin efecto, que es lo correcto aquí: lo que se
+	 * prueba es el cableado con la pasarela, no el reparto de capacidades (eso lo vigila MetaCapsTest).
+	 *
+	 * @param string $name Nombre del rol.
+	 * @return object|null
+	 */
+	function get_role( $name ) {
+		unset( $name );
+		return null;
+	}
+
+	/**
+	 * Doble de update_option().
+	 *
+	 * @param string $name  Nombre.
+	 * @param mixed  $value Valor.
+	 * @return bool
+	 */
+	function update_option( $name, $value ) {
+		unset( $name, $value );
+		return true;
+	}
+
+	/**
 	 * Contraseña aleatoria (determinista para las pruebas).
 	 *
 	 * @param int  $length  Longitud.
