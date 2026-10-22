@@ -37,6 +37,16 @@ class Handlers {
 	public const ACTION_VIDEO = 'convoca_courses_video';
 
 	/**
+	 * Acción del formulario que abre un intento de examen.
+	 */
+	public const ACTION_EXAM_OPEN = 'convoca_courses_exam_open';
+
+	/**
+	 * Acción del formulario que envía un examen.
+	 */
+	public const ACTION_EXAM_SUBMIT = 'convoca_courses_exam_submit';
+
+	/**
 	 * Registra los enganches.
 	 *
 	 * @return void
@@ -46,6 +56,8 @@ class Handlers {
 		add_action( 'admin_post_nopriv_' . self::ACTION_ENROLL, array( __CLASS__, 'handle_enroll' ) );
 		add_action( 'admin_post_' . self::ACTION_CANCEL, array( __CLASS__, 'handle_cancel' ) );
 		add_action( 'admin_post_' . self::ACTION_COMPLETE, array( __CLASS__, 'handle_complete' ) );
+		add_action( 'admin_post_' . self::ACTION_EXAM_OPEN, array( __CLASS__, 'handle_exam_open' ) );
+		add_action( 'admin_post_' . self::ACTION_EXAM_SUBMIT, array( __CLASS__, 'handle_exam_submit' ) );
 		add_action( 'wp_ajax_' . self::ACTION_VIDEO, array( __CLASS__, 'handle_video' ) );
 	}
 
@@ -239,6 +251,170 @@ class Handlers {
 	}
 
 	/**
+	 * URL del formulario de examen.
+	 *
+	 * @return string
+	 */
+	public static function exam_form_action(): string {
+		return esc_url( admin_url( 'admin-post.php' ) );
+	}
+
+	/**
+	 * Nonce del formulario que abre un examen.
+	 *
+	 * @param int $exam_id Examen.
+	 * @return string
+	 */
+	public static function exam_open_nonce( int $exam_id ): string {
+		return wp_create_nonce( self::ACTION_EXAM_OPEN . '_' . $exam_id );
+	}
+
+	/**
+	 * Nonce del formulario que envía un intento.
+	 *
+	 * @param int $attempt_id Intento.
+	 * @return string
+	 */
+	public static function exam_submit_nonce( int $attempt_id ): string {
+		return wp_create_nonce( self::ACTION_EXAM_SUBMIT . '_' . $attempt_id );
+	}
+
+	/**
+	 * Abre un intento de examen.
+	 *
+	 * @return void
+	 */
+	public static function handle_exam_open(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verifica justo debajo.
+		$exam_id = isset( $_POST['exam_id'] ) ? absint( wp_unslash( (string) $_POST['exam_id'] ) ) : 0;
+		$nonce   = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_EXAM_OPEN . '_' . $exam_id ) ) {
+			self::redirect_back( 0, 'nonce' );
+			return;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			self::redirect_to_login( '' );
+			return;
+		}
+
+		$result = Attempts::open( get_current_user_id(), $exam_id );
+
+		if ( is_wp_error( $result ) ) {
+			self::redirect_back( CPT_Examen::course_id( $exam_id ), self::exam_error_key( $result->get_error_code() ), $result->get_error_code() );
+			return;
+		}
+
+		self::back_with( array( 'convoca_intento' => (int) $result ), CPT_Examen::course_id( $exam_id ) );
+	}
+
+	/**
+	 * Envía un intento y lo corrige en el servidor.
+	 *
+	 * El tiempo y el número de intentos no se negocian aquí: los decide `Attempts`. Este método solo
+	 * recoge lo que llegó.
+	 *
+	 * @return void
+	 */
+	public static function handle_exam_submit(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verifica justo debajo.
+		$attempt_id = isset( $_POST['attempt_id'] ) ? absint( wp_unslash( (string) $_POST['attempt_id'] ) ) : 0;
+		$nonce      = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		$entrantes  = isset( $_POST['convoca_respuesta'] ) && is_array( $_POST['convoca_respuesta'] ) ? wp_unslash( $_POST['convoca_respuesta'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- se sanea valor a valor justo debajo.
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_EXAM_SUBMIT . '_' . $attempt_id ) ) {
+			self::redirect_back( 0, 'nonce' );
+			return;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			self::redirect_to_login( '' );
+			return;
+		}
+
+		$respuestas = array();
+		foreach ( (array) $entrantes as $question_id => $valor ) {
+			if ( is_array( $valor ) ) {
+				$respuestas[ (int) $question_id ] = array_map( 'sanitize_text_field', array_map( 'strval', $valor ) );
+				continue;
+			}
+			$respuestas[ (int) $question_id ] = sanitize_text_field( (string) $valor );
+		}
+
+		$result = Attempts::submit( $attempt_id, get_current_user_id(), $respuestas );
+
+		if ( is_wp_error( $result ) ) {
+			self::redirect_back( 0, self::exam_error_key( $result->get_error_code() ), $result->get_error_code() );
+			return;
+		}
+
+		self::back_with(
+			array(
+				'convoca_intento' => $attempt_id,
+				'convoca_msg'     => ! empty( $result['recibido'] ) ? 'exam_sent' : 'exam_expired',
+			),
+			0
+		);
+	}
+
+	/**
+	 * Clave de aviso para un error del examen.
+	 *
+	 * @param string $code Código de error.
+	 * @return string
+	 */
+	private static function exam_error_key( string $code ): string {
+		switch ( $code ) {
+			case 'convoca_courses_exam_locked':
+				return 'exam_locked';
+			case 'convoca_courses_no_attempts':
+				return 'exam_no_attempts';
+			case 'convoca_courses_exam_empty':
+				return 'exam_empty';
+			default:
+				return 'exam_error';
+		}
+	}
+
+	/**
+	 * Vuelve a la página de origen añadiendo parámetros propios.
+	 *
+	 * @param array<string, mixed> $args Parámetros a añadir.
+	 * @param int                  $course_id Curso de respaldo.
+	 * @return void
+	 */
+	private static function back_with( array $args, int $course_id ): void {
+		$referer = wp_get_referer();
+		$target  = $referer ? (string) wp_validate_redirect( $referer, '' ) : '';
+
+		if ( '' === $target ) {
+			$target = $course_id > 0 ? (string) get_permalink( $course_id ) : home_url( '/' );
+		}
+
+		wp_safe_redirect( add_query_arg( $args, $target ) );
+		exit;
+	}
+
+	/**
+	 * Manda al inicio de sesión volviendo a la página actual.
+	 *
+	 * @param string $target Destino posterior; vacío = el referente.
+	 * @return void
+	 */
+	private static function redirect_to_login( string $target ): void {
+		if ( '' === $target ) {
+			$referer = wp_get_referer();
+			$target  = $referer ? (string) wp_validate_redirect( $referer, home_url( '/' ) ) : home_url( '/' );
+		}
+
+		wp_safe_redirect( wp_login_url( $target ) );
+		exit;
+	}
+
+	/**
 	 * Vuelve a la página de origen con un aviso legible.
 	 *
 	 * @param int    $course_id Curso.
@@ -284,6 +460,18 @@ class Handlers {
 				return __( 'Matrícula cancelada.', 'convoca-courses' );
 			case 'completed':
 				return __( 'Lección marcada como completada.', 'convoca-courses' );
+			case 'exam_sent':
+				return __( 'Examen enviado y corregido.', 'convoca-courses' );
+			case 'exam_expired':
+				return __( 'Se ha pasado el tiempo del examen: el intento se ha cerrado sin corregir.', 'convoca-courses' );
+			case 'exam_locked':
+				return __( 'El examen todavía no está abierto: completa antes las lecciones que pide el curso.', 'convoca-courses' );
+			case 'exam_no_attempts':
+				return __( 'Has agotado los intentos de este examen.', 'convoca-courses' );
+			case 'exam_empty':
+				return __( 'El examen no tiene preguntas todavía.', 'convoca-courses' );
+			case 'exam_error':
+				return __( 'No se ha podido completar la operación con el examen.', 'convoca-courses' );
 			case 'pending_payment':
 				return __( 'Matrícula reservada. Completa el pago para activarla.', 'convoca-courses' );
 			case 'payment_error':

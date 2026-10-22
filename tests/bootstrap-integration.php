@@ -464,13 +464,14 @@ namespace {
 	}
 
 	// Clases del módulo bajo prueba.
-	foreach ( array( 'CPT_Base', 'CPT_Curso', 'CPT_Modulo', 'CPT_Leccion', 'CPT_Matricula', 'Progress', 'Enrollment', 'Access', 'Hierarchy', 'License', 'Course_Payment', 'Certificate', 'Video', 'Installer', 'Verification', 'Shortcodes', 'Handlers', 'Assets', 'Settings', 'Plugin' ) as $convoca_courses_class ) {
+	foreach ( array( 'CPT_Base', 'CPT_Curso', 'CPT_Modulo', 'CPT_Leccion', 'CPT_Matricula', 'CPT_Examen', 'Progress', 'Questions', 'Quiz', 'Attempts', 'Exam_View', 'Enrollment', 'Access', 'Hierarchy', 'License', 'Course_Payment', 'Certificate', 'Video', 'Installer', 'Verification', 'Shortcodes', 'Handlers', 'Assets', 'Settings', 'Plugin' ) as $convoca_courses_class ) {
 		require_once __DIR__ . '/../includes/' . $convoca_courses_class . '.php';
 	}
 
 	// Clases del panel (mapa de WordPress, no PSR-4).
 	require_once __DIR__ . '/../admin/class-admin-fields.php';
 	require_once __DIR__ . '/../admin/class-admin-columns.php';
+	require_once __DIR__ . '/../admin/class-admin-examen.php';
 
 	// Se arranca el plugin como en producción: así los ganchos de pago que se prueban son los que
 	// registra el propio plugin, no una lista copiada en el arnés.

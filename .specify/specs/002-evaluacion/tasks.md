@@ -37,15 +37,21 @@ Marcar solo lo que esté **demostrado** con un comando o una medición.
       guardaba cadena vacía y «no secuencial» quedaba indistinguible de «sin configurar»; ahora el meta se
       guarda como `1`/`0` explícitos.
 
-## F3 — Banco de preguntas y examen
-- [ ] CPT `convoca_examen` + metabox de configuración y de preguntas.
-- [ ] `Questions`: alta/edición/borrado con validación por tipo.
-- [ ] `Quiz::grade()` y `Quiz::pick()` puros, con tests de los tres tipos y de los casos límite.
+## F3 — Banco de preguntas y examen · HECHA (22-10-2026)
+- [x] CPT `convoca_examen` (`includes/CPT_Examen.php`) con la caja de configuración: curso, módulo,
+      preguntas por intento, aleatorio, intentos, nota mínima, tiempo máximo, corrección visible y peso.
+- [x] `Questions`: alta, edición y borrado con validación por tipo; 12 pruebas de la validación pura.
+- [x] `Quiz::grade()` y `Quiz::pick()` puros: única, múltiple (una de más anula), V/F, en blanco, examen
+      vacío, ponderación por puntos y mínimo configurable; 12 pruebas.
+- [x] El borrado del examen se lleva sus preguntas (`Questions::delete_for_exam`).
 
-## F4 — Intentos
-- [ ] Shortcode `[convoca_curso_examen]` + `Handlers` (abrir, enviar, nonce).
-- [ ] Tiempo máximo validado en servidor; intentos limitados; índice único anti-carrera.
-- [ ] Negativos: sin matrícula no abre; agotados los intentos, rechaza.
+## F4 — Intentos · HECHA (22-10-2026)
+- [x] `Attempts`: abrir (selección aleatoria del examen + banco del curso), enviar, corregir, cerrar.
+      El índice único `intento (exam_id,user_id,intento)` es la red anti-carrera.
+- [x] Shortcode `[convoca_curso_examen]` y formulario sin JavaScript (`admin-post` + nonce).
+- [x] Tiempo máximo e intentos validados **en el servidor**: envío tardío → `expirado`, sin corregir.
+- [ ] Negativos medidos en WordPress real: sin matrícula no abre; agotados los intentos, rechaza;
+      envío tardío queda `expirado`. (Se miden en la sonda de la F6, junto con los criterios 3-5.)
 
 ## F5 — Tareas
 - [ ] CPT `convoca_tarea`, entrega de texto o fichero, plazo y estados.

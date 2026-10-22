@@ -63,6 +63,9 @@ final class Plugin {
 		$columns = new Admin_Columns();
 		$columns->register();
 
+		$exam_admin = new Admin_Examen();
+		$exam_admin->register();
+
 		if ( is_admin() ) {
 			Settings::register();
 		}
@@ -88,6 +91,7 @@ final class Plugin {
 		CPT_Modulo::register();
 		CPT_Leccion::register();
 		CPT_Matricula::register();
+		CPT_Examen::register();
 	}
 
 	/**
@@ -106,6 +110,11 @@ final class Plugin {
 
 		if ( CPT_Curso::TYPE === $type ) {
 			Progress::delete_for_course( $post_id );
+			return;
+		}
+
+		if ( CPT_Examen::TYPE === $type ) {
+			Questions::delete_for_exam( $post_id );
 		}
 	}
 }

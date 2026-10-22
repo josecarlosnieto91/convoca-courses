@@ -25,6 +25,30 @@ class Shortcodes {
 		add_shortcode( 'convoca_curso', array( __CLASS__, 'course' ) );
 		add_shortcode( 'convoca_curso_lecciones', array( __CLASS__, 'lessons' ) );
 		add_shortcode( 'convoca_curso_leccion', array( __CLASS__, 'lesson' ) );
+		add_shortcode( 'convoca_curso_examen', array( __CLASS__, 'exam' ) );
+	}
+
+	/**
+	 * Examen del curso: abrir intento, responder y ver el resultado.
+	 *
+	 * @param array<string, string>|string $atts Atributos (`id` = examen).
+	 * @return string
+	 */
+	public static function exam( $atts ): string {
+		$atts = shortcode_atts(
+			array(
+				'id' => '0',
+			),
+			$atts,
+			'convoca_curso_examen'
+		);
+
+		$exam_id = (int) $atts['id'];
+		if ( ! Hierarchy::is_type( $exam_id, CPT_Examen::TYPE ) ) {
+			return self::error_box();
+		}
+
+		return Certificate::render_template( 'examen.php', Exam_View::data( $exam_id, get_current_user_id() ), false );
 	}
 
 	/**
