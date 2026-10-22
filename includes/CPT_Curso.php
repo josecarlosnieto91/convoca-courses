@@ -101,9 +101,13 @@ class CPT_Curso extends CPT_Base {
 				},
 			),
 			'desbloqueo_secuencial'    => array(
-				'type'     => 'boolean',
+				// Se guarda como texto `1`/`0` a propósito: con `boolean`, un `false` se almacena como
+				// cadena vacía y entonces «no secuencial» queda indistinguible de «sin configurar», que es
+				// justo lo que la migración necesita distinguir. Medido: `update_post_meta( …, '0' )` con
+				// saneador booleano guardaba `` y la comprobación no podía leer el cero.
+				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
-					return (bool) $value;
+					return $value ? '1' : '0';
 				},
 			),
 			'fecha_apertura_matricula' => array(

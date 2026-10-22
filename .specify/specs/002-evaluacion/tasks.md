@@ -18,11 +18,24 @@ Marcar solo lo que esté **demostrado** con un comando o una medición.
       **17 comprobaciones, 0 fallos.**
 - [x] Negativo: quitando la columna `correctas` del esquema, el test cae («Falta la columna correctas»).
 
-## F2 — Desbloqueo y acceso
-- [ ] Secuencial por defecto en cursos nuevos + aviso en el admin.
-- [ ] `Access::can_take_exam()` con `todas|modulo|porcentaje`, comprobado en servidor.
-- [ ] `is_expired()` / `is_enrollment_open()`; solo lectura al vencer.
-- [ ] Negativos: examen bloqueado no se fuerza por URL; curso caducado no avanza; matrícula fuera de ventana.
+## F2 — Desbloqueo y acceso · CERRADA (22-10-2026)
+- [x] Secuencial por defecto en cursos nuevos (`CPT_Curso::is_sequential()` → `true`) y migración que deja
+      como estaban los cursos anteriores (`Installer::migrate_sequential_default()`, marcados con `0`).
+      Aviso en la caja del curso.
+- [x] `Access::can_take_exam()` con `todas|modulo|porcentaje` y `scope_percent()` por módulo: la decisión se
+      toma en el servidor (matrícula + caducidad + progreso).
+- [x] `Access::is_expired()` / `is_enrollment_open()`; `can_view_lesson()` deja el curso caducado en solo
+      lectura de lo ya completado.
+- [x] Campos del curso en el panel: fechas de matrícula, fin, días de acceso, nota mínima y modo de acceso.
+- [x] 16 pruebas unitarias de las reglas puras (`tests/Unit/AccessRulesTest.php`).
+- [x] **Medición real en WordPress** (sonda de 22 comprobaciones, 0 fallos): curso nuevo secuencial; curso
+      anterior migrado a `0` y el creado después secuencial; ventana de matrícula; caducidad a los 40 días con
+      30 contratados y curso indefinido a los 400; examen cerrado con 0 y 1 de 3 lecciones, abierto en los
+      tres modos, cerrado con el curso caducado aunque esté todo hecho; el alumnado no gestiona y el
+      administrador sí.
+- [x] Defecto encontrado y corregido en la medición: con saneador booleano, `update_post_meta( …, '0' )`
+      guardaba cadena vacía y «no secuencial» quedaba indistinguible de «sin configurar»; ahora el meta se
+      guarda como `1`/`0` explícitos.
 
 ## F3 — Banco de preguntas y examen
 - [ ] CPT `convoca_examen` + metabox de configuración y de preguntas.
