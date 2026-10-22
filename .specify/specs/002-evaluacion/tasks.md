@@ -6,13 +6,17 @@ Marcar solo lo que esté **demostrado** con un comando o una medición.
 - [x] `spec.md`, `plan.md`, `tasks.md` en `.specify/specs/002-evaluacion/`.
 - [x] Línea base medida: 0.2.3, 54+10 tests, cobertura CI 11,2 % (suelo 9,1 %), CI y Cobertura en verde.
 
-## F1 — Esquema y migración
-- [ ] `Installer::schema()` puro con las cuatro tablas nuevas (sentencias `CREATE TABLE`).
-- [ ] `CONVOCA_COURSES_DB_VERSION` a `2.0.0` en código, bootstraps de pruebas y `phpstan-bootstrap.php`.
-- [ ] `maybe_upgrade()` idempotente: aplica una vez, no repite, no toca la tabla de progreso.
-- [ ] Tests unitarios del esquema (tablas, columnas, índices, tipos) y de `needs_upgrade()`.
-- [ ] Medición real: instalar desde cero y actualizar desde 0.2.3 con datos previos.
-- [ ] Negativo: romper la migración a propósito y ver caer el test.
+## F1 — Esquema y migración · CERRADA (22-10-2026)
+- [x] `Installer::schema()` puro con las cuatro tablas nuevas (sentencias `CREATE TABLE`).
+- [x] `CONVOCA_COURSES_DB_VERSION` a `2.0.0` en código, bootstraps de pruebas y `phpstan-bootstrap.php`.
+- [x] `maybe_upgrade()` idempotente: aplica una vez, no repite, no toca la tabla de progreso.
+- [x] Tests unitarios del esquema (tablas, columnas, índices, tipos) y de `needs_upgrade()`:
+      `tests/Unit/InstallerSchemaTest.php`, 11 tests / 64 aserciones.
+- [x] Medición real en WordPress 7.1.3 + MariaDB 11 (contenedor desechable): las cinco tablas creadas por
+      `dbDelta`, columnas exactas, índice único `intento (exam_id,user_id,intento)`; actualización desde 0.2.3
+      con progreso previo: **2 filas intactas**, opción a `2.0.0` y segunda pasada idempotente.
+      **17 comprobaciones, 0 fallos.**
+- [x] Negativo: quitando la columna `correctas` del esquema, el test cae («Falta la columna correctas»).
 
 ## F2 — Desbloqueo y acceso
 - [ ] Secuencial por defecto en cursos nuevos + aviso en el admin.
