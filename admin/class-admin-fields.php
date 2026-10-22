@@ -80,21 +80,25 @@ class Admin_Fields {
 		Certificate::render_template(
 			'metabox-curso.php',
 			array(
-				'post_id'     => (int) $post->ID,
-				'precio'      => CPT_Curso::price( (int) $post->ID ),
-				'moneda'      => CPT_Curso::currency( (int) $post->ID ),
-				'plazas'      => CPT_Curso::seats( (int) $post->ID ),
-				'certificado' => CPT_Curso::issues_certificate( (int) $post->ID ),
-				'secuencial'  => CPT_Curso::is_sequential( (int) $post->ID ),
-				'apertura'    => CPT_Curso::enrollment_open_date( (int) $post->ID ),
-				'cierre'      => CPT_Curso::enrollment_close_date( (int) $post->ID ),
-				'fecha_fin'   => CPT_Curso::end_date( (int) $post->ID ),
-				'caducidad'   => CPT_Curso::expiry_days( (int) $post->ID ),
-				'nota_minima' => CPT_Curso::min_score( (int) $post->ID ),
-				'acceso'      => CPT_Curso::exam_access( (int) $post->ID ),
-				'acceso_pct'  => CPT_Curso::exam_access_percent( (int) $post->ID ),
-				'modos'       => CPT_Curso::ACCESO_EXAMEN,
-				'prefix'      => $prefix,
+				'post_id'       => (int) $post->ID,
+				'precio'        => CPT_Curso::price( (int) $post->ID ),
+				'moneda'        => CPT_Curso::currency( (int) $post->ID ),
+				'plazas'        => CPT_Curso::seats( (int) $post->ID ),
+				'certificado'   => CPT_Curso::issues_certificate( (int) $post->ID ),
+				'secuencial'    => CPT_Curso::is_sequential( (int) $post->ID ),
+				'apertura'      => CPT_Curso::enrollment_open_date( (int) $post->ID ),
+				'cierre'        => CPT_Curso::enrollment_close_date( (int) $post->ID ),
+				'fecha_fin'     => CPT_Curso::end_date( (int) $post->ID ),
+				'caducidad'     => CPT_Curso::expiry_days( (int) $post->ID ),
+				'nota_minima'   => CPT_Curso::min_score( (int) $post->ID ),
+				'acceso'        => CPT_Curso::exam_access( (int) $post->ID ),
+				'acceso_pct'    => CPT_Curso::exam_access_percent( (int) $post->ID ),
+				'precio_socio'  => CPT_Curso::get_float( (int) $post->ID, 'precio_socio', -1.0 ),
+				'descuento'     => CPT_Curso::member_discount( (int) $post->ID ),
+				'gratis_socios' => CPT_Curso::members_free( (int) $post->ID ),
+				'pro_precio'    => Pro::enabled( 'precio_socio' ) && Members_Bridge::is_available(),
+				'modos'         => CPT_Curso::ACCESO_EXAMEN,
+				'prefix'        => $prefix,
 			)
 		);
 	}
@@ -211,6 +215,9 @@ class Admin_Fields {
 		$minima     = isset( $_POST['convoca_nota_minima'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_nota_minima'] ) ) : 50.0;
 		$acceso     = isset( $_POST['convoca_acceso_examen'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_acceso_examen'] ) ) : 'todas';
 		$acceso_pct = isset( $_POST['convoca_acceso_examen_porcentaje'] ) ? absint( wp_unslash( (string) $_POST['convoca_acceso_examen_porcentaje'] ) ) : 100;
+		$socio      = isset( $_POST['convoca_precio_socio'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_precio_socio'] ) ) : -1.0;
+		$descuento  = isset( $_POST['convoca_descuento_socio'] ) ? absint( wp_unslash( (string) $_POST['convoca_descuento_socio'] ) ) : 0;
+		$gratis     = ! empty( $_POST['convoca_gratis_socios'] );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		update_post_meta( $post_id, $prefix . 'precio', max( 0.0, $price ) );
@@ -225,6 +232,9 @@ class Admin_Fields {
 		update_post_meta( $post_id, $prefix . 'nota_minima', CPT_Curso::normalize_score( $minima ) );
 		update_post_meta( $post_id, $prefix . 'acceso_examen', CPT_Curso::normalize_exam_access( $acceso ) );
 		update_post_meta( $post_id, $prefix . 'acceso_examen_porcentaje', max( 0, min( 100, $acceso_pct ) ) );
+		update_post_meta( $post_id, $prefix . 'precio_socio', $socio < 0 ? -1.0 : round( $socio, 2 ) );
+		update_post_meta( $post_id, $prefix . 'descuento_socio', max( 0, min( 100, $descuento ) ) );
+		update_post_meta( $post_id, $prefix . 'gratis_socios', $gratis ? '1' : '0' );
 	}
 
 	/**

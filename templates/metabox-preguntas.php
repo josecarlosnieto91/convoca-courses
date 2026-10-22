@@ -130,3 +130,29 @@ $convoca_correctas = $convoca_editando ? (array) $editar['correctas'] : array();
 		</button>
 	</p>
 </form>
+
+<?php if ( ! empty( $bank ) ) : ?>
+	<hr />
+	<h4><?php esc_html_e( 'Banco compartido (PRO)', 'convoca-courses' ); ?></h4>
+	<p>
+		<a class="button" href="<?php echo esc_url( (string) $bank_export ); ?>">
+			<?php esc_html_e( 'Exportar preguntas en CSV', 'convoca-courses' ); ?>
+		</a>
+	</p>
+	<form method="post" action="<?php echo esc_url( (string) $action_url ); ?>">
+		<input type="hidden" name="action" value="<?php echo esc_attr( (string) $bank_action ); ?>" />
+		<input type="hidden" name="course_id" value="<?php echo esc_attr( (string) $curso_id ); ?>" />
+		<input type="hidden" name="exam_id" value="<?php echo esc_attr( (string) $post_id ); ?>" />
+		<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $bank_nonce ); ?>" />
+		<p>
+			<label for="convoca_csv"><?php esc_html_e( 'Importar preguntas (CSV con cabecera)', 'convoca-courses' ); ?></label><br />
+			<textarea name="convoca_csv" id="convoca_csv" rows="6" class="large-text code"></textarea>
+		</p>
+		<p class="description">
+			<?php esc_html_e( 'Columnas: tipo;enunciado;opcion1;opcion2;opcion3;opcion4;correctas;puntos;explicacion. En «correctas», los números de opción empezando en 1.', 'convoca-courses' ); ?>
+		</p>
+		<p>
+			<button type="submit" class="button"><?php esc_html_e( 'Importar', 'convoca-courses' ); ?></button>
+		</p>
+	</form>
+<?php endif; ?>

@@ -93,6 +93,10 @@ class Admin_Entregas {
 				'action_url'   => esc_url( admin_url( 'admin-post.php' ) ),
 				'action'       => Handlers::ACTION_TASK_GRADE,
 				'bulk'         => Pro::enabled( 'tutores' ),
+				'group'        => Group_Email::enabled(),
+				'group_action' => Handlers::ACTION_GROUP_EMAIL,
+				'group_nonce'  => wp_create_nonce( Handlers::ACTION_GROUP_EMAIL . '_' . $course_id ),
+				'alumnos'      => $course_id > 0 ? Roster::count( $course_id ) : 0,
 			)
 		);
 	}

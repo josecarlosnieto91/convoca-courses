@@ -188,6 +188,7 @@ class Shortcodes {
 		$user_id = get_current_user_id();
 		$state   = Access::summary( $user_id, $course_id );
 		$free    = Enrollment::free_seats( $course_id );
+		$precio  = Pricing::for_user( $course_id, $user_id );
 
 		$enrollment_id = Enrollment::find( $user_id, $course_id );
 		$status        = $enrollment_id > 0 ? CPT_Matricula::status( $enrollment_id ) : '';
@@ -200,7 +201,8 @@ class Shortcodes {
 				'course_id'         => $course_id,
 				'title'             => (string) get_the_title( $course_id ),
 				'content'           => (string) apply_filters( 'the_content', (string) get_post_field( 'post_content', $course_id ) ),
-				'price'             => CPT_Curso::price( $course_id ) > 0 ? CPT_Curso::formatted_price( $course_id ) : '',
+				'price'             => (float) $precio['precio'] > 0 ? CPT_Curso::format_amount( (float) $precio['precio'], CPT_Curso::currency( $course_id ) ) : '',
+				'price_reason'      => Pricing::label( (string) $precio['motivo'] ),
 				'seats'             => $free,
 				'enrolled'          => $state['enrolled'],
 				'progress'          => $state,
@@ -209,7 +211,7 @@ class Shortcodes {
 				'logged_in'         => $user_id > 0,
 				'enroll_url'        => Handlers::enroll_form_action(),
 				'enroll_nonce'      => Handlers::enroll_nonce(),
-				'needs_payment'     => Course_Payment::course_needs_payment( $course_id ),
+				'needs_payment'     => Course_Payment::course_needs_payment( $course_id, $user_id ),
 				'enrollment_status' => $status,
 				'payment_url'       => $payment_url,
 			),

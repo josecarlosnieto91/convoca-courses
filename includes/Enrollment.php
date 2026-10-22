@@ -135,6 +135,16 @@ class Enrollment {
 			return new \WP_Error( 'convoca_courses_already', __( 'Ya estás matriculado en este curso.', 'convoca-courses' ) );
 		}
 
+		// Convocatorias (PRO): si el curso las tiene, la matrícula exige una abierta con plazas. La
+		// comprobación va aquí, en el servidor: el formulario solo enseña lo que esta función permite.
+		$cohort_id = 0;
+		if ( Cohorts::enabled() && ! empty( Cohorts::of_course( $course_id ) ) ) {
+			$cohort_id = Cohorts::open_for( $course_id );
+			if ( 0 === $cohort_id ) {
+				return new \WP_Error( 'convoca_courses_no_cohort', __( 'No hay ninguna convocatoria abierta con plazas para este curso.', 'convoca-courses' ) );
+			}
+		}
+
 		$is_limited = CPT_Curso::seats( $course_id ) > 0;
 		$lock_key   = 'convoca_courses_seats_' . $course_id;
 		$locked     = false;
@@ -183,6 +193,8 @@ class Enrollment {
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'importe', isset( $args['importe'] ) ? (float) $args['importe'] : CPT_Curso::price( $course_id ) );
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'moneda', CPT_Curso::currency( $course_id ) );
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'referencia_pago', isset( $args['referencia_pago'] ) ? (string) $args['referencia_pago'] : '' );
+		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'motivo_precio', isset( $args['motivo_precio'] ) ? (string) $args['motivo_precio'] : 'general' );
+		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'convocatoria_id', $cohort_id );
 
 		if ( $locked ) {
 			\Convoca\Core\Utils::release_lock( $lock_key );

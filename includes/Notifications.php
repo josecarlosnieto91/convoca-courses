@@ -157,6 +157,67 @@ class Notifications {
 	}
 
 	/**
+	 * Recordatorio de inactividad.
+	 *
+	 * @param int $user_id   Alumno.
+	 * @param int $course_id Curso.
+	 * @return bool
+	 */
+	public static function reminder_inactive( int $user_id, int $course_id ): bool {
+		$subject = sprintf(
+			/* translators: %s: course title. */
+			__( 'Te esperamos en %s', 'convoca-courses' ),
+			(string) get_the_title( $course_id )
+		);
+
+		$body = __( 'Hace días que no avanzas en el curso. Cuando quieras, lo tienes donde lo dejaste.', 'convoca-courses' );
+
+		$course_url = (string) get_permalink( $course_id );
+		if ( '' !== $course_url ) {
+			$body .= "\n\n" . $course_url;
+		}
+
+		return self::send( $user_id, $subject, $body, 'recordatorio-inactividad', array( 'course_id' => $course_id ) );
+	}
+
+	/**
+	 * Recordatorio de examen pendiente.
+	 *
+	 * @param int $user_id   Alumno.
+	 * @param int $course_id Curso.
+	 * @return bool
+	 */
+	public static function reminder_exam( int $user_id, int $course_id ): bool {
+		$subject = sprintf(
+			/* translators: %s: course title. */
+			__( 'Te queda el examen de %s', 'convoca-courses' ),
+			(string) get_the_title( $course_id )
+		);
+
+		$body = __( 'Has completado las lecciones y el examen sigue pendiente. Puedes hacerlo cuando quieras.', 'convoca-courses' );
+
+		$course_url = (string) get_permalink( $course_id );
+		if ( '' !== $course_url ) {
+			$body .= "\n\n" . $course_url;
+		}
+
+		return self::send( $user_id, $subject, $body, 'recordatorio-examen', array( 'course_id' => $course_id ) );
+	}
+
+	/**
+	 * Mensaje del profesorado al alumnado de un curso.
+	 *
+	 * @param int    $user_id   Alumno.
+	 * @param int    $course_id Curso.
+	 * @param string $subject   Asunto.
+	 * @param string $body      Cuerpo.
+	 * @return bool
+	 */
+	public static function group_message( int $user_id, int $course_id, string $subject, string $body ): bool {
+		return self::send( $user_id, $subject, $body, 'mensaje-grupo', array( 'course_id' => $course_id ) );
+	}
+
+	/**
 	 * Apunta un aviso que no se ha podido mandar.
 	 *
 	 * @param int                  $user_id  Destinatario.

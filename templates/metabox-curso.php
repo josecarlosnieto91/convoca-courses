@@ -30,6 +30,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p class="description"><?php esc_html_e( '0 significa sin límite. Con plazas limitadas, dos personas no pueden coger la última a la vez.', 'convoca-courses' ); ?></p>
 		</td>
 	</tr>
+	<?php if ( ! empty( $pro_precio ) ) : ?>
+		<tr>
+			<th scope="row"><label for="convoca_precio_socio"><?php esc_html_e( 'Precio de socio', 'convoca-courses' ); ?></label></th>
+			<td>
+				<input type="number" step="0.01" id="convoca_precio_socio" name="convoca_precio_socio"
+					value="<?php echo esc_attr( (string) $precio_socio ); ?>" class="small-text" />
+				<p class="description"><?php esc_html_e( '-1 = sin precio especial. Si pones un importe, manda sobre el descuento.', 'convoca-courses' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="convoca_descuento_socio"><?php esc_html_e( 'Descuento de socio (%)', 'convoca-courses' ); ?></label></th>
+			<td>
+				<input type="number" min="0" max="100" step="1" id="convoca_descuento_socio" name="convoca_descuento_socio"
+					value="<?php echo esc_attr( (string) (int) $descuento ); ?>" class="small-text" />
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Socios gratis', 'convoca-courses' ); ?></th>
+			<td>
+				<label>
+					<input type="checkbox" name="convoca_gratis_socios" value="1" <?php checked( (bool) $gratis_socios ); ?> />
+					<?php esc_html_e( 'Los socios activos no pagan este curso', 'convoca-courses' ); ?>
+				</label>
+			</td>
+		</tr>
+	<?php endif; ?>
 	<tr>
 		<th scope="row"><?php esc_html_e( 'Certificado', 'convoca-courses' ); ?></th>
 		<td>

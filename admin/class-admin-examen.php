@@ -131,6 +131,20 @@ class Admin_Examen {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo lectura de un identificador.
 				'nonce_delete'  => wp_create_nonce( self::ACTION_QUESTION_DELETE . '_' . $exam_id ),
 				'aviso'         => $this->notice_text(),
+				'bank'          => Shared_Bank::enabled(),
+				'bank_export'   => esc_url(
+					add_query_arg(
+						array(
+							'action'         => Handlers::ACTION_BANK_EXPORT,
+							'course_id'      => CPT_Examen::course_id( $exam_id ),
+							'exam_id'        => $exam_id,
+							'_convoca_nonce' => wp_create_nonce( Handlers::ACTION_BANK_EXPORT . '_' . CPT_Examen::course_id( $exam_id ) ),
+						),
+						admin_url( 'admin-post.php' )
+					)
+				),
+				'bank_action'   => Handlers::ACTION_BANK_IMPORT,
+				'bank_nonce'    => wp_create_nonce( Handlers::ACTION_BANK_IMPORT . '_' . $exam_id ),
 			)
 		);
 	}

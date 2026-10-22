@@ -69,6 +69,8 @@ final class Plugin {
 		$entregas = new Admin_Entregas();
 		$entregas->register();
 
+		Reminders::register();
+
 		if ( is_admin() ) {
 			Settings::register();
 		}
@@ -96,6 +98,7 @@ final class Plugin {
 		CPT_Matricula::register();
 		CPT_Examen::register();
 		CPT_Tarea::register();
+		Cohorts::register();
 	}
 
 	/**

@@ -13,6 +13,8 @@ namespace {
 
 	define( 'ABSPATH', __DIR__ . '/../' );
 	define( 'DAY_IN_SECONDS', 86400 );
+	define( 'HOUR_IN_SECONDS', 3600 );
+	define( 'MINUTE_IN_SECONDS', 60 );
 	define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
 	define( 'CONVOCA_COURSES_DB_VERSION', '2.0.0' );
 	define( 'CONVOCA_COURSES_FILE', __DIR__ . '/../convoca-courses.php' );
@@ -464,7 +466,7 @@ namespace {
 	}
 
 	// Clases del módulo bajo prueba.
-	foreach ( array( 'CPT_Base', 'CPT_Curso', 'CPT_Modulo', 'CPT_Leccion', 'CPT_Matricula', 'CPT_Examen', 'CPT_Tarea', 'Progress', 'Questions', 'Quiz', 'Attempts', 'Exam_View', 'Task', 'Task_View', 'Gradebook', 'Roster', 'Notifications', 'Pro', 'Certificate_QR', 'Enrollment', 'Access', 'Hierarchy', 'License', 'Course_Payment', 'Certificate', 'Video', 'Installer', 'Verification', 'Shortcodes', 'Handlers', 'Assets', 'Settings', 'Plugin' ) as $convoca_courses_class ) {
+	foreach ( array( 'CPT_Base', 'CPT_Curso', 'CPT_Modulo', 'CPT_Leccion', 'CPT_Matricula', 'CPT_Examen', 'CPT_Tarea', 'Progress', 'Questions', 'Quiz', 'Attempts', 'Exam_View', 'Task', 'Task_View', 'Gradebook', 'Roster', 'Notifications', 'Pro', 'Certificate_QR', 'Pricing', 'Members_Bridge', 'Cohorts', 'Reminders', 'Group_Email', 'Shared_Bank', 'Enrollment', 'Access', 'Hierarchy', 'License', 'Course_Payment', 'Certificate', 'Video', 'Installer', 'Verification', 'Shortcodes', 'Handlers', 'Assets', 'Settings', 'Plugin' ) as $convoca_courses_class ) {
 		require_once __DIR__ . '/../includes/' . $convoca_courses_class . '.php';
 	}
 
@@ -477,6 +479,47 @@ namespace {
 	// Se arranca el plugin como en producción: así los ganchos de pago que se prueban son los que
 	// registra el propio plugin, no una lista copiada en el arnés.
 	\Convoca\Courses\Plugin::instance()->boot();
+
+	/**
+	 * Cron: no se programa nada, solo se recuerda qué está programado.
+	 *
+	 * @param string $hook Gancho.
+	 * @return int|false
+	 */
+	function wp_next_scheduled( $hook ) {
+		$cron = isset( $GLOBALS['convoca_test_cron'] ) ? $GLOBALS['convoca_test_cron'] : array();
+
+		return isset( $cron[ $hook ] ) ? (int) $cron[ $hook ] : false;
+	}
+
+	/**
+	 * Programa un evento periódico (doble).
+	 *
+	 * @param int    $timestamp Marca de tiempo.
+	 * @param string $recurrence Recurrencia.
+	 * @param string $hook       Gancho.
+	 * @return bool
+	 */
+	function wp_schedule_event( $timestamp, $recurrence, $hook ) {
+		unset( $recurrence );
+		$GLOBALS['convoca_test_cron'][ $hook ] = (int) $timestamp;
+
+		return true;
+	}
+
+	/**
+	 * Quita un evento programado (doble).
+	 *
+	 * @param int    $timestamp Marca de tiempo.
+	 * @param string $hook      Gancho.
+	 * @return bool
+	 */
+	function wp_unschedule_event( $timestamp, $hook ) {
+		unset( $timestamp );
+		unset( $GLOBALS['convoca_test_cron'][ $hook ] );
+
+		return true;
+	}
 }
 
 namespace Convoca\Core {

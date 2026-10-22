@@ -112,6 +112,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</tbody>
 		</table>
 
+		<?php if ( $group && $alumnos > 0 ) : ?>
+			<h2><?php esc_html_e( 'Escribir a todo el alumnado', 'convoca-courses' ); ?></h2>
+			<form method="post" action="<?php echo esc_url( (string) $action_url ); ?>">
+				<input type="hidden" name="action" value="<?php echo esc_attr( (string) $group_action ); ?>" />
+				<input type="hidden" name="course_id" value="<?php echo esc_attr( (string) $course_id ); ?>" />
+				<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $group_nonce ); ?>" />
+				<p>
+					<label for="convoca_asunto"><?php esc_html_e( 'Asunto', 'convoca-courses' ); ?></label>
+					<input type="text" id="convoca_asunto" name="convoca_asunto" class="regular-text" />
+				</p>
+				<p>
+					<textarea name="convoca_mensaje" rows="4" class="large-text" placeholder="<?php esc_attr_e( 'Mensaje para el alumnado', 'convoca-courses' ); ?>"></textarea>
+				</p>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %d: number of students. */
+						esc_html__( 'Se manda a %d personas, una a una, por la cola de correo del ecosistema.', 'convoca-courses' ),
+						(int) $alumnos
+					);
+					?>
+				</p>
+				<p>
+					<button type="submit" class="button button-primary"><?php esc_html_e( 'Enviar mensaje', 'convoca-courses' ); ?></button>
+				</p>
+			</form>
+		<?php endif; ?>
+
 		<?php if ( $bulk ) : ?>
 			<p class="description">
 				<?php esc_html_e( 'Corrección en lote disponible con licencia PRO: cada entrega se guarda por separado, así que no se pisa la corrección de otro tutor.', 'convoca-courses' ); ?>

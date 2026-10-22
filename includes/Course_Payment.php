@@ -72,13 +72,16 @@ class Course_Payment {
 	}
 
 	/**
-	 * ¿Se cobra este curso concreto?
+	 * ¿Se cobra este curso concreto a esta persona?
 	 *
 	 * @param int $course_id Curso.
+	 * @param int $user_id   Persona (0 = precio de tarifa, sin mirar condición de socio).
 	 * @return bool
 	 */
-	public static function course_needs_payment( int $course_id ): bool {
-		return self::needs_payment( CPT_Curso::price( $course_id ), self::gateway_available() );
+	public static function course_needs_payment( int $course_id, int $user_id = 0 ): bool {
+		$precio = $user_id > 0 ? Pricing::for_user( $course_id, $user_id ) : array( 'precio' => CPT_Curso::price( $course_id ) );
+
+		return self::needs_payment( (float) $precio['precio'], self::gateway_available() );
 	}
 
 	/**
@@ -94,7 +97,9 @@ class Course_Payment {
 			return new \WP_Error( 'convoca_courses_no_gateway', __( 'El cobro no está disponible en este sitio.', 'convoca-courses' ) );
 		}
 
-		$price = CPT_Curso::price( $course_id );
+		// Se cobra el importe que quedó guardado en la matrícula, no el precio de tarifa: es el que se
+		// le prometió a la persona (precio de socio, descuento o general) y el que se le enseñó.
+		$price = CPT_Matricula::get_float( $enrollment_id, 'importe', CPT_Curso::price( $course_id ) );
 		$cents = self::amount_cents( $price );
 
 		if ( $cents <= 0 ) {

@@ -62,6 +62,21 @@ class Handlers {
 	public const ACTION_GRADEBOOK_CSV = 'convoca_courses_gradebook_csv';
 
 	/**
+	 * Correo al grupo de alumnado (PRO).
+	 */
+	public const ACTION_GROUP_EMAIL = 'convoca_courses_group_email';
+
+	/**
+	 * Exportación del banco de preguntas (PRO).
+	 */
+	public const ACTION_BANK_EXPORT = 'convoca_courses_bank_export';
+
+	/**
+	 * Importación del banco de preguntas (PRO).
+	 */
+	public const ACTION_BANK_IMPORT = 'convoca_courses_bank_import';
+
+	/**
 	 * Registra los enganches.
 	 *
 	 * @return void
@@ -76,6 +91,9 @@ class Handlers {
 		add_action( 'admin_post_' . self::ACTION_TASK_SUBMIT, array( __CLASS__, 'handle_task_submit' ) );
 		add_action( 'admin_post_' . self::ACTION_TASK_GRADE, array( __CLASS__, 'handle_task_grade' ) );
 		add_action( 'admin_post_' . self::ACTION_GRADEBOOK_CSV, array( __CLASS__, 'handle_gradebook_csv' ) );
+		add_action( 'admin_post_' . self::ACTION_GROUP_EMAIL, array( __CLASS__, 'handle_group_email' ) );
+		add_action( 'admin_post_' . self::ACTION_BANK_EXPORT, array( __CLASS__, 'handle_bank_export' ) );
+		add_action( 'admin_post_' . self::ACTION_BANK_IMPORT, array( __CLASS__, 'handle_bank_import' ) );
 		add_action( 'wp_ajax_' . self::ACTION_VIDEO, array( __CLASS__, 'handle_video' ) );
 	}
 
@@ -138,15 +156,18 @@ class Handlers {
 			exit;
 		}
 
-		// Curso de pago con el gateway activo: la matrícula nace PENDIENTE y se manda a la pasarela.
-		// Sin gateway (o con precio 0) el flujo es el de siempre: matrícula activa al momento.
-		$needs_payment = Course_Payment::course_needs_payment( $course_id );
+		// Precio que le toca a esta persona: general, de socio o gratis por ser socio. Se decide en el
+		// servidor y se guarda con la matrícula, para que después se pueda explicar qué se cobró.
+		$precio        = Pricing::for_user( $course_id, get_current_user_id() );
+		$needs_payment = Course_Payment::needs_payment( $precio['precio'], Course_Payment::gateway_available() );
 
 		$result = Enrollment::enroll(
 			get_current_user_id(),
 			$course_id,
 			array(
-				'estado' => $needs_payment ? 'pendiente' : 'activa',
+				'estado'        => $needs_payment ? 'pendiente' : 'activa',
+				'importe'       => $precio['precio'],
+				'motivo_precio' => $precio['motivo'],
 			)
 		);
 
@@ -550,6 +571,125 @@ class Handlers {
 	}
 
 	/**
+	 * Manda el correo al grupo de alumnado de un curso.
+	 *
+	 * @return void
+	 */
+	public static function handle_group_email(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verifica justo debajo.
+		$course_id = isset( $_POST['course_id'] ) ? absint( wp_unslash( (string) $_POST['course_id'] ) ) : 0;
+		$subject   = isset( $_POST['convoca_asunto'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_asunto'] ) ) : '';
+		$body      = isset( $_POST['convoca_mensaje'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['convoca_mensaje'] ) ) : '';
+		$nonce     = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_GROUP_EMAIL . '_' . $course_id ) ) {
+			wp_die( esc_html__( 'La sesión ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+		}
+
+		if ( ! Pro::can_grade() ) {
+			wp_die( esc_html__( 'No tienes permiso para escribir al alumnado.', 'convoca-courses' ) );
+		}
+
+		$resultado = Group_Email::send( $course_id, $subject, $body );
+
+		self::back_to_entregas( $course_id, is_wp_error( $resultado ) ? 'group_error' : 'group_sent' );
+	}
+
+	/**
+	 * Exporta el banco de preguntas en CSV.
+	 *
+	 * @return void
+	 */
+	public static function handle_bank_export(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- el nonce se verifica justo debajo.
+		$course_id = isset( $_GET['course_id'] ) ? absint( wp_unslash( (string) $_GET['course_id'] ) ) : 0;
+		$exam_id   = isset( $_GET['exam_id'] ) ? absint( wp_unslash( (string) $_GET['exam_id'] ) ) : 0;
+		$nonce     = isset( $_GET['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_BANK_EXPORT . '_' . $course_id ) ) {
+			wp_die( esc_html__( 'La sesión ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+		}
+
+		if ( ! Access::can_manage() ) {
+			wp_die( esc_html__( 'No tienes permiso para exportar el banco de preguntas.', 'convoca-courses' ) );
+		}
+
+		$csv = Shared_Bank::export_csv( $course_id, $exam_id );
+
+		if ( is_wp_error( $csv ) ) {
+			wp_die( esc_html( $csv->get_error_message() ) );
+		}
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="preguntas-' . (int) $course_id . '.csv"' );
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- es un CSV: escaparlo lo rompería.
+		echo $csv;
+		exit;
+	}
+
+	/**
+	 * Importa el banco de preguntas desde un CSV.
+	 *
+	 * @return void
+	 */
+	public static function handle_bank_import(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verifica justo debajo.
+		$course_id = isset( $_POST['course_id'] ) ? absint( wp_unslash( (string) $_POST['course_id'] ) ) : 0;
+		$exam_id   = isset( $_POST['exam_id'] ) ? absint( wp_unslash( (string) $_POST['exam_id'] ) ) : 0;
+		$csv       = isset( $_POST['convoca_csv'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['convoca_csv'] ) ) : '';
+		$nonce     = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_BANK_IMPORT . '_' . $exam_id ) ) {
+			wp_die( esc_html__( 'La sesión ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+		}
+
+		if ( ! Access::can_manage() ) {
+			wp_die( esc_html__( 'No tienes permiso para importar preguntas.', 'convoca-courses' ) );
+		}
+
+		$resultado = Shared_Bank::import_csv( $course_id, $exam_id, $csv );
+
+		$aviso = is_wp_error( $resultado ) ? 'bank_error' : 'bank_imported';
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'convoca_msg'    => $aviso,
+					'convoca_detail' => is_wp_error( $resultado ) ? $resultado->get_error_message() : (string) $resultado['creadas'],
+				),
+				(string) get_edit_post_link( $exam_id > 0 ? $exam_id : $course_id, 'raw' )
+			)
+		);
+		exit;
+	}
+
+	/**
+	 * Vuelve a la pantalla de entregas con un aviso.
+	 *
+	 * @param int    $course_id Curso.
+	 * @param string $aviso     Clave del aviso.
+	 * @return void
+	 */
+	private static function back_to_entregas( int $course_id, string $aviso ): void {
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'        => 'convoca-courses-entregas',
+					'course_id'   => $course_id,
+					'convoca_msg' => $aviso,
+				),
+				admin_url( 'edit.php?post_type=' . CPT_Curso::TYPE )
+			)
+		);
+		exit;
+	}
+
+	/**
 	 * Clave de aviso para un error del examen.
 	 *
 	 * @param string $code Código de error.
@@ -669,6 +809,14 @@ class Handlers {
 				return __( 'No se ha podido subir el fichero: revisa el tipo y el tamaño que admite el sitio.', 'convoca-courses' );
 			case 'task_error':
 				return __( 'No se ha podido completar la operación con la tarea.', 'convoca-courses' );
+			case 'group_sent':
+				return __( 'Mensaje enviado al alumnado del curso.', 'convoca-courses' );
+			case 'group_error':
+				return __( 'No se ha podido enviar el mensaje al alumnado.', 'convoca-courses' );
+			case 'bank_imported':
+				return __( 'Preguntas importadas.', 'convoca-courses' );
+			case 'bank_error':
+				return __( 'No se ha podido importar el banco de preguntas.', 'convoca-courses' );
 			case 'pending_payment':
 				return __( 'Matrícula reservada. Completa el pago para activarla.', 'convoca-courses' );
 			case 'payment_error':

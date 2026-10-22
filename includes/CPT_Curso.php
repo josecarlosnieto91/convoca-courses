@@ -37,6 +37,9 @@ class CPT_Curso extends CPT_Base {
 		'nota_minima',
 		'acceso_examen',
 		'acceso_examen_porcentaje',
+		'precio_socio',
+		'descuento_socio',
+		'gratis_socios',
 	);
 
 	/**
@@ -144,6 +147,29 @@ class CPT_Curso extends CPT_Base {
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
 					return self::normalize_exam_access( (string) $value );
+				},
+			),
+			'precio_socio'             => array(
+				// -1 = sin precio especial de socio. Se necesita distinguir «no configurado» de «0 €».
+				'type'     => 'number',
+				'sanitize' => static function ( $value ) {
+					$valor = (float) $value;
+
+					return $valor < 0 ? -1.0 : round( $valor, 2 );
+				},
+			),
+			'descuento_socio'          => array(
+				'type'     => 'integer',
+				'sanitize' => static function ( $value ) {
+					return max( 0, min( 100, (int) $value ) );
+				},
+			),
+			'gratis_socios'            => array(
+				// Texto `1`/`0` por el mismo motivo que el resto: con booleano, un `0` se guarda como
+				// cadena vacía y deja de distinguirse de «sin configurar».
+				'type'     => 'string',
+				'sanitize' => static function ( $value ) {
+					return $value ? '1' : '0';
 				},
 			),
 			'acceso_examen_porcentaje' => array(
@@ -276,6 +302,38 @@ class CPT_Curso extends CPT_Base {
 	 */
 	public static function exam_access_percent( int $course_id ): int {
 		return max( 0, min( 100, self::get_int( $course_id, 'acceso_examen_porcentaje', 100 ) ) );
+	}
+
+	/**
+	 * Precio especial de socio, o `null` si el curso no lo tiene.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return float|null
+	 */
+	public static function member_price( int $course_id ): ?float {
+		$valor = self::get_float( $course_id, 'precio_socio', -1.0 );
+
+		return $valor < 0 ? null : round( $valor, 2 );
+	}
+
+	/**
+	 * Descuento de socio en porcentaje (0-100).
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return float
+	 */
+	public static function member_discount( int $course_id ): float {
+		return (float) max( 0, min( 100, self::get_int( $course_id, 'descuento_socio', 0 ) ) );
+	}
+
+	/**
+	 * ¿Los socios no pagan nada?
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return bool
+	 */
+	public static function members_free( int $course_id ): bool {
+		return self::get_bool( $course_id, 'gratis_socios', false );
 	}
 
 	/**
