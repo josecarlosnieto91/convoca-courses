@@ -118,37 +118,37 @@ class Task {
 		$table  = Installer::table( Installer::SUBMISSIONS_TABLE );
 		$existe = self::submission( $task_id, $user_id );
 
-		$datos = array(
-			'course_id'     => $course_id,
-			'enrollment_id' => Enrollment::active_id( $user_id, $course_id ),
-			'contenido'     => $texto,
-			'adjunto_id'    => max( 0, $adjunto_id ),
-			'entregada_en'  => (string) current_time( 'mysql' ),
-			'estado'        => $estado,
-			'nota'          => 0.0,
-			'comentario'    => '',
-			'corregida_por' => 0,
-			'corregida_en'  => '0000-00-00 00:00:00',
+		$fila = self::row(
+			array(
+				'task_id'       => $task_id,
+				'course_id'     => $course_id,
+				'user_id'       => $user_id,
+				'enrollment_id' => Enrollment::active_id( $user_id, $course_id ),
+				'contenido'     => $texto,
+				'adjunto_id'    => max( 0, $adjunto_id ),
+				'entregada_en'  => (string) current_time( 'mysql' ),
+				'estado'        => $estado,
+			)
 		);
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery -- tabla propia del plugin.
 		if ( null === $existe ) {
-			$datos['task_id'] = $task_id;
-			$datos['user_id'] = $user_id;
-			$ok               = $wpdb->insert(
-				$table,
-				$datos,
-				array( '%d', '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%f', '%s', '%d', '%s' )
-			);
+			$ok = $wpdb->insert( $table, $fila['datos'], $fila['formatos'] );
 		} else {
+			$para_actualizar = $fila['datos'];
+			$formatos        = $fila['formatos'];
+			unset( $para_actualizar['task_id'], $para_actualizar['user_id'] );
+			unset( $formatos[0], $formatos[2] );
+			$formatos = array_values( $formatos );
+
 			$ok = $wpdb->update(
 				$table,
-				$datos,
+				$para_actualizar,
 				array(
 					'task_id' => $task_id,
 					'user_id' => $user_id,
 				),
-				array( '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%f', '%s', '%d', '%s' ),
+				$formatos,
 				array( '%d', '%d' )
 			);
 		}
@@ -168,6 +168,71 @@ class Task {
 		do_action( 'convoca_courses_task_submitted', $task_id, $user_id, $estado );
 
 		return true;
+	}
+
+	/**
+	 * Construye la fila de una entrega con sus formatos.
+	 *
+	 * Función pura y con prueba propia, porque el orden de `$wpdb->insert( $tabla, $datos, $formatos )`
+	 * es posicional: si los formatos se descuadran, el texto entra como número y el estado como cero.
+	 * Medido en la demo el 22-10-2026: la entrega se guardó con `contenido = 0` y `estado = 0`, y no
+	 * había ninguna prueba que lo viera porque `$wpdb` no está en las unitarias.
+	 *
+	 * @param array<string, mixed> $datos Datos de la entrega (sin la corrección, que nace vacía).
+	 * @return array{datos: array<string, mixed>, formatos: array<int, string>}
+	 */
+	public static function row( array $datos ): array {
+		$columnas = array(
+			'task_id'       => '%d',
+			'course_id'     => '%d',
+			'user_id'       => '%d',
+			'enrollment_id' => '%d',
+			'contenido'     => '%s',
+			'adjunto_id'    => '%d',
+			'entregada_en'  => '%s',
+			'estado'        => '%s',
+			'nota'          => '%f',
+			'comentario'    => '%s',
+			'corregida_por' => '%d',
+			'corregida_en'  => '%s',
+		);
+
+		$defecto = array(
+			'contenido'     => '',
+			'adjunto_id'    => 0,
+			'entregada_en'  => '0000-00-00 00:00:00',
+			'estado'        => 'entregada',
+			'nota'          => 0.0,
+			'comentario'    => '',
+			'corregida_por' => 0,
+			'corregida_en'  => '0000-00-00 00:00:00',
+		);
+
+		$fila     = array();
+		$formatos = array();
+
+		foreach ( $columnas as $columna => $formato ) {
+			$valor = array_key_exists( $columna, $datos ) ? $datos[ $columna ] : ( $defecto[ $columna ] ?? '' );
+
+			switch ( $formato ) {
+				case '%d':
+					$fila[ $columna ] = (int) $valor;
+					break;
+				case '%f':
+					$fila[ $columna ] = (float) $valor;
+					break;
+				default:
+					$fila[ $columna ] = (string) $valor;
+					break;
+			}
+
+			$formatos[] = $formato;
+		}
+
+		return array(
+			'datos'    => $fila,
+			'formatos' => $formatos,
+		);
 	}
 
 	/**

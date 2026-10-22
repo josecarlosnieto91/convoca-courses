@@ -3,6 +3,28 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.3.1] — 2026-10-22
+
+Cuatro defectos que solo aparecieron al probar la 0.3.0 en la demo con un navegador de verdad. Los tres
+primeros dejaban la página a medias o guardaban mal los datos; ninguno se veía en las pruebas unitarias.
+
+### Corregido
+
+- **Las plantillas usaban las clases del módulo sin cualificar** (`Handlers::…` en vez de
+  `\Convoca\Courses\Handlers::…`) y la página moría con «Class "Handlers" not found» a la altura del
+  shortcode de tareas: detrás de él no se pintaba nada. Añadida la prueba `TemplatesNamespacedTest`, que
+  revisa las plantillas una a una.
+- **La entrega de una tarea se guardaba descuadrada**: los formatos de `$wpdb->insert()` no seguían el orden
+  de las columnas, así que `contenido` se guardaba como `0` y `estado` como `0`. El armado de la fila vive
+  ahora en `Task::row()`, puro y con prueba propia (`TaskRowTest`).
+- **El detalle de la corrección no se veía al volver al examen**: la nota salía, pero no qué se había
+  fallado. Se reconstruye de la tabla de respuestas (`Attempts::answers()`), que es donde estaba el dato.
+- **Los bloques de examen, tareas y notas salían sin estilos**: sus contenedores no llevaban la clase
+  `convoca-courses`, así que no heredaban la paleta ni las reglas base. Ahora la llevan, y el CSS cubre los
+  componentes nuevos (preguntas, opciones, resultado, tarjetas de tarea, tablas, botón y aviso de aviso).
+- La nota mínima se pinta como `50` y no como `50,0`, y quien gestiona el curso ya no ve el aviso de
+  «necesitas estar matriculado».
+
 ## [0.3.0] — 2026-10-22
 
 La evaluación, que es lo que convierte el módulo en un curso de verdad. Todo lo que sigue es **gratis**;
