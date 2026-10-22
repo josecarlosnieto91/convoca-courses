@@ -2,7 +2,7 @@
 /**
  * Plantilla: acta del curso (profesorado).
  *
- * Variables: ver Shortcodes::gradebook().
+ * Variables: ver \Convoca\Courses\Shortcodes::gradebook().
  *
  * @package Convoca\Courses
  */

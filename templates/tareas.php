@@ -2,7 +2,7 @@
 /**
  * Plantilla: tareas del curso.
  *
- * Variables: ver Task_View::data().
+ * Variables: ver \Convoca\Courses\Task_View::data().
  *
  * @package Convoca\Courses
  */
@@ -117,7 +117,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</p>
 			<?php else : ?>
 				<form method="post" action="<?php echo esc_url( (string) $form_url ); ?>" enctype="multipart/form-data" class="convoca-courses-task__form">
-					<input type="hidden" name="action" value="<?php echo esc_attr( Handlers::ACTION_TASK_SUBMIT ); ?>" />
+					<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_TASK_SUBMIT ); ?>" />
 					<input type="hidden" name="task_id" value="<?php echo esc_attr( (string) $convoca_tarea['id'] ); ?>" />
 					<input type="hidden" name="course_id" value="<?php echo esc_attr( (string) $course_id ); ?>" />
 					<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $convoca_tarea['nonce'] ); ?>" />

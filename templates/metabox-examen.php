@@ -2,7 +2,7 @@
 /**
  * Plantilla: caja de configuración del examen.
  *
- * Variables: ver Admin_Examen::render_config_box().
+ * Variables: ver \Convoca\Courses\Admin_Examen::render_config_box().
  *
  * @package Convoca\Courses
  */

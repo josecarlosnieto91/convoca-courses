@@ -2,7 +2,7 @@
 /**
  * Plantilla: banco de preguntas del examen.
  *
- * Variables: ver Admin_Examen::render_questions_box().
+ * Variables: ver \Convoca\Courses\Admin_Examen::render_questions_box().
  *
  * @package Convoca\Courses
  */

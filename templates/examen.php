@@ -2,7 +2,7 @@
 /**
  * Plantilla: examen del curso.
  *
- * Variables: ver Exam_View::data().
+ * Variables: ver \Convoca\Courses\Exam_View::data().
  *
  * @package Convoca\Courses
  */
@@ -92,9 +92,9 @@ if ( ! $logged_in ) {
 		</p>
 	<?php elseif ( 'en_curso' === $convoca_estado ) : ?>
 		<form method="post" action="<?php echo esc_url( (string) $open_url ); ?>" class="convoca-courses-exam__form">
-			<input type="hidden" name="action" value="<?php echo esc_attr( Handlers::ACTION_EXAM_SUBMIT ); ?>" />
+			<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_EXAM_SUBMIT ); ?>" />
 			<input type="hidden" name="attempt_id" value="<?php echo esc_attr( (string) $open['id'] ); ?>" />
-			<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( Handlers::exam_submit_nonce( (int) $open['id'] ) ); ?>" />
+			<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( \Convoca\Courses\Handlers::exam_submit_nonce( (int) $open['id'] ) ); ?>" />
 
 			<?php $convoca_numero = 0; ?>
 			<?php foreach ( $questions as $convoca_pregunta ) : ?>
@@ -139,7 +139,7 @@ if ( ! $logged_in ) {
 		</form>
 	<?php else : ?>
 		<form method="post" action="<?php echo esc_url( (string) $open_url ); ?>" class="convoca-courses-exam__form">
-			<input type="hidden" name="action" value="<?php echo esc_attr( Handlers::ACTION_EXAM_OPEN ); ?>" />
+			<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_EXAM_OPEN ); ?>" />
 			<input type="hidden" name="exam_id" value="<?php echo esc_attr( (string) $exam_id ); ?>" />
 			<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( (string) $open_nonce ); ?>" />
 			<p class="convoca-courses-exam__actions">
@@ -175,7 +175,7 @@ if ( ! $logged_in ) {
 			<?php if ( $convoca_mostrar_detalle && ! empty( $result['detalle'] ) ) : ?>
 				<ol class="convoca-courses-exam__detail">
 					<?php foreach ( $result['detalle'] as $convoca_linea ) : ?>
-						<?php $convoca_pregunta = Questions::get( (int) $convoca_linea['question_id'] ); ?>
+						<?php $convoca_pregunta = \Convoca\Courses\Questions::get( (int) $convoca_linea['question_id'] ); ?>
 						<li class="<?php echo $convoca_linea['correcta'] ? 'is-correct' : 'is-wrong'; ?>">
 							<?php echo esc_html( null !== $convoca_pregunta ? (string) $convoca_pregunta['enunciado'] : '' ); ?>
 							— <?php echo $convoca_linea['correcta'] ? esc_html__( 'correcta', 'convoca-courses' ) : esc_html__( 'incorrecta', 'convoca-courses' ); ?>

@@ -2,7 +2,7 @@
 /**
  * Plantilla: mis notas.
  *
- * Variables: ver Shortcodes::grades().
+ * Variables: ver \Convoca\Courses\Shortcodes::grades().
  *
  * @package Convoca\Courses
  */

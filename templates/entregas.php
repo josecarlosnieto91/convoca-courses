@@ -2,7 +2,7 @@
 /**
  * Plantilla: pantalla de entregas del panel.
  *
- * Variables: ver Admin_Entregas::render().
+ * Variables: ver \Convoca\Courses\Admin_Entregas::render().
  *
  * @package Convoca\Courses
  */
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endif; ?>
 
 	<form method="get" action="<?php echo esc_url( admin_url( 'edit.php' ) ); ?>">
-		<input type="hidden" name="post_type" value="<?php echo esc_attr( CPT_Curso::TYPE ); ?>" />
+		<input type="hidden" name="post_type" value="<?php echo esc_attr( \Convoca\Courses\CPT_Curso::TYPE ); ?>" />
 		<input type="hidden" name="page" value="<?php echo esc_attr( (string) $page ); ?>" />
 		<label for="convoca-course-filter"><?php esc_html_e( 'Curso', 'convoca-courses' ); ?></label>
 		<select name="course_id" id="convoca-course-filter">
@@ -87,7 +87,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<input type="hidden" name="action" value="<?php echo esc_attr( (string) $action ); ?>" />
 								<input type="hidden" name="submission_id" value="<?php echo esc_attr( (string) $convoca_entrega['id'] ); ?>" />
 								<input type="hidden" name="course_id" value="<?php echo esc_attr( (string) $course_id ); ?>" />
-								<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( Handlers::task_grade_nonce( (int) $convoca_entrega['id'] ) ); ?>" />
+								<input type="hidden" name="_convoca_nonce" value="<?php echo esc_attr( \Convoca\Courses\Handlers::task_grade_nonce( (int) $convoca_entrega['id'] ) ); ?>" />
 								<p>
 									<label for="convoca_nota_<?php echo esc_attr( (string) $convoca_entrega['id'] ); ?>"><?php esc_html_e( 'Nota', 'convoca-courses' ); ?></label>
 									<input
