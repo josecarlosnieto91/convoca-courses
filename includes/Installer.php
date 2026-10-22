@@ -32,6 +32,11 @@ class Installer {
 	public const SEQ_MIGRATED_OPTION = 'convoca_courses_seq_migrated';
 
 	/**
+	 * Opción con la versión del plugin que repartió las capabilities.
+	 */
+	public const CAPS_OPTION = 'convoca_courses_caps_version';
+
+	/**
 	 * Nombre de la tabla de progreso (sin prefijo).
 	 */
 	public const PROGRESS_TABLE = 'convoca_course_progress';
@@ -270,6 +275,26 @@ class Installer {
 		}
 
 		update_option( self::SEQ_MIGRATED_OPTION, '1', false );
+	}
+
+	/**
+	 * Reparte las capabilities cuando cambia la versión del plugin.
+	 *
+	 * No basta con hacerlo en la activación ni con la versión de esquema: una instalación que actualiza
+	 * de la 0.2.3 a la 0.3.x no vuelve a activarse, así que una capability nueva (`convoca_grade_courses`)
+	 * no llegaba nunca a los roles. Medido en la demo el 22-10-2026.
+	 *
+	 * @return void
+	 */
+	public static function maybe_upgrade_capabilities(): void {
+		$repartida = (string) get_option( self::CAPS_OPTION, '' );
+
+		if ( CONVOCA_COURSES_VERSION === $repartida ) {
+			return;
+		}
+
+		self::add_capabilities();
+		update_option( self::CAPS_OPTION, CONVOCA_COURSES_VERSION, false );
 	}
 
 	/**

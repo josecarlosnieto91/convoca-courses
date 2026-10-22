@@ -3,6 +3,29 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.3.2] — 2026-10-22
+
+**El módulo dejaba el panel del sitio sin acceso, administrador incluido.** Defecto crítico, encontrado
+probando la demo con un navegador de verdad y medido con el módulo activo y desactivado.
+
+### Corregido
+
+- **Las tres capacidades por entrada del tipo de contenido se declaraban con capacidades globales**
+  (`'read_post' => 'read'`, `'edit_post' => 'convoca_manage_courses'`, `'delete_post' => …`). WordPress
+  copia esos valores a `$post_type_meta_caps`, y a partir de ahí cualquier `current_user_can( 'read' )`
+  sin id de entrada se resuelve como `do_not_allow`: `/wp-admin` respondía 403 a todo el mundo y el
+  registro se llenaba de «read_post debe comprobarse para una entrada específica». Ahora las tres van
+  con nombre propio (`convoca_read_curso`, `convoca_edit_curso`, `convoca_delete_curso`) y un filtro
+  `map_meta_cap` las traduce a lo que significan: leer es `read`, editar y borrar son la puerta del
+  módulo. Medido en la demo: con la 0.3.1 `map_meta_cap( 'read' )` devolvía `["do_not_allow"]`; con la
+  0.3.2 devuelve `["read"]` y el panel abre con 200.
+- El mismo defecto en el tipo de contenido de convocatorias.
+
+### Añadido
+
+- `MetaCapsTest`: falla si alguna de las tres primitivas por entrada vuelve a llamarse como una
+  capacidad global, y comprueba la traducción del puente.
+
 ## [0.3.1] — 2026-10-22
 
 Cuatro defectos que solo aparecieron al probar la 0.3.0 en la demo con un navegador de verdad. Los tres

@@ -66,9 +66,12 @@ class Cohorts {
 				'supports'        => array( 'title' ),
 				'capability_type' => 'post',
 				'capabilities'    => array(
-					'edit_post'           => 'convoca_manage_courses',
-					'read_post'           => 'read',
-					'delete_post'         => 'convoca_manage_courses',
+					// Las tres por entrada, con nombre propio: mapearlas a capacidades globales
+					// ('read', 'convoca_manage_courses') las mete en $post_type_meta_caps y deja
+					// el panel del sitio sin acceso. Ver CPT_Base::bridge_meta_caps().
+					'edit_post'           => CPT_Base::CAP_EDIT_POST,
+					'read_post'           => CPT_Base::CAP_READ_POST,
+					'delete_post'         => CPT_Base::CAP_DELETE_POST,
 					'edit_posts'          => 'convoca_manage_courses',
 					'edit_others_posts'   => 'convoca_manage_courses',
 					'publish_posts'       => 'convoca_manage_courses',

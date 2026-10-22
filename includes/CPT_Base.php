@@ -98,18 +98,55 @@ abstract class CPT_Base {
 		);
 	}
 
+	/** Capacidad por entrada para editar; se traduce a la puerta del módulo. */
+	public const CAP_EDIT_POST = 'convoca_edit_curso';
+
+	/** Capacidad por entrada para leer; se traduce a la primitiva global `read`. */
+	public const CAP_READ_POST = 'convoca_read_curso';
+
+	/** Capacidad por entrada para borrar; se traduce a la puerta del módulo. */
+	public const CAP_DELETE_POST = 'convoca_delete_curso';
+
+	/**
+	 * Traduce las capacidades por entrada del módulo a las capacidades reales.
+	 *
+	 * Los tres nombres son propios (no globales) para no contaminar $post_type_meta_caps, y aquí
+	 * recuperan el significado que les toca: leer es `read`, editar y borrar son la puerta del
+	 * módulo. El nombre es común a los seis tipos porque la traducción no depende del tipo.
+	 *
+	 * @param array<int, string> $caps Capacidades primitivas calculadas por WordPress.
+	 * @param string             $cap  Capacidad que se está comprobando.
+	 * @return array<int, string>
+	 */
+	public static function bridge_meta_caps( $caps, $cap ) {
+		if ( self::CAP_READ_POST === $cap ) {
+			return array( 'read' );
+		}
+
+		if ( self::CAP_EDIT_POST === $cap || self::CAP_DELETE_POST === $cap ) {
+			return array( 'convoca_manage_courses' );
+		}
+
+		return $caps;
+	}
+
 	/**
 	 * Mapa de capabilities del tipo de contenido.
 	 *
 	 * @return array<string, string>
 	 */
 	protected static function capabilities(): array {
-		// Con map_meta_cap hay que declarar TODAS las primitivas: las que falten hacen que
-		// map_meta_cap() se llame sin post y WordPress avise en el log en cada comprobación.
+		// CUIDADO: las tres primitivas POR ENTRADA no pueden ser capacidades globales. WordPress
+		// mete en $post_type_meta_caps el valor de edit_post/read_post/delete_post de cada tipo
+		// registrado, y a partir de ahí cualquier current_user_can() de esa capacidad SIN id de
+		// entrada se resuelve como do_not_allow. Con 'read_post' => 'read' el sitio entero pierde
+		// el acceso al panel (administrador incluido): medido en la demo el 22-10-2026
+		// (map_meta_cap('read') devolvía ["do_not_allow"] con el módulo activo y ["read"] sin él).
+		// Por eso van con nombre propio y se traducen a la puerta real en bridge_meta_caps().
 		return array(
-			'edit_post'              => 'convoca_manage_courses',
-			'read_post'              => 'read',
-			'delete_post'            => 'convoca_manage_courses',
+			'edit_post'              => self::CAP_EDIT_POST,
+			'read_post'              => self::CAP_READ_POST,
+			'delete_post'            => self::CAP_DELETE_POST,
 			'edit_posts'             => 'convoca_manage_courses',
 			'edit_others_posts'      => 'convoca_manage_courses',
 			'edit_private_posts'     => 'convoca_manage_courses',

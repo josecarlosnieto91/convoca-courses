@@ -47,8 +47,11 @@ final class Plugin {
 	 */
 	public function boot(): void {
 		Installer::maybe_upgrade();
+		Installer::maybe_upgrade_capabilities();
 
 		add_action( 'init', array( $this, 'register_types' ) );
+		// Las capacidades por entrada del módulo necesitan su traducción (ver CPT_Base).
+		add_filter( 'map_meta_cap', array( CPT_Base::class, 'bridge_meta_caps' ), 10, 2 );
 		add_action( 'init', array( Verification::class, 'register_rewrite' ) );
 		add_filter( 'query_vars', array( Verification::class, 'query_vars' ) );
 		add_action( 'template_redirect', array( Verification::class, 'maybe_serve' ) );
