@@ -3,6 +3,44 @@
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [0.3.0] — 2026-10-22
+
+La evaluación, que es lo que convierte el módulo en un curso de verdad. Todo lo que sigue es **gratis**;
+lo PRO es la capa de organización.
+
+### Añadido
+
+- **Exámenes tipo test.** CPT `convoca_examen` con curso y módulo, preguntas por intento, aleatorio,
+  intentos, nota mínima, tiempo máximo, corrección visible y peso. Banco de preguntas en tabla propia con
+  tres tipos: única, múltiple (una de más anula) y verdadero/falso.
+- **Intentos con corrección en servidor.** El tiempo y el número de intentos no se negocian en el
+  navegador: enviar tarde deja el intento `expirado` sin corregir, y el índice único
+  `(exam_id, user_id, intento)` impide que dos envíos simultáneos creen dos intentos.
+- **Tareas con entrega.** Texto o fichero por la biblioteca de medios, plazo, estados `entregada`,
+  `fuera_de_plazo` y `corregida`, reentrega que reabre y limpia la nota anterior, y pantalla **Entregas**
+  en el panel para corregir con nota y comentario.
+- **Libro de notas.** Nota final con pesos por examen y por tarea (avisa si no suman 100), vista del
+  alumno, acta del profesorado y **exportación CSV**.
+- **Certificado con nota y puerta de aprobado.** Si el curso evalúa, el certificado exige aprobado y la
+  nota se congela en el PDF. Curso sin evaluación: igual que antes.
+- **Precio distinto para socios** (PRO): gratis, precio especial o descuento %, por curso, con la
+  prioridad gratis > precio socio > descuento > general. La matrícula guarda **importe y motivo**.
+- **Capa PRO de organización**: convocatorias con plazas y fechas, recordatorios automáticos de
+  inactividad y examen pendiente, varios correctores (capability `convoca_grade_courses`), certificado con
+  QR generado en el sitio, banco de preguntas compartido con importación/exportación CSV y correo al grupo
+  de alumnado.
+- Contrato `convoca_es_socio_activo` contestado por **Convoca Members** 2.9.18.
+
+### Corregido
+
+- `License::has_pro()` no aplicaba el filtro `convoca_courses_has_pro` cuando el núcleo no está: el PRO no
+  se podía forzar en un sitio mínimo ni probar en los dos sentidos. Ahora el filtro manda siempre.
+- `Access::can_submit_task()`: las tareas no se bloquean por progreso, solo por matrícula y caducidad.
+
+### Notas
+
+- 155 pruebas unitarias y 10 de integración; medición en WordPress real: 52 comprobaciones, 0 fallos.
+
 ## [0.2.3] — 2026-10-21
 
 ### Arreglado

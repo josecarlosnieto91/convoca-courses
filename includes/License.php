@@ -35,22 +35,22 @@ class License {
 	 * @return bool
 	 */
 	public static function has_pro(): bool {
-		if ( ! class_exists( '\Convoca\Core\License_Manager' ) ) {
-			return false;
-		}
+		$has = false;
 
-		if ( ! method_exists( '\Convoca\Core\License_Manager', 'has_pro' ) ) {
-			return false;
+		if ( class_exists( '\Convoca\Core\License_Manager' ) && method_exists( '\Convoca\Core\License_Manager', 'has_pro' ) ) {
+			$has = (bool) \Convoca\Core\License_Manager::has_pro( self::FEATURE );
 		}
-
-		$has = \Convoca\Core\License_Manager::has_pro( self::FEATURE );
 
 		/**
 		 * Permite forzar o retirar el PRO (pruebas, entornos gestionados).
 		 *
-		 * @param bool $has Resultado de la licencia.
+		 * El filtro se aplica **también sin núcleo**: si solo se aplicara con el gestor de licencias
+		 * delante, no habría forma de probar las funciones PRO en un sitio mínimo, y una prueba que no
+		 * puede encender la licencia no demuestra nada.
+		 *
+		 * @param bool $has Resultado de la licencia (falso si no hay gestor).
 		 */
-		return (bool) apply_filters( 'convoca_courses_has_pro', (bool) $has );
+		return (bool) apply_filters( 'convoca_courses_has_pro', $has );
 	}
 
 	/**

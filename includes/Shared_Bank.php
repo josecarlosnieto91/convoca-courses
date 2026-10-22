@@ -99,7 +99,7 @@ class Shared_Bank {
 			);
 		}
 
-		return implode( "\\r\\n", $lineas ) . "\\r\\n";
+		return implode( "\r\n", $lineas ) . "\r\n";
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Shared_Bank {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function parse_csv( string $csv ): array {
-		$filas = preg_split( '/\\r\\n|\\n|\\r/', trim( $csv ) );
+		$filas = preg_split( '/\r\n|\n|\r/', trim( $csv ) );
 		if ( ! is_array( $filas ) || empty( $filas ) ) {
 			return array();
 		}
@@ -120,7 +120,7 @@ class Shared_Bank {
 		$primera   = true;
 
 		foreach ( $filas as $fila ) {
-			$campos = str_getcsv( $fila, ';', '"', '\\\\' );
+			$campos = str_getcsv( $fila, ';', '"', '\\' );
 
 			if ( $primera ) {
 				$primera = false;
