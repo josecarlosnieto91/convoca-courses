@@ -66,6 +66,9 @@ final class Plugin {
 		$exam_admin = new Admin_Examen();
 		$exam_admin->register();
 
+		$entregas = new Admin_Entregas();
+		$entregas->register();
+
 		if ( is_admin() ) {
 			Settings::register();
 		}
@@ -92,6 +95,7 @@ final class Plugin {
 		CPT_Leccion::register();
 		CPT_Matricula::register();
 		CPT_Examen::register();
+		CPT_Tarea::register();
 	}
 
 	/**
@@ -115,6 +119,11 @@ final class Plugin {
 
 		if ( CPT_Examen::TYPE === $type ) {
 			Questions::delete_for_exam( $post_id );
+			return;
+		}
+
+		if ( CPT_Tarea::TYPE === $type ) {
+			Task::delete_for_task( $post_id );
 		}
 	}
 }

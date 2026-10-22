@@ -275,6 +275,7 @@ class Installer {
 			'convoca_manage_courses',
 			'convoca_enroll_courses',
 			'convoca_view_certificates',
+			'convoca_grade_courses',
 		);
 
 		foreach ( array( 'administrator', 'editor' ) as $role_name ) {
@@ -298,6 +299,7 @@ class Installer {
 			'convoca_manage_courses',
 			'convoca_enroll_courses',
 			'convoca_view_certificates',
+			'convoca_grade_courses',
 		);
 
 		foreach ( array( 'administrator', 'editor' ) as $role_name ) {

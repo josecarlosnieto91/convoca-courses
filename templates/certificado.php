@@ -24,6 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		.course { font-size: 18px; margin: 0 0 26px; }
 		.meta { font-size: 12px; color: #4a5160; }
 		.code { margin-top: 30px; font-family: monospace; font-size: 13px; }
+		.qr { margin-top: 18px; width: 110px; height: 110px; }
+		.qr img { width: 100%; height: 100%; }
+		.convoca-qr-fallback { font-size: 9px; word-break: break-all; }
 	</style>
 </head>
 <body>
@@ -46,13 +49,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 		</p>
 
+		<?php if ( ! empty( $nota ) ) : ?>
+			<p class="meta">
+				<?php
+				printf(
+					/* translators: %s: score, 0-100. */
+					esc_html__( 'Nota final: %s sobre 100', 'convoca-courses' ),
+					esc_html( (string) $nota )
+				);
+				?>
+			</p>
+		<?php endif; ?>
+
+		<?php if ( ! empty( $qr ) ) : ?>
+			<div class="qr">
+			<?php
+			echo wp_kses(
+				(string) $qr,
+				array(
+					'img'  => array(
+						'src' => true,
+						'alt' => true,
+					),
+					'span' => array( 'class' => true ),
+				)
+			);
+			?>
+							</div>
+		<?php endif; ?>
+
 		<p class="code"><?php echo esc_html( (string) $code ); ?></p>
 		<p class="meta">
 			<?php
 			printf(
 				/* translators: %s: verification URL. */
 				esc_html__( 'Verificable en %s', 'convoca-courses' ),
-				esc_html( home_url( '/verificar-curso/?codigo=' . (string) $code ) )
+				esc_html( ! empty( $verify ) ? (string) $verify : home_url( '/verificar-curso/?codigo=' . (string) $code ) )
 			);
 			?>
 		</p>

@@ -47,6 +47,21 @@ class Handlers {
 	public const ACTION_EXAM_SUBMIT = 'convoca_courses_exam_submit';
 
 	/**
+	 * Acción del formulario de entrega de una tarea.
+	 */
+	public const ACTION_TASK_SUBMIT = 'convoca_courses_task_submit';
+
+	/**
+	 * Acción del formulario de corrección de una entrega (panel).
+	 */
+	public const ACTION_TASK_GRADE = 'convoca_courses_task_grade';
+
+	/**
+	 * Descarga del acta de notas en CSV.
+	 */
+	public const ACTION_GRADEBOOK_CSV = 'convoca_courses_gradebook_csv';
+
+	/**
 	 * Registra los enganches.
 	 *
 	 * @return void
@@ -58,6 +73,9 @@ class Handlers {
 		add_action( 'admin_post_' . self::ACTION_COMPLETE, array( __CLASS__, 'handle_complete' ) );
 		add_action( 'admin_post_' . self::ACTION_EXAM_OPEN, array( __CLASS__, 'handle_exam_open' ) );
 		add_action( 'admin_post_' . self::ACTION_EXAM_SUBMIT, array( __CLASS__, 'handle_exam_submit' ) );
+		add_action( 'admin_post_' . self::ACTION_TASK_SUBMIT, array( __CLASS__, 'handle_task_submit' ) );
+		add_action( 'admin_post_' . self::ACTION_TASK_GRADE, array( __CLASS__, 'handle_task_grade' ) );
+		add_action( 'admin_post_' . self::ACTION_GRADEBOOK_CSV, array( __CLASS__, 'handle_gradebook_csv' ) );
 		add_action( 'wp_ajax_' . self::ACTION_VIDEO, array( __CLASS__, 'handle_video' ) );
 	}
 
@@ -361,6 +379,177 @@ class Handlers {
 	}
 
 	/**
+	 * URL del formulario de entrega de tareas.
+	 *
+	 * @return string
+	 */
+	public static function task_form_action(): string {
+		return esc_url( admin_url( 'admin-post.php' ) );
+	}
+
+	/**
+	 * Nonce del formulario de entrega de una tarea.
+	 *
+	 * @param int $task_id Tarea.
+	 * @return string
+	 */
+	public static function task_nonce( int $task_id ): string {
+		return wp_create_nonce( self::ACTION_TASK_SUBMIT . '_' . $task_id );
+	}
+
+	/**
+	 * Nonce del formulario de corrección de una entrega.
+	 *
+	 * @param int $submission_id Entrega.
+	 * @return string
+	 */
+	public static function task_grade_nonce( int $submission_id ): string {
+		return wp_create_nonce( self::ACTION_TASK_GRADE . '_' . $submission_id );
+	}
+
+	/**
+	 * Atiende la entrega de una tarea, con texto o fichero.
+	 *
+	 * El fichero va a la biblioteca de medios de WordPress: así hereda las comprobaciones de tipo y
+	 * tamaño del sitio, en vez de tener un control propio que se olvida de una.
+	 *
+	 * @return void
+	 */
+	public static function handle_task_submit(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verifica justo debajo.
+		$task_id   = isset( $_POST['task_id'] ) ? absint( wp_unslash( (string) $_POST['task_id'] ) ) : 0;
+		$course_id = isset( $_POST['course_id'] ) ? absint( wp_unslash( (string) $_POST['course_id'] ) ) : 0;
+		$texto     = isset( $_POST['convoca_entrega'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['convoca_entrega'] ) ) : '';
+		$nonce     = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_TASK_SUBMIT . '_' . $task_id ) ) {
+			self::redirect_back( $course_id, 'nonce' );
+			return;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			self::redirect_to_login( '' );
+			return;
+		}
+
+		$adjunto = 0;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- el nonce se verificó arriba y el fichero lo valida media_handle_upload().
+		if ( isset( $_FILES['convoca_adjunto'] ) && ! empty( $_FILES['convoca_adjunto']['name'] ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+
+			$subido = media_handle_upload( 'convoca_adjunto', 0 );
+
+			if ( is_wp_error( $subido ) ) {
+				self::redirect_back( $course_id, 'task_file', $subido->get_error_code() );
+				return;
+			}
+
+			$adjunto = (int) $subido;
+		}
+
+		$result = Task::deliver( $task_id, get_current_user_id(), $texto, $adjunto );
+
+		if ( is_wp_error( $result ) ) {
+			self::redirect_back( $course_id, 'task_error', $result->get_error_code() );
+			return;
+		}
+
+		self::back_with( array( 'convoca_msg' => 'task_sent' ), $course_id );
+	}
+
+	/**
+	 * Corrige una entrega desde el panel.
+	 *
+	 * @return void
+	 */
+	public static function handle_task_grade(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verifica justo debajo.
+		$submission_id = isset( $_POST['submission_id'] ) ? absint( wp_unslash( (string) $_POST['submission_id'] ) ) : 0;
+		$course_id     = isset( $_POST['course_id'] ) ? absint( wp_unslash( (string) $_POST['course_id'] ) ) : 0;
+		$nota          = isset( $_POST['convoca_nota'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_nota'] ) ) : 0.0;
+		$comentario    = isset( $_POST['convoca_comentario'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['convoca_comentario'] ) ) : '';
+		$nonce         = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_TASK_GRADE . '_' . $submission_id ) ) {
+			wp_die( esc_html__( 'La sesión ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+		}
+
+		if ( ! Pro::can_grade() ) {
+			wp_die( esc_html__( 'No tienes permiso para corregir entregas.', 'convoca-courses' ) );
+		}
+
+		$result = Task::grade( $submission_id, $nota, $comentario, get_current_user_id() );
+
+		$aviso = is_wp_error( $result ) ? 'task_error' : 'task_graded';
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'        => 'convoca-courses-entregas',
+					'course_id'   => $course_id,
+					'convoca_msg' => $aviso,
+				),
+				admin_url( 'edit.php?post_type=' . CPT_Curso::TYPE )
+			)
+		);
+		exit;
+	}
+
+	/**
+	 * URL de descarga del acta en CSV.
+	 *
+	 * @param int $course_id Curso.
+	 * @return string
+	 */
+	public static function gradebook_csv_url( int $course_id ): string {
+		return esc_url(
+			add_query_arg(
+				array(
+					'action'         => self::ACTION_GRADEBOOK_CSV,
+					'course_id'      => $course_id,
+					'_convoca_nonce' => wp_create_nonce( self::ACTION_GRADEBOOK_CSV . '_' . $course_id ),
+				),
+				admin_url( 'admin-post.php' )
+			)
+		);
+	}
+
+	/**
+	 * Descarga el acta del curso en CSV.
+	 *
+	 * @return void
+	 */
+	public static function handle_gradebook_csv(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- el nonce se verifica justo debajo.
+		$course_id = isset( $_GET['course_id'] ) ? absint( wp_unslash( (string) $_GET['course_id'] ) ) : 0;
+		$nonce     = isset( $_GET['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['_convoca_nonce'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_GRADEBOOK_CSV . '_' . $course_id ) ) {
+			wp_die( esc_html__( 'La sesión ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+		}
+
+		if ( ! Access::can_manage() ) {
+			wp_die( esc_html__( 'El acta de notas solo la ve quien gestiona el curso.', 'convoca-courses' ) );
+		}
+
+		$csv = Gradebook::csv( Gradebook::rows( $course_id ) );
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="acta-' . (int) $course_id . '.csv"' );
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- es un CSV: escaparlo lo rompería.
+		echo $csv;
+		exit;
+	}
+
+	/**
 	 * Clave de aviso para un error del examen.
 	 *
 	 * @param string $code Código de error.
@@ -472,6 +661,14 @@ class Handlers {
 				return __( 'El examen no tiene preguntas todavía.', 'convoca-courses' );
 			case 'exam_error':
 				return __( 'No se ha podido completar la operación con el examen.', 'convoca-courses' );
+			case 'task_sent':
+				return __( 'Tarea entregada.', 'convoca-courses' );
+			case 'task_graded':
+				return __( 'Entrega corregida y alumno avisado.', 'convoca-courses' );
+			case 'task_file':
+				return __( 'No se ha podido subir el fichero: revisa el tipo y el tamaño que admite el sitio.', 'convoca-courses' );
+			case 'task_error':
+				return __( 'No se ha podido completar la operación con la tarea.', 'convoca-courses' );
 			case 'pending_payment':
 				return __( 'Matrícula reservada. Completa el pago para activarla.', 'convoca-courses' );
 			case 'payment_error':

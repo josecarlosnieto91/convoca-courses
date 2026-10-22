@@ -24,6 +24,12 @@ parameters:
             message: '#Path in require_once\(\) "/tmp/wp/wp-admin/#'
             identifier: requireOnce.fileNotFound
             path: includes/Installer.php
+        # Los tres includes de la biblioteca de medios al subir un fichero de tarea: la ruta es la
+        # correcta en runtime (el ABSPATH de un WordPress real) y no existe en el bootstrap de PHPStan.
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-admin/includes/#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Handlers.php
         # Los stubs declaran la API actual del núcleo. En runtime puede haber una versión anterior
         # sin algún método; los guardas con method_exists() existen justo para no provocar un fatal
         # en una instalación con el núcleo viejo, así que se mantienen aunque el stub los haga

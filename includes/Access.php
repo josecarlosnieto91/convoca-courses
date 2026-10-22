@@ -270,6 +270,28 @@ class Access {
 	}
 
 	/**
+	 * ¿Puede esta persona entregar tareas de este curso?
+	 *
+	 * Matriculado y con el acceso en vigor. Las tareas **no** se bloquean por progreso: el plazo lo
+	 * pone quien imparte el curso, no el orden de las lecciones.
+	 *
+	 * @param int $user_id   Persona.
+	 * @param int $course_id Curso.
+	 * @return bool
+	 */
+	public static function can_submit_task( int $user_id, int $course_id ): bool {
+		if ( self::can_manage() ) {
+			return true;
+		}
+
+		if ( ! self::is_enrolled( $user_id, $course_id ) ) {
+			return false;
+		}
+
+		return ! self::is_expired( $user_id, $course_id );
+	}
+
+	/**
 	 * Porcentaje completado en un ámbito: el curso entero, o las lecciones de un módulo.
 	 *
 	 * @param int $user_id   Persona.

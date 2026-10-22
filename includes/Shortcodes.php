@@ -26,6 +26,120 @@ class Shortcodes {
 		add_shortcode( 'convoca_curso_lecciones', array( __CLASS__, 'lessons' ) );
 		add_shortcode( 'convoca_curso_leccion', array( __CLASS__, 'lesson' ) );
 		add_shortcode( 'convoca_curso_examen', array( __CLASS__, 'exam' ) );
+		add_shortcode( 'convoca_curso_tareas', array( __CLASS__, 'tasks' ) );
+		add_shortcode( 'convoca_curso_notas', array( __CLASS__, 'grades' ) );
+		add_shortcode( 'convoca_curso_acta', array( __CLASS__, 'gradebook' ) );
+	}
+
+	/**
+	 * Mis notas del curso.
+	 *
+	 * @param array<string, string>|string $atts Atributos (`id` = curso).
+	 * @return string
+	 */
+	public static function grades( $atts ): string {
+		$atts = shortcode_atts(
+			array(
+				'id' => '0',
+			),
+			$atts,
+			'convoca_curso_notas'
+		);
+
+		$course_id = self::resolve_course_id( (int) $atts['id'] );
+		if ( 0 === $course_id ) {
+			return self::error_box();
+		}
+
+		$user_id = get_current_user_id();
+		$notas   = Gradebook::for_user( $user_id, $course_id );
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo lectura del aviso a pintar.
+		$aviso = isset( $_GET['convoca_msg'] ) ? sanitize_key( wp_unslash( (string) $_GET['convoca_msg'] ) ) : '';
+
+		return Certificate::render_template(
+			'notas.php',
+			array(
+				'course_id' => $course_id,
+				'logged_in' => $user_id > 0,
+				'enrolled'  => Access::is_enrolled( $user_id, $course_id ),
+				'pieces'    => $notas['piezas'],
+				'final'     => $notas['nota'],
+				'weight'    => $notas['peso'],
+				'minimum'   => $notas['minimo'],
+				'passed'    => $notas['aprobado'],
+				'complete'  => $notas['completo'],
+				'notice'    => '' === $aviso ? '' : Handlers::message( $aviso ),
+			),
+			false
+		);
+	}
+
+	/**
+	 * Acta del curso: tabla del profesorado con la nota de cada alumno y su CSV.
+	 *
+	 * @param array<string, string>|string $atts Atributos (`id` = curso).
+	 * @return string
+	 */
+	public static function gradebook( $atts ): string {
+		$atts = shortcode_atts(
+			array(
+				'id' => '0',
+			),
+			$atts,
+			'convoca_curso_acta'
+		);
+
+		$course_id = self::resolve_course_id( (int) $atts['id'] );
+		if ( 0 === $course_id ) {
+			return self::error_box();
+		}
+
+		if ( ! Access::can_manage() ) {
+			return '<div class="convoca-courses-notice convoca-courses-notice--error">'
+				. esc_html__( 'El acta de notas solo la ve quien gestiona el curso.', 'convoca-courses' )
+				. '</div>';
+		}
+
+		$pesos = array();
+		foreach ( Gradebook::pieces( $course_id ) as $pieza ) {
+			$pesos[] = (float) $pieza['peso'];
+		}
+
+		return Certificate::render_template(
+			'acta.php',
+			array(
+				'course_id'   => $course_id,
+				'rows'        => Gradebook::rows( $course_id ),
+				'weights_sum' => array_sum( $pesos ),
+				'weights_ok'  => Gradebook::weights_ok( $pesos ),
+				'csv_url'     => Handlers::gradebook_csv_url( $course_id ),
+			),
+			false
+		);
+	}
+
+	/**
+	 * Tareas del curso: entrega, estado y corrección.
+	 *
+	 * @param array<string, string>|string $atts Atributos (`id` = curso).
+	 * @return string
+	 */
+	public static function tasks( $atts ): string {
+		$atts = shortcode_atts(
+			array(
+				'id' => '0',
+			),
+			$atts,
+			'convoca_curso_tareas'
+		);
+
+		$course_id = self::resolve_course_id( (int) $atts['id'] );
+		if ( 0 === $course_id ) {
+			return self::error_box();
+		}
+
+		return Certificate::render_template( 'tareas.php', Task_View::data( $course_id, get_current_user_id() ), false );
 	}
 
 	/**

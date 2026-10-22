@@ -61,6 +61,7 @@
         <element value="convoca_manage_courses"/>
         <element value="convoca_enroll_courses"/>
         <element value="convoca_view_certificates"/>
+        <element value="convoca_grade_courses"/>
       </property>
     </properties>
   </rule>

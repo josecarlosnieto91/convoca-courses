@@ -51,9 +51,24 @@ class Certificate {
 			return '';
 		}
 
+		// Curso que evalúa: el certificado exige aprobado, no solo haber visto las lecciones.
+		// Es la puerta que impide certificar a quien no ha demostrado nada.
+		if ( Gradebook::has_evaluation( $course_id ) ) {
+			$notas = Gradebook::for_user( $user_id, $course_id );
+			if ( ! $notas['aprobado'] ) {
+				return '';
+			}
+		}
+
 		$code = self::generate_code( $course_id, $enrollment_id );
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'cert_codigo', $code );
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'cert_fecha', current_time( 'mysql' ) );
+
+		// La nota del certificado se congela aquí: un certificado no puede cambiar de nota después.
+		if ( Gradebook::has_evaluation( $course_id ) ) {
+			$notas = Gradebook::for_user( $user_id, $course_id );
+			update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'cert_nota', null === $notas['nota'] ? '' : (float) $notas['nota'] );
+		}
 
 		if ( 'completada' !== CPT_Matricula::status( $enrollment_id ) ) {
 			update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'estado', 'completada' );
@@ -66,6 +81,8 @@ class Certificate {
 		 * @param string $code          Código público del certificado.
 		 */
 		do_action( 'convoca_courses_certificate_issued', $enrollment_id, $code );
+
+		Notifications::certificate_issued( $user_id, $course_id, $code, self::verify_url( $code ) );
 
 		return $code;
 	}
@@ -82,6 +99,16 @@ class Certificate {
 	 */
 	public static function normalize( string $code ): string {
 		return strtoupper( (string) preg_replace( '/[^A-Za-z0-9]/', '', $code ) );
+	}
+
+	/**
+	 * URL pública de verificación de un código.
+	 *
+	 * @param string $code Código del certificado.
+	 * @return string
+	 */
+	public static function verify_url( string $code ): string {
+		return home_url( '/verificar-curso/?codigo=' . self::normalize( $code ) );
 	}
 
 	/**
@@ -156,12 +183,17 @@ class Certificate {
 		$user_id   = CPT_Matricula::user_id( $enrollment_id );
 		$user      = get_userdata( $user_id );
 
+		$nota = CPT_Matricula::get_string( $enrollment_id, 'cert_nota', '' );
+
 		return array(
 			'code'   => self::normalize( $code ),
 			'course' => (string) get_the_title( $course_id ),
 			'person' => $user ? (string) $user->display_name : '',
 			'date'   => (string) CPT_Matricula::get_string( $enrollment_id, 'cert_fecha' ),
 			'center' => (string) get_bloginfo( 'name' ),
+			'nota'   => '' === $nota ? '' : number_format_i18n( (float) $nota, 2 ),
+			'verify' => self::verify_url( $code ),
+			'qr'     => Certificate_QR::enabled() ? Certificate_QR::image( self::verify_url( $code ) ) : '',
 		);
 	}
 
