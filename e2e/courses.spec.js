@@ -207,11 +207,11 @@ test.describe('Convoca Courses — flujos públicos', () => {
 });
 
 test.describe('Convoca Courses — panel', () => {
-  // El /wp-admin de la demo responde 403 a las peticiones automatizadas (comprobado con sesión real
-  // de navegador, no solo con cookie de wp-cli): es una restricción del entorno, no del plugin. La
-  // prueba queda a la espera de que se decida abrir el panel a la suite; se ejecuta con E2E_PANEL=1.
+  // Este test estuvo saltado mientras el panel devolvía 403: la causa no era el entorno, era el
+  // plugin (las capacidades por entrada del tipo de contenido contaminaban $post_type_meta_caps y
+  // dejaban `read` en do_not_allow, así que /wp-admin cerraba a todo el mundo). Corregido en la
+  // 0.3.2; si vuelve a fallar con 403, mirar MetaCapsTest antes que las cookies.
   test('el profesorado entra y ve las entregas del curso', async ({ page }, testInfo) => {
-    test.skip(!process.env.E2E_PANEL, 'E2E_PANEL no está activo: el /wp-admin de la demo responde 403 a peticiones automatizadas (issue abierto)');
     await login(page, datos.profe.login, datos.profe.pass);
 
     const resp = await page.goto(
@@ -220,9 +220,13 @@ test.describe('Convoca Courses — panel', () => {
     );
 
     // Si el panel no se abre, el motivo tiene que verse en el informe, no esconderse.
-    const cuerpo = await page.textContent('body');
+    // Ojo: mirar el texto del body entero da falsos positivos, porque WordPress mete en línea las
+    // traducciones de los scripts ("no tienes permisos para subir este tipo de archivo"). Se mira la
+    // zona del contenido y el título del documento.
     expect(resp.status(), 'HTTP del panel de entregas').toBe(200);
-    expect(cuerpo).not.toContain('no tienes permisos');
+    expect(page.url()).toContain('page=convoca-courses-entregas');
+    expect(await page.title()).not.toContain('Error');
+    expect(await page.locator('#wpbody-content').innerText()).not.toContain('no tienes permisos');
 
     await expect(page.locator('h1')).toContainText('Entregas del alumnado');
     const tabla = page.locator('table.convoca-courses-entregas');

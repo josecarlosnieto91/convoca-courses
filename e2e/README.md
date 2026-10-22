@@ -33,9 +33,19 @@ las personas de prueba). Si falta, la suite no inventa datos: para y dice cómo 
 Cada test adjunta capturas al informe HTML (`playwright-report/index.html`) y deja los PNG en
 `test-results/`.
 
-## Lo que está pendiente de decisión
+## El 403 del panel que no era del entorno
 
-- **El `/wp-admin` de la demo responde 403 a las peticiones automatizadas**, incluso con una sesión real
-  creada por el formulario de login y con un usuario con la capacidad del módulo. Mientras no se abra, el
-  test del panel está **desactivado por defecto**: se ejecuta con `E2E_PANEL=1`. Issue abierto en el repo
-  que corresponda con la evidencia.
+Durante el desarrollo de esta suite el `/wp-admin` de la demo respondía 403 a todo el mundo, incluso a un
+administrador recién creado. Parecía una restricción del sitio. No lo era: **era el plugin**. El tipo de
+contenido declaraba `'read_post' => 'read'`, WordPress copia ese valor a `$post_type_meta_caps` y desde
+ahí cualquier `current_user_can( 'read' )` sin id de entrada se resuelve como `do_not_allow`. Corregido en
+la 0.3.2 (las tres capacidades por entrada tienen nombre propio y las traduce `CPT_Base::bridge_meta_caps`).
+
+Si el test del panel vuelve a dar 403, el sospechoso es ese mapa, no las cookies: `MetaCapsTest` lo vigila.
+
+Cómo se comprobó, por si hay que repetirlo:
+
+```bash
+wp eval 'echo wp_json_encode( map_meta_cap( "read", 1 ) );'   # ["read"] bien, ["do_not_allow"] mal
+wp plugin deactivate convoca-courses && wp eval '...' && wp plugin activate convoca-courses
+```
