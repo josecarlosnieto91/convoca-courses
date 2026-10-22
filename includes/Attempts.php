@@ -522,6 +522,41 @@ class Attempts {
 	}
 
 	/**
+	 * Borra los intentos de un examen (y sus respuestas).
+	 *
+	 * Sin esto quedaban filas huérfanas al borrar el examen: medido en la demo, 3 intentos y 8
+	 * respuestas de un examen que ya no existía.
+	 *
+	 * @param int $exam_id Examen.
+	 * @return void
+	 */
+	public static function delete_for_exam( int $exam_id ): void {
+		global $wpdb;
+
+		if ( $exam_id <= 0 ) {
+			return;
+		}
+
+		$tabla_intentos   = Installer::table( Installer::ATTEMPTS_TABLE );
+		$tabla_respuestas = Installer::table( Installer::ANSWERS_TABLE );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tablas propias, valores preparados.
+		$intentos = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM {$tabla_intentos} WHERE exam_id = %d",
+				$exam_id
+			)
+		);
+
+		foreach ( (array) $intentos as $attempt_id ) {
+			$wpdb->delete( $tabla_respuestas, array( 'attempt_id' => (int) $attempt_id ), array( '%d' ) );
+		}
+
+		$wpdb->delete( $tabla_intentos, array( 'exam_id' => $exam_id ), array( '%d' ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	}
+
+	/**
 	 * Preguntas guardadas en un intento.
 	 *
 	 * @param array<string, mixed> $attempt Intento decodificado.

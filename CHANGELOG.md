@@ -24,6 +24,12 @@ primeros dejaban la página a medias o guardaban mal los datos; ninguno se veía
   componentes nuevos (preguntas, opciones, resultado, tarjetas de tarea, tablas, botón y aviso de aviso).
 - La nota mínima se pinta como `50` y no como `50,0`, y quien gestiona el curso ya no ve el aviso de
   «necesitas estar matriculado».
+- **Las capabilities se refrescan al actualizar.** Una instalación que venía de la 0.2.3 no tenía
+  `convoca_grade_courses` y el módulo funcionaba solo por el respaldo de `manage_options`, así que no había
+  forma de nombrar tutores. Medido en la demo: `current_user_can( 'convoca_manage_courses' )` respondía «no»
+  al administrador.
+- **Borrar un examen se lleva sus intentos y sus respuestas**: quedaban filas huérfanas (3 intentos y 8
+  respuestas de un examen ya inexistente en la demo).
 
 ## [0.3.0] — 2026-10-22
 

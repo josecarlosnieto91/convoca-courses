@@ -122,6 +122,7 @@ final class Plugin {
 
 		if ( CPT_Examen::TYPE === $type ) {
 			Questions::delete_for_exam( $post_id );
+			Attempts::delete_for_exam( $post_id );
 			return;
 		}
 

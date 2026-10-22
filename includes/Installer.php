@@ -224,6 +224,13 @@ class Installer {
 
 		self::create_tables();
 		self::migrate_sequential_default();
+
+		// Las capabilities también se refrescan al actualizar: una instalación que viene de la 0.2.3
+		// no tiene `convoca_grade_courses` (la añadió la 0.3.0) y sin esto no hay forma de dar tutor
+		// sin tocar la base a mano. Medido en la demo: el administrador no tenía la capability del
+		// módulo y el panel funcionaba solo por el respaldo de `manage_options`.
+		self::add_capabilities();
+
 		update_option( self::DB_OPTION, CONVOCA_COURSES_DB_VERSION, false );
 	}
 
