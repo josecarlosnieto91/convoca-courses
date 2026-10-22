@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="convoca-courses-grades">
+<div class="convoca-courses convoca-courses-grades">
 	<?php if ( '' !== (string) $notice ) : ?>
 		<div class="convoca-courses-notice"><?php echo esc_html( (string) $notice ); ?></div>
 	<?php endif; ?>

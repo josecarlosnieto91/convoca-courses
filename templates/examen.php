@@ -15,7 +15,7 @@ $convoca_estado = 'abierto';
 
 if ( ! $logged_in ) {
 	$convoca_estado = 'sin_sesion';
-} elseif ( ! $enrolled ) {
+} elseif ( ! $enrolled && ! $manage ) {
 	$convoca_estado = 'sin_matricula';
 } elseif ( $expired ) {
 	$convoca_estado = 'caducado';
@@ -27,7 +27,7 @@ if ( ! $logged_in ) {
 	$convoca_estado = 'agotado';
 }
 ?>
-<div class="convoca-courses-exam" id="convoca-examen-<?php echo esc_attr( (string) $exam_id ); ?>">
+<div class="convoca-courses convoca-courses-exam" id="convoca-examen-<?php echo esc_attr( (string) $exam_id ); ?>">
 	<h3 class="convoca-courses-exam__title"><?php echo esc_html( (string) $title ); ?></h3>
 
 	<?php if ( '' !== $notice ) : ?>
@@ -43,7 +43,7 @@ if ( ! $logged_in ) {
 		printf(
 			/* translators: %s: minimum score, 0-100. */
 			esc_html__( 'Nota mínima para aprobar: %s sobre 100.', 'convoca-courses' ),
-			esc_html( number_format_i18n( (float) $min_score, 1 ) )
+			esc_html( rtrim( rtrim( number_format_i18n( (float) $min_score, 1 ), '0' ), ',' ) )
 		);
 		?>
 		<?php if ( $time_limit > 0 ) : ?>

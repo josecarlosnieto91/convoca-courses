@@ -51,6 +51,7 @@ class Task_View {
 			'logged_in'  => $user_id > 0,
 			'enrolled'   => $course_id > 0 && Access::is_enrolled( $user_id, $course_id ),
 			'can_submit' => $course_id > 0 && Access::can_submit_task( $user_id, $course_id ),
+			'manage'     => Access::can_manage(),
 			'tasks'      => $tareas,
 			'form_url'   => Handlers::task_form_action(),
 			'notice'     => self::notice(),

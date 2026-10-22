@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="convoca-courses-gradebook">
+<div class="convoca-courses convoca-courses-gradebook">
 	<p class="convoca-courses-gradebook__actions">
 		<a class="convoca-button" href="<?php echo esc_url( (string) $csv_url ); ?>">
 			<?php esc_html_e( 'Descargar acta en CSV', 'convoca-courses' ); ?>

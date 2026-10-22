@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="convoca-courses-tasks">
+<div class="convoca-courses convoca-courses-tasks">
 	<?php if ( '' !== $notice ) : ?>
 		<div class="convoca-courses-notice"><?php echo esc_html( (string) $notice ); ?></div>
 	<?php endif; ?>
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="convoca-courses-notice convoca-courses-notice--warning">
 			<?php esc_html_e( 'Inicia sesión para ver y entregar las tareas.', 'convoca-courses' ); ?>
 		</p>
-	<?php elseif ( ! $enrolled ) : ?>
+	<?php elseif ( ! $enrolled && ! $manage ) : ?>
 		<p class="convoca-courses-notice convoca-courses-notice--warning">
 			<?php esc_html_e( 'Necesitas estar matriculado en el curso para entregar tareas.', 'convoca-courses' ); ?>
 		</p>

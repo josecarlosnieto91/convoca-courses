@@ -373,3 +373,211 @@ body.dark .convoca-courses,
 		width: 100%;
 	}
 }
+
+/* Aviso de advertencia: los formularios de examen y tareas lo usan para «todavía no puedes». */
+
+.convoca-courses .convoca-courses-notice--warning {
+	background: rgba(255, 171, 0, 0.12);
+	border-left-color: var(--cc-accent);
+}
+
+/* Botón del módulo (exámenes, tareas, acta). Mismo naranja de marca que el resto del curso. */
+
+.convoca-courses .convoca-button,
+.convoca-courses button.convoca-button {
+	background: var(--cc-accent);
+	border: 1px solid var(--cc-accent-dark);
+	border-radius: 8px;
+	color: #1a1d24;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.2;
+	padding: 0.6rem 1.2rem;
+	text-decoration: none;
+	-webkit-appearance: none;
+}
+
+.convoca-courses .convoca-button:hover,
+.convoca-courses .convoca-button:focus {
+	background: var(--cc-accent-dark);
+	color: #1a1d24;
+}
+
+.convoca-courses .convoca-button:focus-visible {
+	outline: 3px solid var(--cc-ink);
+	outline-offset: 2px;
+}
+
+/* Examen */
+
+.convoca-courses-exam__title {
+	margin: 0 0 0.5rem;
+}
+
+.convoca-courses-exam__rules {
+	color: var(--cc-ink-soft);
+	font-size: 0.9rem;
+	margin: 0 0 1.25rem;
+}
+
+.convoca-courses-exam__question {
+	background: var(--cc-surface);
+	border: 1px solid var(--cc-border);
+	border-radius: var(--cc-radius);
+	margin: 0 0 1rem;
+	padding: 1rem 1.1rem 0.6rem;
+}
+
+.convoca-courses-exam__question legend {
+	font-weight: 600;
+	padding: 0 0.35rem;
+}
+
+.convoca-courses-exam__question legend small {
+	color: var(--cc-ink-soft);
+	font-weight: 400;
+}
+
+.convoca-courses-exam__option {
+	align-items: flex-start;
+	display: flex;
+	gap: 0.55rem;
+	margin: 0.35rem 0;
+	padding: 0.15rem 0;
+}
+
+.convoca-courses-exam__option input {
+	margin-top: 0.25rem;
+}
+
+.convoca-courses-exam__actions {
+	margin: 1.25rem 0 0;
+}
+
+.convoca-courses-exam__result {
+	background: var(--cc-surface-alt);
+	border: 1px solid var(--cc-border);
+	border-radius: var(--cc-radius);
+	margin: 1.5rem 0 0;
+	padding: 1rem 1.2rem;
+}
+
+.convoca-courses-exam__result--expirado {
+	border-left: 4px solid var(--cc-error);
+}
+
+.convoca-courses-exam__detail {
+	margin: 0.75rem 0 0;
+	padding-left: 1.2rem;
+}
+
+.convoca-courses-exam__detail li {
+	margin: 0.35rem 0;
+}
+
+.convoca-courses-exam__detail li.is-correct {
+	color: var(--cc-badge-ok-ink);
+}
+
+.convoca-courses-exam__detail li.is-wrong {
+	color: var(--cc-error);
+}
+
+.convoca-courses-exam__explanation {
+	color: var(--cc-ink-soft);
+	font-size: 0.9rem;
+	margin: 0.25rem 0 0;
+}
+
+/* Tareas */
+
+.convoca-courses-task {
+	background: var(--cc-surface);
+	border: 1px solid var(--cc-border);
+	border-radius: var(--cc-radius);
+	margin: 0 0 1.25rem;
+	padding: 1.1rem 1.2rem;
+}
+
+.convoca-courses-task h4 {
+	margin: 0 0 0.35rem;
+}
+
+.convoca-courses-task__meta {
+	color: var(--cc-ink-soft);
+	font-size: 0.9rem;
+	margin: 0 0 0.75rem;
+}
+
+.convoca-courses-task__submission {
+	background: var(--cc-surface-alt);
+	border-radius: 8px;
+	margin: 0.75rem 0;
+	padding: 0.75rem 1rem;
+}
+
+.convoca-courses-task__grade {
+	font-weight: 600;
+	margin: 0.5rem 0 0;
+}
+
+.convoca-courses-task__form textarea {
+	box-sizing: border-box;
+	max-width: 100%;
+	width: 100%;
+}
+
+/* Notas y acta */
+
+.convoca-courses-table {
+	border-collapse: collapse;
+	margin: 1rem 0;
+	width: 100%;
+}
+
+.convoca-courses-table th,
+.convoca-courses-table td {
+	border-bottom: 1px solid var(--cc-border);
+	padding: 0.6rem 0.7rem;
+	text-align: left;
+	vertical-align: top;
+}
+
+.convoca-courses-table thead th {
+	background: var(--cc-surface-alt);
+	font-size: 0.85rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.convoca-courses-table tfoot th {
+	border-top: 2px solid var(--cc-border);
+}
+
+.convoca-courses-grades__summary {
+	color: var(--cc-ink-soft);
+	margin: 0.5rem 0 0;
+}
+
+.convoca-courses-gradebook__actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin: 0 0 1rem;
+}
+
+@media (max-width: 600px) {
+	.convoca-courses-exam__question,
+	.convoca-courses-task {
+		padding: 0.9rem;
+	}
+
+	.convoca-courses-table {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+}
