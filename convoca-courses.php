@@ -70,7 +70,7 @@ if ( ! defined( 'CONVOCA_COURSES_URL' ) ) {
 	define( 'CONVOCA_COURSES_URL', plugin_dir_url( __FILE__ ) );
 }
 if ( ! defined( 'CONVOCA_COURSES_DB_VERSION' ) ) {
-	define( 'CONVOCA_COURSES_DB_VERSION', '1.0.0' );
+	define( 'CONVOCA_COURSES_DB_VERSION', '2.0.0' );
 }
 if ( ! defined( 'CONVOCA_COURSES_VERSION' ) ) {
 	// Cache-buster de los assets: se lee de la cabecera para que nunca quede fija.

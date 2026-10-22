@@ -14,7 +14,7 @@ namespace {
 	define( 'ABSPATH', __DIR__ . '/../' );
 	define( 'DAY_IN_SECONDS', 86400 );
 	define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
-	define( 'CONVOCA_COURSES_DB_VERSION', '1.0.0' );
+	define( 'CONVOCA_COURSES_DB_VERSION', '2.0.0' );
 	define( 'CONVOCA_COURSES_FILE', __DIR__ . '/../convoca-courses.php' );
 	define( 'CONVOCA_COURSES_DIR', __DIR__ . '/../' );
 	define( 'CONVOCA_COURSES_URL', 'https://example.org/wp-content/plugins/convoca-courses/' );

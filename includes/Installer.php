@@ -32,6 +32,26 @@ class Installer {
 	public const PROGRESS_TABLE = 'convoca_course_progress';
 
 	/**
+	 * Banco de preguntas (sin prefijo).
+	 */
+	public const QUESTIONS_TABLE = 'convoca_course_questions';
+
+	/**
+	 * Intentos de examen (sin prefijo).
+	 */
+	public const ATTEMPTS_TABLE = 'convoca_course_attempts';
+
+	/**
+	 * Respuestas de un intento (sin prefijo).
+	 */
+	public const ANSWERS_TABLE = 'convoca_course_answers';
+
+	/**
+	 * Entregas de tareas (sin prefijo).
+	 */
+	public const SUBMISSIONS_TABLE = 'convoca_course_submissions';
+
+	/**
 	 * Activación: crea tablas, capabilities y reescribe reglas.
 	 *
 	 * @return void
@@ -61,19 +81,22 @@ class Installer {
 	}
 
 	/**
-	 * Crea o actualiza las tablas propias con dbDelta.
+	 * Definición del esquema, sin tocar la base de datos.
 	 *
-	 * @return void
+	 * Es el único sitio donde vive el SQL: así se puede comprobar en una prueba unitaria qué tablas,
+	 * columnas e índices se esperan, sin necesitar WordPress ni MySQL.
+	 *
+	 * `dbDelta` es quisquilloso: quiere dos espacios tras `PRIMARY KEY`, una definición por línea y
+	 * nada de `IF NOT EXISTS`. Cualquier cambio aquí se mide contra una base de datos real.
+	 *
+	 * @param string $prefix  Prefijo de las tablas del sitio.
+	 * @param string $collate Juego de caracteres y colación (de `$wpdb->get_charset_collate()`).
+	 * @return array<string, string> Sentencias `CREATE TABLE` indexadas por nombre de tabla sin prefijo.
 	 */
-	public static function create_tables(): void {
-		global $wpdb;
+	public static function schema( string $prefix, string $collate ): array {
+		$sql = array();
 
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-		$table   = $wpdb->prefix . self::PROGRESS_TABLE;
-		$collate = $wpdb->get_charset_collate();
-
-		$sql = "CREATE TABLE {$table} (
+		$sql[ self::PROGRESS_TABLE ] = "CREATE TABLE {$prefix}" . self::PROGRESS_TABLE . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			course_id bigint(20) unsigned NOT NULL,
 			user_id bigint(20) unsigned NOT NULL,
@@ -84,7 +107,102 @@ class Installer {
 			KEY course_user (course_id,user_id)
 		) {$collate};";
 
-		dbDelta( $sql );
+		$sql[ self::QUESTIONS_TABLE ] = "CREATE TABLE {$prefix}" . self::QUESTIONS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			course_id bigint(20) unsigned NOT NULL,
+			exam_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			tipo varchar(20) NOT NULL DEFAULT 'unica',
+			enunciado longtext NOT NULL,
+			opciones longtext NOT NULL,
+			correctas longtext NOT NULL,
+			puntos decimal(6,2) NOT NULL DEFAULT 1.00,
+			explicacion longtext NOT NULL,
+			orden int(11) NOT NULL DEFAULT 0,
+			creado_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			KEY course_exam (course_id,exam_id),
+			KEY exam (exam_id)
+		) {$collate};";
+
+		$sql[ self::ATTEMPTS_TABLE ] = "CREATE TABLE {$prefix}" . self::ATTEMPTS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			exam_id bigint(20) unsigned NOT NULL,
+			course_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			enrollment_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			intento int(11) unsigned NOT NULL DEFAULT 1,
+			preguntas longtext NOT NULL,
+			iniciado_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			terminado_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			puntuacion decimal(5,2) NOT NULL DEFAULT 0.00,
+			aprobado tinyint(1) NOT NULL DEFAULT 0,
+			estado varchar(20) NOT NULL DEFAULT 'abierto',
+			PRIMARY KEY  (id),
+			UNIQUE KEY intento (exam_id,user_id,intento),
+			KEY course_user (course_id,user_id)
+		) {$collate};";
+
+		$sql[ self::ANSWERS_TABLE ] = "CREATE TABLE {$prefix}" . self::ANSWERS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			attempt_id bigint(20) unsigned NOT NULL,
+			question_id bigint(20) unsigned NOT NULL,
+			respuesta longtext NOT NULL,
+			acertada tinyint(1) NOT NULL DEFAULT 0,
+			puntos_obtenidos decimal(6,2) NOT NULL DEFAULT 0.00,
+			respondida_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY intento_pregunta (attempt_id,question_id)
+		) {$collate};";
+
+		$sql[ self::SUBMISSIONS_TABLE ] = "CREATE TABLE {$prefix}" . self::SUBMISSIONS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			task_id bigint(20) unsigned NOT NULL,
+			course_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			enrollment_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			contenido longtext NOT NULL,
+			adjunto_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			entregada_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			estado varchar(20) NOT NULL DEFAULT 'entregada',
+			nota decimal(5,2) NOT NULL DEFAULT 0.00,
+			comentario longtext NOT NULL,
+			corregida_por bigint(20) unsigned NOT NULL DEFAULT 0,
+			corregida_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY tarea_alumno (task_id,user_id),
+			KEY course_user (course_id,user_id)
+		) {$collate};";
+
+		return $sql;
+	}
+
+	/**
+	 * Crea o actualiza las tablas propias con dbDelta.
+	 *
+	 * @return void
+	 */
+	public static function create_tables(): void {
+		global $wpdb;
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		foreach ( self::schema( $wpdb->prefix, $wpdb->get_charset_collate() ) as $statement ) {
+			dbDelta( $statement );
+		}
+	}
+
+	/**
+	 * ¿Hay que aplicar el esquema?
+	 *
+	 * Función pura para poder probarla sin WordPress: la migración se dispara cuando la versión
+	 * guardada no es la del código, y también cuando no hay versión guardada (instalación nueva).
+	 *
+	 * @param string $installed Versión de esquema guardada en opciones ('' si no hay).
+	 * @param string $code      Versión de esquema que espera el código.
+	 * @return bool
+	 */
+	public static function needs_upgrade( string $installed, string $code ): bool {
+		return $installed !== $code;
 	}
 
 	/**
@@ -94,7 +212,8 @@ class Installer {
 	 */
 	public static function maybe_upgrade(): void {
 		$installed = (string) get_option( self::DB_OPTION, '' );
-		if ( CONVOCA_COURSES_DB_VERSION === $installed ) {
+
+		if ( ! self::needs_upgrade( $installed, CONVOCA_COURSES_DB_VERSION ) ) {
 			return;
 		}
 
@@ -154,7 +273,17 @@ class Installer {
 	 * @return string
 	 */
 	public static function progress_table(): string {
+		return self::table( self::PROGRESS_TABLE );
+	}
+
+	/**
+	 * Nombre completo de una tabla del módulo.
+	 *
+	 * @param string $name Nombre sin prefijo.
+	 * @return string
+	 */
+	public static function table( string $name ): string {
 		global $wpdb;
-		return $wpdb->prefix . self::PROGRESS_TABLE;
+		return $wpdb->prefix . $name;
 	}
 }
