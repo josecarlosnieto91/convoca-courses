@@ -96,9 +96,9 @@ class Shortcodes {
 		}
 
 		if ( ! Access::can_manage() ) {
-			return '<div class="convoca-courses-notice convoca-courses-notice--error">'
+			return '<div class="convoca-courses"><div class="convoca-courses-notice convoca-courses-notice--locked">'
 				. esc_html__( 'El acta de notas solo la ve quien gestiona el curso.', 'convoca-courses' )
-				. '</div>';
+				. '</div></div>';
 		}
 
 		$pesos = array();
