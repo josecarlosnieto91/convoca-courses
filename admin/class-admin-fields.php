@@ -86,6 +86,14 @@ class Admin_Fields {
 				'plazas'      => CPT_Curso::seats( (int) $post->ID ),
 				'certificado' => CPT_Curso::issues_certificate( (int) $post->ID ),
 				'secuencial'  => CPT_Curso::is_sequential( (int) $post->ID ),
+				'apertura'    => CPT_Curso::enrollment_open_date( (int) $post->ID ),
+				'cierre'      => CPT_Curso::enrollment_close_date( (int) $post->ID ),
+				'fecha_fin'   => CPT_Curso::end_date( (int) $post->ID ),
+				'caducidad'   => CPT_Curso::expiry_days( (int) $post->ID ),
+				'nota_minima' => CPT_Curso::min_score( (int) $post->ID ),
+				'acceso'      => CPT_Curso::exam_access( (int) $post->ID ),
+				'acceso_pct'  => CPT_Curso::exam_access_percent( (int) $post->ID ),
+				'modos'       => CPT_Curso::ACCESO_EXAMEN,
 				'prefix'      => $prefix,
 			)
 		);
@@ -195,6 +203,14 @@ class Admin_Fields {
 		$seats      = isset( $_POST['convoca_plazas'] ) ? absint( wp_unslash( (string) $_POST['convoca_plazas'] ) ) : 0;
 		$cert       = ! empty( $_POST['convoca_certificado'] );
 		$sequential = ! empty( $_POST['convoca_secuencial'] );
+
+		$apertura   = isset( $_POST['convoca_apertura_matricula'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_apertura_matricula'] ) ) : '';
+		$cierre     = isset( $_POST['convoca_cierre_matricula'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_cierre_matricula'] ) ) : '';
+		$fin        = isset( $_POST['convoca_fecha_fin'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_fecha_fin'] ) ) : '';
+		$dias       = isset( $_POST['convoca_caducidad_dias'] ) ? absint( wp_unslash( (string) $_POST['convoca_caducidad_dias'] ) ) : 0;
+		$minima     = isset( $_POST['convoca_nota_minima'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_nota_minima'] ) ) : 50.0;
+		$acceso     = isset( $_POST['convoca_acceso_examen'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_acceso_examen'] ) ) : 'todas';
+		$acceso_pct = isset( $_POST['convoca_acceso_examen_porcentaje'] ) ? absint( wp_unslash( (string) $_POST['convoca_acceso_examen_porcentaje'] ) ) : 100;
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		update_post_meta( $post_id, $prefix . 'precio', max( 0.0, $price ) );
@@ -202,6 +218,13 @@ class Admin_Fields {
 		update_post_meta( $post_id, $prefix . 'plazas', max( 0, $seats ) );
 		update_post_meta( $post_id, $prefix . 'certificado', $cert ? 1 : 0 );
 		update_post_meta( $post_id, $prefix . 'desbloqueo_secuencial', $sequential ? 1 : 0 );
+		update_post_meta( $post_id, $prefix . 'fecha_apertura_matricula', CPT_Curso::normalize_date( $apertura ) );
+		update_post_meta( $post_id, $prefix . 'fecha_cierre_matricula', CPT_Curso::normalize_date( $cierre ) );
+		update_post_meta( $post_id, $prefix . 'fecha_fin', CPT_Curso::normalize_date( $fin ) );
+		update_post_meta( $post_id, $prefix . 'caducidad_dias', max( 0, $dias ) );
+		update_post_meta( $post_id, $prefix . 'nota_minima', CPT_Curso::normalize_score( $minima ) );
+		update_post_meta( $post_id, $prefix . 'acceso_examen', CPT_Curso::normalize_exam_access( $acceso ) );
+		update_post_meta( $post_id, $prefix . 'acceso_examen_porcentaje', max( 0, min( 100, $acceso_pct ) ) );
 	}
 
 	/**

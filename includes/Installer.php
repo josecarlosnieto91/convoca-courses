@@ -27,6 +27,11 @@ class Installer {
 	public const KEEP_DATA_OPTION = 'convoca_courses_keep_data';
 
 	/**
+	 * Opción que marca que ya se decidió el desbloqueo secuencial de los cursos antiguos.
+	 */
+	public const SEQ_MIGRATED_OPTION = 'convoca_courses_seq_migrated';
+
+	/**
 	 * Nombre de la tabla de progreso (sin prefijo).
 	 */
 	public const PROGRESS_TABLE = 'convoca_course_progress';
@@ -218,7 +223,46 @@ class Installer {
 		}
 
 		self::create_tables();
+		self::migrate_sequential_default();
 		update_option( self::DB_OPTION, CONVOCA_COURSES_DB_VERSION, false );
+	}
+
+	/**
+	 * Deja el desbloqueo secuencial como estaba en los cursos anteriores a la 0.3.0.
+	 *
+	 * Desde la 0.3.0 un curso nuevo nace secuencial (`CPT_Curso::is_sequential()` devuelve `true` por
+	 * defecto). Aplicar eso a los cursos que ya están en marcha encerraría al alumnado a mitad de
+	 * temario, así que aquí se les escribe un `0` explícito la primera vez y se marca la opción: a
+	 * partir de ahí, cambiarlo es una decisión de quien administra, no un efecto de la actualización.
+	 *
+	 * @return void
+	 */
+	public static function migrate_sequential_default(): void {
+		if ( '1' === (string) get_option( self::SEQ_MIGRATED_OPTION, '' ) ) {
+			return;
+		}
+
+		$clave  = CPT_Base::META_PREFIX . 'desbloqueo_secuencial';
+		$cursos = get_posts(
+			array(
+				'post_type'   => CPT_Curso::TYPE,
+				'post_status' => 'any',
+				'numberposts' => -1,
+				'fields'      => 'ids',
+				'meta_query'  => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- se ejecuta una sola vez, en la migración.
+					array(
+						'key'     => $clave,
+						'compare' => 'NOT EXISTS',
+					),
+				),
+			)
+		);
+
+		foreach ( $cursos as $curso_id ) {
+			update_post_meta( (int) $curso_id, $clave, '0' );
+		}
+
+		update_option( self::SEQ_MIGRATED_OPTION, '1', false );
 	}
 
 	/**

@@ -30,7 +30,19 @@ class CPT_Curso extends CPT_Base {
 		'plazas',
 		'certificado',
 		'desbloqueo_secuencial',
+		'fecha_apertura_matricula',
+		'fecha_cierre_matricula',
+		'fecha_fin',
+		'caducidad_dias',
+		'nota_minima',
+		'acceso_examen',
+		'acceso_examen_porcentaje',
 	);
+
+	/**
+	 * Modos de acceso al examen: todas las lecciones, las de su módulo, o un porcentaje.
+	 */
+	public const ACCESO_EXAMEN = array( 'todas', 'modulo', 'porcentaje' );
 
 	/**
 	 * Argumentos del registro.
@@ -63,35 +75,77 @@ class CPT_Curso extends CPT_Base {
 	 */
 	protected static function meta(): array {
 		return array(
-			'precio'                => array(
+			'precio'                   => array(
 				'type'     => 'number',
 				'sanitize' => static function ( $value ) {
 					return max( 0.0, (float) $value );
 				},
 			),
-			'moneda'                => array(
+			'moneda'                   => array(
 				'type'     => 'string',
 				'sanitize' => static function ( $value ) {
 					$value = strtoupper( substr( (string) $value, 0, 3 ) );
 					return '' === $value ? 'EUR' : $value;
 				},
 			),
-			'plazas'                => array(
+			'plazas'                   => array(
 				'type'     => 'integer',
 				'sanitize' => static function ( $value ) {
 					return max( 0, (int) $value );
 				},
 			),
-			'certificado'           => array(
+			'certificado'              => array(
 				'type'     => 'boolean',
 				'sanitize' => static function ( $value ) {
 					return (bool) $value;
 				},
 			),
-			'desbloqueo_secuencial' => array(
+			'desbloqueo_secuencial'    => array(
 				'type'     => 'boolean',
 				'sanitize' => static function ( $value ) {
 					return (bool) $value;
+				},
+			),
+			'fecha_apertura_matricula' => array(
+				'type'     => 'string',
+				'sanitize' => static function ( $value ) {
+					return self::normalize_date( (string) $value );
+				},
+			),
+			'fecha_cierre_matricula'   => array(
+				'type'     => 'string',
+				'sanitize' => static function ( $value ) {
+					return self::normalize_date( (string) $value );
+				},
+			),
+			'fecha_fin'                => array(
+				'type'     => 'string',
+				'sanitize' => static function ( $value ) {
+					return self::normalize_date( (string) $value );
+				},
+			),
+			'caducidad_dias'           => array(
+				'type'     => 'integer',
+				'sanitize' => static function ( $value ) {
+					return max( 0, (int) $value );
+				},
+			),
+			'nota_minima'              => array(
+				'type'     => 'number',
+				'sanitize' => static function ( $value ) {
+					return self::normalize_score( (float) $value );
+				},
+			),
+			'acceso_examen'            => array(
+				'type'     => 'string',
+				'sanitize' => static function ( $value ) {
+					return self::normalize_exam_access( (string) $value );
+				},
+			),
+			'acceso_examen_porcentaje' => array(
+				'type'     => 'integer',
+				'sanitize' => static function ( $value ) {
+					return max( 0, min( 100, (int) $value ) );
 				},
 			),
 		);
@@ -140,11 +194,132 @@ class CPT_Curso extends CPT_Base {
 	/**
 	 * Si las lecciones se desbloquean en orden.
 	 *
+	 * Por defecto **sí**: un curso nuevo se crea secuencial. Los cursos que ya existían antes de la
+	 * 0.3.0 se marcan como no secuenciales en la migración, para no encerrar a quien está a mitad.
+	 *
 	 * @param int $course_id Identificador del curso.
 	 * @return bool
 	 */
 	public static function is_sequential( int $course_id ): bool {
-		return self::get_bool( $course_id, 'desbloqueo_secuencial', false );
+		return self::get_bool( $course_id, 'desbloqueo_secuencial', true );
+	}
+
+	/**
+	 * Fecha de apertura de matrícula (`Y-m-d`), vacía si no hay ventana.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return string
+	 */
+	public static function enrollment_open_date( int $course_id ): string {
+		return self::get_string( $course_id, 'fecha_apertura_matricula', '' );
+	}
+
+	/**
+	 * Fecha de cierre de matrícula (`Y-m-d`), vacía si no hay ventana.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return string
+	 */
+	public static function enrollment_close_date( int $course_id ): string {
+		return self::get_string( $course_id, 'fecha_cierre_matricula', '' );
+	}
+
+	/**
+	 * Fecha de fin del curso (`Y-m-d`), vacía si el curso es indefinido.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return string
+	 */
+	public static function end_date( int $course_id ): string {
+		return self::get_string( $course_id, 'fecha_fin', '' );
+	}
+
+	/**
+	 * Días de acceso desde la matrícula. 0 = acceso indefinido.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return int
+	 */
+	public static function expiry_days( int $course_id ): int {
+		return max( 0, self::get_int( $course_id, 'caducidad_dias', 0 ) );
+	}
+
+	/**
+	 * Nota mínima para aprobar (0-100). Por defecto 50.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return float
+	 */
+	public static function min_score( int $course_id ): float {
+		return self::normalize_score( self::get_float( $course_id, 'nota_minima', 50.0 ) );
+	}
+
+	/**
+	 * Modo de acceso al examen: `todas`, `modulo` o `porcentaje`.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return string
+	 */
+	public static function exam_access( int $course_id ): string {
+		return self::normalize_exam_access( self::get_string( $course_id, 'acceso_examen', 'todas' ) );
+	}
+
+	/**
+	 * Porcentaje de lecciones exigido cuando el modo es `porcentaje`.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return int
+	 */
+	public static function exam_access_percent( int $course_id ): int {
+		return max( 0, min( 100, self::get_int( $course_id, 'acceso_examen_porcentaje', 100 ) ) );
+	}
+
+	/**
+	 * Fecha normalizada a `Y-m-d`, o cadena vacía si no se puede interpretar.
+	 *
+	 * Función pura: la usan los saneadores de metadatos y se prueba sin WordPress.
+	 *
+	 * @param string $value Fecha escrita por la persona.
+	 * @return string
+	 */
+	public static function normalize_date( string $value ): string {
+		$value = trim( $value );
+		if ( '' === $value ) {
+			return '';
+		}
+
+		$ts = strtotime( $value );
+		if ( false === $ts ) {
+			return '';
+		}
+
+		return gmdate( 'Y-m-d', $ts );
+	}
+
+	/**
+	 * Nota acotada a la escala del módulo (0-100).
+	 *
+	 * Función pura.
+	 *
+	 * @param float $value Nota.
+	 * @return float
+	 */
+	public static function normalize_score( float $value ): float {
+		return round( max( 0.0, min( 100.0, $value ) ), 2 );
+	}
+
+	/**
+	 * Modo de acceso al examen válido; si no se reconoce, `todas`.
+	 *
+	 * Función pura.
+	 *
+	 * @param string $value Modo escrito por la persona.
+	 * @return string
+	 */
+	public static function normalize_exam_access( string $value ): string {
+		$value = strtolower( trim( $value ) );
+
+		return in_array( $value, self::ACCESO_EXAMEN, true ) ? $value : 'todas';
 	}
 
 	/**
