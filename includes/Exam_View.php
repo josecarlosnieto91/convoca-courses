@@ -134,6 +134,23 @@ class Exam_View {
 			return null;
 		}
 
+		// Detalle de la corrección, reconstruido de las respuestas guardadas: es lo que el alumno
+		// necesita para ver qué falló cuando la corrección está configurada «al enviar».
+		if ( 'enviado' === (string) $attempt['estado'] && 'tras_enviar' === CPT_Examen::feedback( $exam_id ) ) {
+			$detalle = array();
+			foreach ( Attempts::answers( (int) $attempt['id'] ) as $linea ) {
+				$pregunta  = Questions::get( (int) $linea['question_id'] );
+				$detalle[] = array(
+					'question_id' => (int) $linea['question_id'],
+					'correcta'    => (bool) $linea['correcta'],
+					'puntos'      => (float) $linea['puntos'],
+					'enunciado'   => null === $pregunta ? '' : (string) $pregunta['enunciado'],
+					'explicacion' => null === $pregunta ? '' : (string) $pregunta['explicacion'],
+				);
+			}
+			$attempt['detalle'] = $detalle;
+		}
+
 		return $attempt;
 	}
 

@@ -175,12 +175,11 @@ if ( ! $logged_in ) {
 			<?php if ( $convoca_mostrar_detalle && ! empty( $result['detalle'] ) ) : ?>
 				<ol class="convoca-courses-exam__detail">
 					<?php foreach ( $result['detalle'] as $convoca_linea ) : ?>
-						<?php $convoca_pregunta = \Convoca\Courses\Questions::get( (int) $convoca_linea['question_id'] ); ?>
 						<li class="<?php echo $convoca_linea['correcta'] ? 'is-correct' : 'is-wrong'; ?>">
-							<?php echo esc_html( null !== $convoca_pregunta ? (string) $convoca_pregunta['enunciado'] : '' ); ?>
+							<?php echo esc_html( (string) ( $convoca_linea['enunciado'] ?? '' ) ); ?>
 							— <?php echo $convoca_linea['correcta'] ? esc_html__( 'correcta', 'convoca-courses' ) : esc_html__( 'incorrecta', 'convoca-courses' ); ?>
-							<?php if ( null !== $convoca_pregunta && '' !== (string) $convoca_pregunta['explicacion'] ) : ?>
-								<p class="convoca-courses-exam__explanation"><?php echo esc_html( (string) $convoca_pregunta['explicacion'] ); ?></p>
+							<?php if ( '' !== (string) ( $convoca_linea['explicacion'] ?? '' ) ) : ?>
+								<p class="convoca-courses-exam__explanation"><?php echo esc_html( (string) $convoca_linea['explicacion'] ); ?></p>
 							<?php endif; ?>
 						</li>
 					<?php endforeach; ?>

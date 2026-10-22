@@ -474,6 +474,54 @@ class Attempts {
 	}
 
 	/**
+	 * Respuestas guardadas de un intento, con su corrección.
+	 *
+	 * El detalle de la corrección **no** se guarda como tal: se reconstruye de la tabla de respuestas.
+	 * Sin esto, al volver a la página del examen el alumno veía la nota pero no qué había fallado, y
+	 * la retroalimentación «al enviar» se quedaba en la nota.
+	 *
+	 * @param int $attempt_id Intento.
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function answers( int $attempt_id ): array {
+		global $wpdb;
+
+		if ( $attempt_id <= 0 ) {
+			return array();
+		}
+
+		$table = Installer::table( Installer::ANSWERS_TABLE );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valor preparado.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$table} WHERE attempt_id = %d ORDER BY id ASC",
+				$attempt_id
+			),
+			'ARRAY_A'
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		$salida = array();
+		foreach ( $rows as $row ) {
+			$respuesta = json_decode( (string) ( $row['respuesta'] ?? '[]' ), true );
+
+			$salida[] = array(
+				'question_id' => isset( $row['question_id'] ) ? (int) $row['question_id'] : 0,
+				'respuesta'   => is_array( $respuesta ) ? array_values( array_map( 'strval', $respuesta ) ) : array(),
+				'correcta'    => ! empty( $row['acertada'] ),
+				'puntos'      => isset( $row['puntos_obtenidos'] ) ? round( (float) $row['puntos_obtenidos'], 2 ) : 0.0,
+			);
+		}
+
+		return $salida;
+	}
+
+	/**
 	 * Preguntas guardadas en un intento.
 	 *
 	 * @param array<string, mixed> $attempt Intento decodificado.
