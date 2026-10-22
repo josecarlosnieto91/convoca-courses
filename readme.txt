@@ -89,5 +89,34 @@ rechaza.
 
 == Changelog ==
 
+= 0.3.2 =
+* Corregido un defecto crítico: el tipo de contenido declaraba sus capacidades por entrada con capacidades globales (`read`, `convoca_manage_courses`), WordPress las metía en `$post_type_meta_caps` y el panel del sitio entero respondía 403 a todo el mundo, administrador incluido. Ahora van con nombre propio y un filtro `map_meta_cap` las traduce.
+* Mismo arreglo en el tipo de contenido de convocatorias.
+* Nueva prueba `MetaCapsTest`, que falla si esas tres capacidades vuelven a llamarse como una global.
+
+= 0.3.1 =
+* Las plantillas usaban las clases del módulo sin cualificar y la página moría con un error fatal.
+* La entrega de una tarea se guardaba descuadrada (formatos de `$wpdb->insert()` fuera de orden).
+* El detalle de la corrección no se veía al volver al examen.
+* Los bloques de examen, tareas y notas salían sin estilos.
+* Las capacidades se refrescan al actualizar; borrar un examen se lleva sus intentos y sus respuestas.
+
+= 0.3.0 =
+* Exámenes tipo test con banco de preguntas, intentos y corrección en servidor.
+* Tareas con entrega de texto o fichero, plazo y estados.
+* Libro de notas con pesos por examen y por tarea, y certificado que exige aprobado.
+* Precio distinto para socios y capa PRO de organización (convocatorias, recordatorios, correo al grupo, banco compartido).
+
+= 0.2.3 =
+* Los oyentes del cobro usan los nombres de gancho nuevos de Convoca Gateway.
+
+= 0.2.2 =
+* Traducción completa al inglés (`en_US`).
+
+= 0.2.0 =
+* Cobro de la matrícula con Convoca Gateway (opcional).
+
 = 0.1.0 =
 * Primera versión: cursos, módulos, lecciones, matrícula, progreso, certificado y vídeo PRO.
+
+El detalle línea a línea de cada versión está en `CHANGELOG.md`.
