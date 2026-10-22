@@ -11,3 +11,8 @@ build-dir/
 
 # Artefactos de la puerta de cobertura (clover, junit): no se versionan.
 /build/
+
+# Suite E2E (Playwright)
+playwright-report/
+test-results/
+e2e/.fixtures.json

@@ -14,6 +14,11 @@
   -->
   <exclude-pattern>dev-tools/*</exclude-pattern>
   <!--
+    e2e/: arnés de la suite Playwright (fixture PHP que se ejecuta dentro de la demo). Igual que dev-tools,
+    no viaja en el paquete y no es código del plugin.
+  -->
+  <exclude-pattern>e2e/*</exclude-pattern>
+  <!--
     tests/bootstrap-integration.php: arnés de las pruebas de integración. Declara tres espacios de
     nombres (WordPress, Convoca\Core y Convoca\Gateway) y varios dobles en un solo fichero **a
     propósito**, porque tiene que definir símbolos que en producción vienen de otros plugins. Las

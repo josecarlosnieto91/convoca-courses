@@ -12,6 +12,11 @@ composer.lock
 node_modules/
 tests/
 dev-tools/
+e2e/
+node_modules/
+playwright.config.js
+package.json
+package-lock.json
 stubs/
 vendor/
 *.md

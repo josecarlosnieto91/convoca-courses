@@ -8,6 +8,7 @@ parameters:
             - node_modules (?)
             - tests
             - dev-tools
+            - e2e
             # Las plantillas reciben sus variables con extract() desde un array tipado que construye la
             # clase: PHPStan no puede seguirlo y las marca todas como indefinidas. Se quedan fuera del
             # análisis estático, no de la revisión: pasan PHPCS y se ejercitan en el WordPress real.
