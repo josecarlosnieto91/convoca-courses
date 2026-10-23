@@ -17,7 +17,6 @@ use Convoca\Courses\CPT_Matricula;
 use Convoca\Courses\Enrollment;
 use PHPUnit\Framework\TestCase;
 
-require_once dirname( __DIR__, 2 ) . '/includes/CPT_Base.php';
 require_once dirname( __DIR__, 2 ) . '/includes/CPT_Curso.php';
 require_once dirname( __DIR__, 2 ) . '/includes/CPT_Matricula.php';
 require_once dirname( __DIR__, 2 ) . '/includes/Enrollment.php';
@@ -33,6 +32,7 @@ final class EnrollmentAforoTest extends TestCase {
 	 * @return void
 	 */
 	protected function setUp(): void {
+		require_once dirname( __DIR__, 2 ) . '/includes/CPT_Base.php';
 		$GLOBALS['_cc_posts']         = array();
 		$GLOBALS['convoca_test_meta'] = array();
 	}

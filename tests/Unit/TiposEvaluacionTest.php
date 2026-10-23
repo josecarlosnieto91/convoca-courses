@@ -19,7 +19,6 @@ use Convoca\Courses\CPT_Examen;
 use Convoca\Courses\CPT_Tarea;
 use PHPUnit\Framework\TestCase;
 
-require_once dirname( __DIR__, 2 ) . '/includes/CPT_Base.php';
 require_once dirname( __DIR__, 2 ) . '/includes/CPT_Examen.php';
 require_once dirname( __DIR__, 2 ) . '/includes/CPT_Tarea.php';
 
@@ -34,6 +33,7 @@ final class TiposEvaluacionTest extends TestCase {
 	 * @return void
 	 */
 	protected function setUp(): void {
+		require_once dirname( __DIR__, 2 ) . '/includes/CPT_Base.php';
 		$GLOBALS['_cc_cpt'] = array();
 	}
 

@@ -15,7 +15,6 @@ namespace Convoca\Courses\Tests\Unit;
 use Convoca\Courses\Handlers;
 use PHPUnit\Framework\TestCase;
 
-require_once dirname( __DIR__, 2 ) . '/includes/Handlers.php';
 
 /**
  * Acciones y nonces de los formularios del módulo.
@@ -28,6 +27,7 @@ final class HandlersFormulariosTest extends TestCase {
 	 * @return void
 	 */
 	protected function setUp(): void {
+		require_once dirname( __DIR__, 2 ) . '/includes/Handlers.php';
 		$GLOBALS['_cc_nonces'] = array();
 	}
 
