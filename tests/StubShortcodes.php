@@ -314,6 +314,11 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		 */
 		public function update( $tabla, $datos, $donde, $formatos = null, $donde_fmt = null ) {
 			$this->actualizados[] = array( $tabla, $datos, $donde, $formatos, $donde_fmt );
+
+			if ( ! empty( $GLOBALS['convoca_courses_wpdb_falla']['update'] ) ) {
+				return false;
+			}
+
 			return 1;
 		}
 
@@ -352,6 +357,10 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		public function insert( $tabla, $datos, $formato = null ) {
 			$this->inserts[] = array( $tabla, $datos, $formato );
 			++$this->insert_id;
+
+			if ( ! empty( $GLOBALS['convoca_courses_wpdb_falla']['insert'] ) ) {
+				return false;
+			}
 			return count( $this->inserts );
 		}
 
