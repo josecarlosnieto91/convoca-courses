@@ -240,6 +240,8 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		public $inserts = array();
 		/** @var array<int, string> Formatos pedidos en cada lectura. */
 		public $formatos = array();
+		/** @var array<int, array> Borrados ejecutados. */
+		public $borrados = array();
 
 		/**
 		 * Siguiente valor preparado.
@@ -287,6 +289,19 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		public function query( $sql ) {
 			$this->consultas[] = (string) $sql;
 			return true;
+		}
+
+		/**
+		 * Anota un borrado y dice cuántas filas se llevó.
+		 *
+		 * @param string $tabla   Tabla.
+		 * @param array  $where   Condiciones.
+		 * @param array  $formato Formatos.
+		 * @return int
+		 */
+		public function delete( $tabla, $where, $formato = null ) {
+			$this->borrados[] = array( $tabla, $where, $formato );
+			return 1;
 		}
 
 		/**
