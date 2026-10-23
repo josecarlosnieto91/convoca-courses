@@ -133,7 +133,7 @@ class SettingsAjustesTest extends TestCase {
 	public function test_lo_que_llega_se_limpia_y_la_clave_se_cifra(): void {
 		$config = Settings::sanitize_video(
 			array(
-				'endpoint'    => '  https://s3.eu-west-1.amazonaws.com  ',
+				'endpoint'    => '  https://almacen.example.test  ',
 				'bucket'      => '  mi-bucket  ',
 				'region'      => 'eu-west-1',
 				'key'         => '  AKIA  ',
@@ -143,7 +143,7 @@ class SettingsAjustesTest extends TestCase {
 			)
 		);
 
-		$this->assertSame( 'https://s3.eu-west-1.amazonaws.com', $config['endpoint'], 'la URL va sin espacios' );
+		$this->assertSame( 'https://almacen.example.test', $config['endpoint'], 'la URL va sin espacios' );
 		$this->assertSame( 'mi-bucket', $config['bucket'] );
 		$this->assertSame( 'eu-west-1', $config['region'] );
 		$this->assertSame( 'AKIA', $config['key'] );
