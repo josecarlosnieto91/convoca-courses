@@ -18,6 +18,7 @@ define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
 
 require_once __DIR__ . '/stubs-clases.php';
 require_once __DIR__ . '/StubShortcodes.php';
+require_once __DIR__ . '/StubWpError.php';
 require_once __DIR__ . '/StubMailer.php';
 define( 'CONVOCA_COURSES_DB_VERSION', '2.0.0' );
 define( 'CONVOCA_COURSES_FILE', __DIR__ . '/../convoca-courses.php' );

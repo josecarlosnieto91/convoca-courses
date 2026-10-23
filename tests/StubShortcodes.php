@@ -242,6 +242,10 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		public $formatos = array();
 		/** @var array<int, array> Borrados ejecutados. */
 		public $borrados = array();
+		/** @var array<int, array> Actualizaciones ejecutadas. */
+		public $actualizados = array();
+		/** @var array<int, array> Columnas servidas por get_col(). */
+		public $cols = array();
 
 		/**
 		 * Siguiente valor preparado.
@@ -289,6 +293,32 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		public function query( $sql ) {
 			$this->consultas[] = (string) $sql;
 			return true;
+		}
+
+		/**
+		 * Anota una actualización y dice cuántas filas tocó.
+		 *
+		 * @param string     $tabla    Tabla.
+		 * @param array      $datos    Valores.
+		 * @param array      $donde    Condiciones.
+		 * @param array|null $formatos Formatos de los valores.
+		 * @param array|null $donde_fmt Formatos de las condiciones.
+		 * @return int
+		 */
+		public function update( $tabla, $datos, $donde, $formatos = null, $donde_fmt = null ) {
+			$this->actualizados[] = array( $tabla, $datos, $donde, $formatos, $donde_fmt );
+			return 1;
+		}
+
+		/**
+		 * Lee una columna de la consulta preparada.
+		 *
+		 * @param string $sql Consulta.
+		 * @return array<int, mixed>
+		 */
+		public function get_col( $sql = '' ) {
+			$this->consultas[] = (string) $sql;
+			return array_shift( $this->cols );
 		}
 
 		/**
@@ -556,5 +586,20 @@ if ( ! function_exists( 'get_post_time' ) ) {
 		$marca = (int) ( $GLOBALS['convoca_courses_fechas'][ (int) $post_id ] ?? 0 );
 
 		return 'U' === $formato ? $marca : gmdate( (string) $formato, $marca );
+	}
+}
+
+if ( ! function_exists( 'wp_json_encode' ) ) {
+	/**
+	 * JSON de WordPress (doble que delega en json_encode).
+	 *
+	 * @param mixed $datos       Datos.
+	 * @param int   $opciones    Opciones.
+	 * @param int   $profundidad Profundidad.
+	 * @return string|false
+	 */
+	function wp_json_encode( $datos, $opciones = 0, $profundidad = 512 ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- doble de wp_json_encode, aquí no hay WordPress.
+		return json_encode( $datos, (int) $opciones, (int) $profundidad );
 	}
 }
