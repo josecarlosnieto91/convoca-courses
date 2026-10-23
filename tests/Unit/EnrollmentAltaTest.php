@@ -118,7 +118,7 @@ class EnrollmentAltaTest extends TestCase {
 		$r = Enrollment::enroll( 9, 3 );
 
 		$this->assertSame( 44, $r, 'se devuelve la matrícula que ya había' );
-		$this->assertSame( 'activa', $GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'estado' ] );
+		$this->assertSame( 'activa', $this->meta( 44, 'estado' ) );
 		$this->assertSame( array(), $GLOBALS['convoca_test_insertados'], 'no se crea otra' );
 	}
 
@@ -132,15 +132,14 @@ class EnrollmentAltaTest extends TestCase {
 		$id = Enrollment::enroll( 9, 3 );
 
 		$this->assertSame( 100, $id );
-		$meta = $GLOBALS['convoca_test_meta'][100];
-		$this->assertSame( 3, $meta[ CPT_Base::META_PREFIX . 'curso_id' ] );
-		$this->assertSame( 9, $meta[ CPT_Base::META_PREFIX . 'user_id' ] );
-		$this->assertSame( 'activa', $meta[ CPT_Base::META_PREFIX . 'estado' ] );
-		$this->assertSame( 'ninguno', $meta[ CPT_Base::META_PREFIX . 'pago' ] );
-		$this->assertSame( 25.0, $meta[ CPT_Base::META_PREFIX . 'importe' ], 'sin importe, el precio del curso' );
-		$this->assertSame( 'EUR', $meta[ CPT_Base::META_PREFIX . 'moneda' ] );
-		$this->assertSame( 'general', $meta[ CPT_Base::META_PREFIX . 'motivo_precio' ] );
-		$this->assertSame( 0, $meta[ CPT_Base::META_PREFIX . 'convocatoria_id' ] );
+		$this->assertSame( 3, $this->meta( 100, 'curso_id' ) );
+		$this->assertSame( 9, $this->meta( 100, 'user_id' ) );
+		$this->assertSame( 'activa', $this->meta( 100, 'estado' ) );
+		$this->assertSame( 'ninguno', $this->meta( 100, 'pago' ) );
+		$this->assertSame( 25.0, $this->meta( 100, 'importe' ), 'sin importe, el precio del curso' );
+		$this->assertSame( 'EUR', $this->meta( 100, 'moneda' ) );
+		$this->assertSame( 'general', $this->meta( 100, 'motivo_precio' ) );
+		$this->assertSame( 0, $this->meta( 100, 'convocatoria_id' ) );
 		$this->assertStringContainsString( 'Una persona', $GLOBALS['convoca_test_insertados'][0]['post_title'] );
 	}
 
@@ -162,12 +161,11 @@ class EnrollmentAltaTest extends TestCase {
 			)
 		);
 
-		$meta = $GLOBALS['convoca_test_meta'][100];
-		$this->assertSame( 'pendiente', $meta[ CPT_Base::META_PREFIX . 'estado' ] );
-		$this->assertSame( 'transferencia', $meta[ CPT_Base::META_PREFIX . 'pago' ] );
-		$this->assertSame( 10.0, $meta[ CPT_Base::META_PREFIX . 'importe' ] );
-		$this->assertSame( 'beca', $meta[ CPT_Base::META_PREFIX . 'motivo_precio' ] );
-		$this->assertSame( 'REF-1', $meta[ CPT_Base::META_PREFIX . 'referencia_pago' ] );
+		$this->assertSame( 'pendiente', $this->meta( 100, 'estado' ) );
+		$this->assertSame( 'transferencia', $this->meta( 100, 'pago' ) );
+		$this->assertSame( 10.0, $this->meta( 100, 'importe' ) );
+		$this->assertSame( 'beca', $this->meta( 100, 'motivo_precio' ) );
+		$this->assertSame( 'REF-1', $this->meta( 100, 'referencia_pago' ) );
 	}
 
 	/**
@@ -242,7 +240,7 @@ class EnrollmentAltaTest extends TestCase {
 		$this->matricula( 44, 3, 9, 'activa' );
 
 		$this->assertTrue( Enrollment::cancel( 44 ) );
-		$this->assertSame( 'cancelada', $GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'estado' ] );
+		$this->assertSame( 'cancelada', $this->meta( 44, 'estado' ) );
 	}
 
 	/**
@@ -252,7 +250,7 @@ class EnrollmentAltaTest extends TestCase {
 		$this->matricula( 44, 3, 9, 'activa' );
 
 		$this->assertFalse( Enrollment::set_status( 44, 'inventado' ) );
-		$this->assertSame( 'activa', $GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'estado' ], 'el estado no se toca' );
+		$this->assertSame( 'activa', $this->meta( 44, 'estado' ), 'el estado no se toca' );
 	}
 
 	/**
@@ -262,7 +260,18 @@ class EnrollmentAltaTest extends TestCase {
 		$this->matricula( 44, 3, 9, 'activa' );
 
 		$this->assertTrue( Enrollment::set_status( 44, 'completada' ) );
-		$this->assertSame( 'completada', $GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'estado' ] );
+		$this->assertSame( 'completada', $this->meta( 44, 'estado' ) );
+	}
+
+	/**
+	 * Lee la meta de una matrícula con su prefijo ya puesto.
+	 *
+	 * @param int    $id    Matrícula.
+	 * @param string $clave Clave sin prefijo.
+	 * @return mixed
+	 */
+	private function meta( int $id, string $clave ) {
+		return $GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . $clave ] ?? null;
 	}
 
 	/**
