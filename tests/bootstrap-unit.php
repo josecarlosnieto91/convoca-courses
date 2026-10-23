@@ -17,6 +17,8 @@ define( 'MINUTE_IN_SECONDS', 60 );
 define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
 
 require_once __DIR__ . '/stubs-clases.php';
+require_once __DIR__ . '/StubWpPost.php';
+require_once __DIR__ . '/StubAssets.php';
 require_once __DIR__ . '/StubShortcodes.php';
 require_once __DIR__ . '/StubWpError.php';
 require_once __DIR__ . '/StubCoreUtils.php';

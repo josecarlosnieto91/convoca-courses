@@ -104,6 +104,11 @@ if ( ! function_exists( 'add_action' ) ) {
 	 * @return bool
 	 */
 	function add_action( $hook, $callback, $priority = 10, $args = 1 ) {
+		$GLOBALS['convoca_courses_enganches'][] = array(
+			'gancho'   => $hook,
+			'callback' => $callback,
+		);
+
 		$GLOBALS['convoca_courses_acciones'][ $hook ] = array(
 			'callback' => $callback,
 			'priority' => (int) $priority,
@@ -629,7 +634,13 @@ if ( ! function_exists( 'get_post' ) ) {
 	 * @return object|null
 	 */
 	function get_post( $post_id = 0 ) {
-		return $GLOBALS['convoca_test_posts'][ (int) $post_id ] ?? null;
+		$post_id = (int) $post_id;
+
+		if ( 0 === $post_id ) {
+			return $GLOBALS['post'] ?? null;
+		}
+
+		return $GLOBALS['convoca_test_posts'][ $post_id ] ?? null;
 	}
 }
 
