@@ -100,7 +100,13 @@ if ( ! function_exists( 'apply_filters' ) ) {
 	 * @return mixed
 	 */
 	function apply_filters( $hook, $value, ...$args ) {
-		unset( $hook, $args );
+		unset( $args );
+
+		// Un filtro se puede forzar desde la prueba: sin esto no hay forma de encender el PRO.
+		if ( array_key_exists( $hook, $GLOBALS['convoca_courses_filtros'] ?? array() ) ) {
+			return $GLOBALS['convoca_courses_filtros'][ $hook ];
+		}
+
 		return $value;
 	}
 }

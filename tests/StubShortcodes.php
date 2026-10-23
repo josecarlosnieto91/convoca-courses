@@ -402,3 +402,18 @@ if ( ! function_exists( 'current_time' ) ) {
 		return 'mysql' === $formato ? '2026-10-23 10:00:00' : '2026-10-23 10:00:00';
 	}
 }
+
+if ( ! function_exists( 'get_post_meta' ) ) {
+	/**
+	 * Meta de una entrada (doble que lee del mismo almacén que get_posts: convoca_test_meta).
+	 *
+	 * @param int    $post_id Entrada.
+	 * @param string $clave   Clave.
+	 * @param bool   $unico   Si se pide un solo valor.
+	 * @return mixed
+	 */
+	function get_post_meta( $post_id, $clave = '', $unico = false ) {
+		unset( $unico );
+		return $GLOBALS['convoca_test_meta'][ (int) $post_id ][ (string) $clave ] ?? '';
+	}
+}
