@@ -417,3 +417,83 @@ if ( ! function_exists( 'get_post_meta' ) ) {
 		return $GLOBALS['convoca_test_meta'][ (int) $post_id ][ (string) $clave ] ?? '';
 	}
 }
+
+if ( ! function_exists( 'wp_generate_password' ) ) {
+	/**
+	 * Contraseña aleatoria (doble determinista: la prueba fija el sufijo del código).
+	 *
+	 * @param int  $largo     Longitud.
+	 * @param bool $especial  Caracteres especiales.
+	 * @param bool $extra     Caracteres extra.
+	 * @return string
+	 */
+	function wp_generate_password( $largo = 12, $especial = true, $extra = false ) {
+		unset( $especial, $extra );
+		$base = $GLOBALS['convoca_courses_aleatorio'] ?? 'abcd1234';
+		return substr( str_pad( (string) $base, (int) $largo, '0' ), 0, (int) $largo );
+	}
+}
+
+if ( ! function_exists( 'get_bloginfo' ) ) {
+	/**
+	 * Datos del sitio (doble).
+	 *
+	 * @param string $campo Campo.
+	 * @return string
+	 */
+	function get_bloginfo( $campo = '' ) {
+		return 'name' === $campo ? (string) ( $GLOBALS['convoca_courses_sitio'] ?? 'El sitio' ) : '';
+	}
+}
+
+if ( ! function_exists( 'sanitize_file_name' ) ) {
+	/**
+	 * Nombre de fichero seguro (doble: quita lo que no sea letra, número, guion o punto).
+	 *
+	 * @param string $nombre Nombre.
+	 * @return string
+	 */
+	function sanitize_file_name( $nombre ) {
+		return (string) preg_replace( '/[^A-Za-z0-9._-]/', '', (string) $nombre );
+	}
+}
+
+if ( ! function_exists( 'trailingslashit' ) ) {
+	/**
+	 * Añade la barra final si falta.
+	 *
+	 * @param string $ruta Ruta.
+	 * @return string
+	 */
+	function trailingslashit( $ruta ) {
+		return rtrim( (string) $ruta, '/\\' ) . '/';
+	}
+}
+
+if ( ! function_exists( 'esc_html_e' ) ) {
+	/**
+	 * Imprime un texto escapado (doble).
+	 *
+	 * @param string $texto  Texto.
+	 * @param string $dominio Dominio (no se usa).
+	 * @return void
+	 */
+	function esc_html_e( $texto, $dominio = '' ) {
+		unset( $dominio );
+		echo function_exists( 'esc_html' ) ? esc_html( $texto ) : $texto; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de esc_html_e.
+	}
+}
+
+if ( ! function_exists( 'esc_attr_e' ) ) {
+	/**
+	 * Imprime un atributo escapado (doble).
+	 *
+	 * @param string $texto   Texto.
+	 * @param string $dominio Dominio (no se usa).
+	 * @return void
+	 */
+	function esc_attr_e( $texto, $dominio = '' ) {
+		unset( $dominio );
+		echo function_exists( 'esc_attr' ) ? esc_attr( $texto ) : $texto; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de esc_attr_e.
+	}
+}
