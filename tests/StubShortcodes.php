@@ -320,3 +320,70 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 	// phpcs:enable WordPress.WP.GlobalVariablesOverride
 	// phpcs:enable Generic.Commenting.DocComment
 }
+
+if ( ! function_exists( 'get_option' ) ) {
+	/**
+	 * Opciones del sitio (doble en memoria).
+	 *
+	 * @param string $nombre  Nombre.
+	 * @param mixed  $defecto Valor por defecto.
+	 * @return mixed
+	 */
+	function get_option( $nombre, $defecto = false ) {
+		$GLOBALS['convoca_courses_opciones'] = $GLOBALS['convoca_courses_opciones'] ?? array();
+		return array_key_exists( $nombre, $GLOBALS['convoca_courses_opciones'] ) ? $GLOBALS['convoca_courses_opciones'][ $nombre ] : $defecto;
+	}
+}
+
+if ( ! function_exists( 'update_option' ) ) {
+	/**
+	 * Guarda una opción (doble en memoria).
+	 *
+	 * @param string $nombre Nombre.
+	 * @param mixed  $valor  Valor.
+	 * @param mixed  $auto   Autoload (no se usa).
+	 * @return bool
+	 */
+	function update_option( $nombre, $valor, $auto = null ) {
+		$GLOBALS['convoca_courses_opciones'][ $nombre ] = $valor;
+		$GLOBALS['convoca_courses_autoload'][ $nombre ] = $auto;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'delete_option' ) ) {
+	/**
+	 * Borra una opción (doble en memoria).
+	 *
+	 * @param string $nombre Nombre.
+	 * @return bool
+	 */
+	function delete_option( $nombre ) {
+		unset( $GLOBALS['convoca_courses_opciones'][ $nombre ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_userdata' ) ) {
+	/**
+	 * Datos de una persona (doble que lee de convoca_courses_usuarios).
+	 *
+	 * @param int $user_id Identificador.
+	 * @return object|false
+	 */
+	function get_userdata( $user_id ) {
+		return $GLOBALS['convoca_courses_usuarios'][ (int) $user_id ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'current_time' ) ) {
+	/**
+	 * Hora actual del sitio (doble fijo: las pruebas no dependen del reloj).
+	 *
+	 * @param string $formato Formato.
+	 * @return string
+	 */
+	function current_time( $formato = 'mysql' ) {
+		return 'mysql' === $formato ? '2026-10-23 10:00:00' : '2026-10-23 10:00:00';
+	}
+}
