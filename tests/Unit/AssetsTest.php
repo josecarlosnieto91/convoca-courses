@@ -175,10 +175,10 @@ class AssetsTest extends TestCase {
 	 */
 	public static function pantallas_del_modulo(): array {
 		return array(
-			'curso'      => array( CPT_Curso::TYPE ),
-			'módulo'    => array( CPT_Modulo::TYPE ),
-			'lección'   => array( CPT_Leccion::TYPE ),
-			'matrícula' => array( 'convoca_matricula' ),
+			'curso'     => array( CPT_Curso::TYPE ),
+			'modulo'    => array( CPT_Modulo::TYPE ),
+			'leccion'   => array( CPT_Leccion::TYPE ),
+			'matricula' => array( 'convoca_matricula' ),
 		);
 	}
 }
