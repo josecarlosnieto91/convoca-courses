@@ -243,3 +243,52 @@ if ( ! function_exists( 'register_post_meta' ) ) {
 		return true;
 	}
 }
+
+if ( ! function_exists( 'wp_create_nonce' ) ) {
+	/**
+	 * Nonce de mentira pero **distinto por acción**: lo que se prueba es que cada acción pida el
+	 * suyo, y para eso el doble apunta la acción y devuelve algo que la nombra.
+	 *
+	 * @param string $action Acción a la que se asocia el nonce.
+	 * @return string
+	 */
+	function wp_create_nonce( $action = '' ) {
+		$GLOBALS['_cc_nonces'][ (string) $action ] = true;
+
+		return 'nonce-' . md5( (string) $action );
+	}
+}
+if ( ! function_exists( 'esc_url' ) ) {
+	/**
+	 * Escapado de URL: en las pruebas, tal cual.
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	function esc_url( $url = '' ) {
+		return (string) $url;
+	}
+}
+if ( ! function_exists( 'admin_url' ) ) {
+	/**
+	 * URL del panel.
+	 *
+	 * @param string $path Ruta.
+	 * @return string
+	 */
+	function admin_url( $path = '' ) {
+		return 'https://example.org/wp-admin/' . ltrim( (string) $path, '/' );
+	}
+}
+if ( ! function_exists( 'add_query_arg' ) ) {
+	/**
+	 * Añade parámetros a una URL.
+	 *
+	 * @param array  $args Parámetros.
+	 * @param string $url  URL base.
+	 * @return string
+	 */
+	function add_query_arg( $args = array(), $url = '' ) {
+		return (string) $url . '?' . http_build_query( (array) $args );
+	}
+}
