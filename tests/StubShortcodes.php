@@ -721,3 +721,118 @@ if ( ! function_exists( 'current_user_can' ) ) {
 		return ! empty( $caps[ (string) $capacidad ] );
 	}
 }
+
+if ( ! function_exists( 'add_submenu_page' ) ) {
+	/**
+	 * Añade una página bajo un menú (doble que apunta los argumentos).
+	 *
+	 * @param string $padre   Menú padre.
+	 * @param string $titulo  Título.
+	 * @param string $menu    Etiqueta del menú.
+	 * @param string $cap     Capacidad.
+	 * @param string $slug    Identificador.
+	 * @param mixed  $render  Devolución de llamada.
+	 * @return string
+	 */
+	function add_submenu_page( $padre, $titulo = '', $menu = '', $cap = '', $slug = '', $render = null ) {
+		$GLOBALS['convoca_courses_submenus'][ (string) $slug ] = array(
+			'padre'  => (string) $padre,
+			'titulo' => (string) $titulo,
+			'menu'   => (string) $menu,
+			'cap'    => (string) $cap,
+			'render' => $render,
+		);
+
+		return 'hook-' . (string) $slug;
+	}
+}
+
+if ( ! function_exists( 'register_setting' ) ) {
+	/**
+	 * Registra un ajuste (doble que apunta su saneado y su valor por defecto).
+	 *
+	 * @param string $grupo   Grupo.
+	 * @param string $opcion  Opción.
+	 * @param array  $args    Argumentos.
+	 * @return void
+	 */
+	function register_setting( $grupo, $opcion, $args = array() ) {
+		$GLOBALS['convoca_courses_ajustes'][ (string) $grupo ][ (string) $opcion ] = $args;
+	}
+}
+
+if ( ! function_exists( 'settings_fields' ) ) {
+	/**
+	 * Campos ocultos del formulario de ajustes (doble: imprime el grupo).
+	 *
+	 * @param string $grupo Grupo.
+	 * @return void
+	 */
+	function settings_fields( $grupo ) {
+		echo '<input type="hidden" name="option_page" value="' . esc_attr( (string) $grupo ) . '">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de settings_fields.
+	}
+}
+
+if ( ! function_exists( 'submit_button' ) ) {
+	/**
+	 * Botón de guardar (doble).
+	 *
+	 * @param string $texto Texto.
+	 * @return void
+	 */
+	function submit_button( $texto = 'Guardar cambios' ) {
+		echo '<button type="submit">' . esc_html( (string) $texto ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de submit_button.
+	}
+}
+
+if ( ! function_exists( 'esc_attr' ) ) {
+	/**
+	 * Atributo escapado (doble).
+	 *
+	 * @param string $texto Texto.
+	 * @return string
+	 */
+	function esc_attr( $texto ) {
+		return htmlspecialchars( (string) $texto, ENT_QUOTES );
+	}
+}
+
+if ( ! function_exists( 'checked' ) ) {
+	/**
+	 * Atributo `checked` (doble).
+	 *
+	 * @param mixed $actual   Valor actual.
+	 * @param mixed $esperado Valor esperado.
+	 * @param bool  $imprimir Si se imprime.
+	 * @return string
+	 */
+	function checked( $actual, $esperado = true, $imprimir = true ) {
+		$salida = (string) $actual === (string) $esperado ? ' checked="checked"' : '';
+
+		if ( $imprimir ) {
+			echo $salida; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de checked.
+		}
+
+		return $salida;
+	}
+}
+
+if ( ! function_exists( 'selected' ) ) {
+	/**
+	 * Atributo `selected` (doble).
+	 *
+	 * @param mixed $actual   Valor actual.
+	 * @param mixed $esperado Valor esperado.
+	 * @param bool  $imprimir Si se imprime.
+	 * @return string
+	 */
+	function selected( $actual, $esperado = true, $imprimir = true ) {
+		$salida = (string) $actual === (string) $esperado ? ' selected="selected"' : '';
+
+		if ( $imprimir ) {
+			echo $salida; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de selected.
+		}
+
+		return $salida;
+	}
+}
