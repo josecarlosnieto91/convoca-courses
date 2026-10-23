@@ -4,7 +4,8 @@
  *
  * Solo se doblan las funciones de WordPress que tocan las clases bajo prueba. Cada doble es
  * deliberadamente pequeño: si una prueba necesita media API de WordPress, lo que falla es el diseño
- * de la prueba.
+ * de la prueba. Las clases dobladas viven en `stubs-clases.php`, porque PHPCS no admite un fichero
+ * que mezcle funciones y clases.
  *
  * @package Convoca\Courses
  */
@@ -14,6 +15,8 @@ define( 'DAY_IN_SECONDS', 86400 );
 define( 'HOUR_IN_SECONDS', 3600 );
 define( 'MINUTE_IN_SECONDS', 60 );
 define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
+
+require_once __DIR__ . '/stubs-clases.php';
 define( 'CONVOCA_COURSES_DB_VERSION', '2.0.0' );
 define( 'CONVOCA_COURSES_FILE', __DIR__ . '/../convoca-courses.php' );
 define( 'CONVOCA_COURSES_DIR', __DIR__ . '/../' );
