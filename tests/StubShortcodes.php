@@ -244,6 +244,13 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		public $borrados = array();
 		/** @var array<int, array> Actualizaciones ejecutadas. */
 		public $actualizados = array();
+
+		/**
+		 * Identificador de la última inserción.
+		 *
+		 * @var int
+		 */
+		public $insert_id = 101;
 		/** @var array<int, array> Columnas servidas por get_col(). */
 		public $cols = array();
 
@@ -344,6 +351,7 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 		 */
 		public function insert( $tabla, $datos, $formato = null ) {
 			$this->inserts[] = array( $tabla, $datos, $formato );
+			++$this->insert_id;
 			return count( $this->inserts );
 		}
 
