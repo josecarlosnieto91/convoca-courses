@@ -186,6 +186,53 @@ class TaskReglasTest extends TestCase {
 	}
 
 	/**
+	 * Las notas por tarea se indexan por tarea, redondeadas, y las tareas sin corregir no aparecen.
+	 */
+	public function test_las_notas_por_tarea_se_indexan_y_se_redondean(): void {
+		// El doble sirve un conjunto de filas por consulta: se encola el conjunto, no la fila.
+		$GLOBALS['wpdb']->resultados = array(
+			array(
+				array(
+					'task_id' => '4',
+					'nota'    => '7.555',
+				),
+				array(
+					'task_id' => '5',
+					'nota'    => '9',
+				),
+			),
+		);
+
+		$notas = Task::grades_by_task( 9, 2 );
+
+		$this->assertSame(
+			array(
+				4 => 7.56,
+				5 => 9.0,
+			),
+			$notas,
+			'la nota va por tarea y a dos decimales'
+		);
+		$this->assertStringContainsString( "estado = 'corregida'", implode( ' ', $GLOBALS['wpdb']->consultas ), 'solo cuentan las corregidas' );
+	}
+
+	/**
+	 * Sin persona o sin curso no se piden notas.
+	 */
+	public function test_sin_persona_o_sin_curso_no_se_piden_notas(): void {
+		$this->assertSame( array(), Task::grades_by_task( 0, 2 ) );
+		$this->assertSame( array(), Task::grades_by_task( 9, 0 ) );
+		$this->assertSame( array(), $GLOBALS['wpdb']->consultas, 'sin datos con los que preguntar no se consulta' );
+	}
+
+	/**
+	 * Si la consulta no devuelve filas, no hay notas.
+	 */
+	public function test_una_consulta_sin_filas_no_da_notas(): void {
+		$this->assertSame( array(), Task::grades_by_task( 9, 2 ) );
+	}
+
+	/**
 	 * Borrar las entregas de una tarea ejecuta su consulta.
 	 */
 	public function test_borrar_las_entregas_de_una_tarea(): void {
