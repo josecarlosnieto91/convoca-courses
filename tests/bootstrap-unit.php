@@ -211,3 +211,24 @@ if ( ! function_exists( 'get_posts' ) ) {
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+if ( ! function_exists( 'register_post_type' ) ) {
+	/**
+	 * Se guardan los argumentos: una prueba tiene que poder decir con qué capacidades se registra
+	 * un tipo de contenido (el defecto de $post_type_meta_caps empezó justo ahí).
+	 */
+	function register_post_type( string $slug, array $args = array() ) {
+		$GLOBALS['_cc_cpt'][ $slug ] = $args;
+
+		return null;
+	}
+}
+
+if ( ! function_exists( 'register_post_meta' ) ) {
+	/** Se apunta lo declarado: la meta registrada es contrato público del plugin. */
+	function register_post_meta( string $post_type, string $key, array $args = array() ) {
+		$GLOBALS['_cc_post_meta'][ $post_type ][ $key ] = $args;
+
+		return true;
+	}
+}
