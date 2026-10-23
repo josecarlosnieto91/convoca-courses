@@ -92,3 +92,123 @@ if ( ! function_exists( 'esc_html' ) ) {
 		return htmlspecialchars( (string) $t, ENT_QUOTES, 'UTF-8' );
 	}
 }
+
+if ( ! function_exists( 'add_action' ) ) {
+	/**
+	 * Registra un gancho (doble que apunta el alta).
+	 *
+	 * @param string   $hook     Gancho.
+	 * @param callable $callback Callback.
+	 * @param int      $priority Prioridad.
+	 * @param int      $args     Argumentos.
+	 * @return bool
+	 */
+	function add_action( $hook, $callback, $priority = 10, $args = 1 ) {
+		$GLOBALS['convoca_courses_acciones'][ $hook ] = array(
+			'callback' => $callback,
+			'priority' => (int) $priority,
+			'args'     => (int) $args,
+		);
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_die' ) ) {
+	/**
+	 * Corta la petición (en las pruebas, lanza para poder comprobarlo).
+	 *
+	 * @param string $mensaje Mensaje.
+	 * @return never
+	 * @throws RuntimeException Siempre: es la forma de que la prueba vea el corte.
+	 */
+	function wp_die( $mensaje = '' ) {
+		throw new RuntimeException( 'wp_die: ' . ( is_scalar( $mensaje ) ? $mensaje : '?' ) );
+	}
+}
+
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+	/**
+	 * Verifica un nonce (doble controlable).
+	 *
+	 * @param string $nonce  Nonce.
+	 * @param string $accion Acción.
+	 * @return int|false
+	 */
+	function wp_verify_nonce( $nonce, $accion = -1 ) {
+		$GLOBALS['convoca_courses_nonces_vistos'][] = array( (string) $nonce, (string) $accion );
+		return $GLOBALS['convoca_courses_nonce_ok'] ?? 1;
+	}
+}
+
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	/**
+	 * Sanea texto (doble).
+	 *
+	 * @param string $v Valor.
+	 * @return string
+	 */
+	function sanitize_text_field( $v ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- este doble ES sanitize_text_field.
+		return trim( strip_tags( (string) $v ) );
+	}
+}
+
+if ( ! function_exists( 'absint' ) ) {
+	/**
+	 * Entero positivo (doble).
+	 *
+	 * @param mixed $v Valor.
+	 * @return int
+	 */
+	function absint( $v ) {
+		return abs( (int) $v );
+	}
+}
+
+if ( ! function_exists( 'wp_unslash' ) ) {
+	/**
+	 * Quita barras (doble).
+	 *
+	 * @param mixed $v Valor.
+	 * @return mixed
+	 */
+	function wp_unslash( $v ) {
+		return is_string( $v ) ? stripslashes( $v ) : $v;
+	}
+}
+
+if ( ! function_exists( 'home_url' ) ) {
+	/**
+	 * URL del sitio (doble).
+	 *
+	 * @param string $ruta Ruta.
+	 * @return string
+	 */
+	function home_url( $ruta = '' ) {
+		return 'https://example.test' . $ruta;
+	}
+}
+
+if ( ! function_exists( 'get_permalink' ) ) {
+	/**
+	 * Enlace de una entrada (doble).
+	 *
+	 * @param mixed $post Entrada o id.
+	 * @return string
+	 */
+	function get_permalink( $post = 0 ) {
+		$id = is_object( $post ) ? (int) ( $post->ID ?? 0 ) : (int) $post;
+		return 'https://example.test/?p=' . $id;
+	}
+}
+
+if ( ! function_exists( 'wp_get_referer' ) ) {
+	/**
+	 * Referente de la petición (doble).
+	 *
+	 * @return string|false
+	 */
+	function wp_get_referer() {
+		return $GLOBALS['convoca_courses_referer'] ?? false;
+	}
+}
