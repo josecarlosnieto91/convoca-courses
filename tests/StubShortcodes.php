@@ -603,3 +603,62 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 		return json_encode( $datos, (int) $opciones, (int) $profundidad );
 	}
 }
+
+if ( ! function_exists( 'get_post' ) ) {
+	/**
+	 * Una entrada (doble que sirve convoca_test_posts).
+	 *
+	 * @param int $post_id Identificador.
+	 * @return object|null
+	 */
+	function get_post( $post_id = 0 ) {
+		return $GLOBALS['convoca_test_posts'][ (int) $post_id ] ?? null;
+	}
+}
+
+if ( ! function_exists( 'wp_insert_post' ) ) {
+	/**
+	 * Crea una entrada (doble que apunta lo insertado y devuelve un id fijo o un error).
+	 *
+	 * @param array $datos    Datos.
+	 * @param bool  $wp_error Si devuelve un error.
+	 * @return int|WP_Error
+	 */
+	function wp_insert_post( $datos = array(), $wp_error = false ) {
+		unset( $wp_error );
+
+		if ( isset( $GLOBALS['convoca_test_insert_error'] ) && $GLOBALS['convoca_test_insert_error'] ) {
+			return new WP_Error( 'insert_fallido', 'No se pudo crear.' );
+		}
+
+		$GLOBALS['convoca_test_insertados'][] = $datos;
+		return (int) ( $GLOBALS['convoca_test_nuevo_id'] ?? 100 );
+	}
+}
+
+if ( ! function_exists( 'update_post_meta' ) ) {
+	/**
+	 * Guarda meta de una entrada (doble que escribe en convoca_test_meta).
+	 *
+	 * @param int    $post_id Entrada.
+	 * @param string $clave   Clave.
+	 * @param mixed  $valor   Valor.
+	 * @return bool
+	 */
+	function update_post_meta( $post_id, $clave, $valor ) {
+		$GLOBALS['convoca_test_meta'][ (int) $post_id ][ (string) $clave ] = $valor;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'is_wp_error' ) ) {
+	/**
+	 * ¿Es un error de WordPress? (doble).
+	 *
+	 * @param mixed $cosa Valor.
+	 * @return bool
+	 */
+	function is_wp_error( $cosa ) {
+		return $cosa instanceof WP_Error;
+	}
+}
