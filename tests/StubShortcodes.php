@@ -670,3 +670,54 @@ if ( ! function_exists( 'is_wp_error' ) ) {
 		return $cosa instanceof WP_Error;
 	}
 }
+
+if ( ! function_exists( 'get_post_field' ) ) {
+	/**
+	 * Campo de una entrada (doble que lee convoca_test_campos).
+	 *
+	 * @param string $campo   Campo.
+	 * @param int    $post_id Entrada.
+	 * @return string
+	 */
+	function get_post_field( $campo, $post_id = 0 ) {
+		return (string) ( $GLOBALS['convoca_test_campos'][ (int) $post_id ][ (string) $campo ] ?? '' );
+	}
+}
+
+if ( ! function_exists( 'sanitize_key' ) ) {
+	/**
+	 * Clave saneada (doble: solo minúsculas, números, guion y guion bajo).
+	 *
+	 * @param string $clave Clave.
+	 * @return string
+	 */
+	function sanitize_key( $clave ) {
+		return (string) preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $clave ) );
+	}
+}
+
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	/**
+	 * URL saneada para guardar (doble: quita espacios y esquemas raros).
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	function esc_url_raw( $url ) {
+		$url = trim( (string) $url );
+		return (string) preg_replace( '/[^A-Za-z0-9:\/?#\[\]@!$&\'()*+,;=._~%\-]/', '', $url );
+	}
+}
+
+if ( ! function_exists( 'current_user_can' ) ) {
+	/**
+	 * Capacidades de la persona (doble que lee convoca_test_caps).
+	 *
+	 * @param string $capacidad Capacidad.
+	 * @return bool
+	 */
+	function current_user_can( $capacidad ) {
+		$caps = $GLOBALS['convoca_test_caps'] ?? array();
+		return ! empty( $caps[ (string) $capacidad ] );
+	}
+}
