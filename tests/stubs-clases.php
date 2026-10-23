@@ -35,9 +35,17 @@ if ( ! class_exists( 'WP_Query' ) ) {
 		 * @param array $args Argumentos.
 		 */
 		public function __construct( $args = array() ) {
-			$tipo  = isset( $args['post_type'] ) ? (string) $args['post_type'] : 'post';
-			$todo  = isset( $GLOBALS['_cc_posts'][ $tipo ] ) ? $GLOBALS['_cc_posts'][ $tipo ] : array();
-			$meta  = isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) ? $args['meta_query'] : array();
+			$tipo = isset( $args['post_type'] ) ? (string) $args['post_type'] : 'post';
+			$todo = isset( $GLOBALS['_cc_posts'][ $tipo ] ) ? $GLOBALS['_cc_posts'][ $tipo ] : array();
+			$meta = isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) ? $args['meta_query'] : array();
+
+			// Consulta por un solo metadato (meta_key / meta_value), como hace CPT_Modulo::of_course().
+			if ( isset( $args['meta_key'] ) ) {
+				$meta[] = array(
+					'key'   => $args['meta_key'],
+					'value' => isset( $args['meta_value'] ) ? $args['meta_value'] : '',
+				);
+			}
 			$state = isset( $args['post_status'] ) && 'any' !== $args['post_status'] ? (string) $args['post_status'] : '';
 			$hit   = array();
 
@@ -63,7 +71,9 @@ if ( ! class_exists( 'WP_Query' ) ) {
 					}
 				}
 				if ( $pasa ) {
-					$hit[] = isset( $post['id'] ) ? $post['id'] : 0;
+					// Si la prueba sembró el objeto entero, se devuelve el objeto (como WordPress);
+					// si solo sembró el id, el id.
+					$hit[] = isset( $post['objeto'] ) ? $post['objeto'] : ( isset( $post['id'] ) ? $post['id'] : 0 );
 				}
 			}
 
