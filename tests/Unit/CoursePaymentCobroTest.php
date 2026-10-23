@@ -53,16 +53,15 @@ class CoursePaymentCobroTest extends TestCase {
 	 * Deja el arnés como estaba.
 	 */
 	private function limpiar(): void {
-		$GLOBALS['convoca_test_meta']                   = array();
-		$GLOBALS['convoca_test_post_types']             = array();
-		$GLOBALS['convoca_test_posts']                  = array();
-		$GLOBALS['convoca_courses_usuarios']            = array();
+		foreach ( array( 'convoca_test_meta', 'convoca_test_post_types', 'convoca_test_posts', 'convoca_courses_usuarios', 'convoca_courses_acciones' ) as $clave ) {
+			$GLOBALS[ $clave ] = array();
+		}
+
 		$GLOBALS['convoca_courses_gateway_activo']      = false;
 		$GLOBALS['convoca_courses_payments_disponible'] = false;
 		$GLOBALS['convoca_courses_pago_error']          = false;
 		$GLOBALS['convoca_courses_pago_id']             = 555;
 		$GLOBALS['convoca_courses_pago_url']            = 'https://pagos.example.test/555';
-		$GLOBALS['convoca_courses_acciones']            = array();
 		Payments::$creados                              = array();
 	}
 
@@ -155,7 +154,7 @@ class CoursePaymentCobroTest extends TestCase {
 	public function test_el_enlace_de_pago_guardado(): void {
 		$this->assertSame( '', Course_Payment::payment_url( 44 ) );
 
-		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'payment_url' ] = 'https://pagos.example.test/9';
+		$this->fijar( 44, 'payment_url', 'https://pagos.example.test/9' );
 
 		$this->assertSame( 'https://pagos.example.test/9', Course_Payment::payment_url( 44 ) );
 	}
@@ -166,8 +165,8 @@ class CoursePaymentCobroTest extends TestCase {
 	public function test_el_recibo_necesita_un_pago(): void {
 		$this->assertSame( '', Course_Payment::receipt_url( 44 ) );
 
-		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'pago_id' ] = '555';
-		$GLOBALS['convoca_courses_payments_disponible']                        = true;
+		$this->fijar( 44, 'pago_id', '555' );
+		$GLOBALS['convoca_courses_payments_disponible'] = true;
 
 		$this->assertSame( 'https://pagos.example.test/recibo/555', Course_Payment::receipt_url( 44 ) );
 	}
@@ -184,25 +183,28 @@ class CoursePaymentCobroTest extends TestCase {
 	}
 
 	/**
-	 * Un pago confirmado con una matrícula que no existe no revienta.
+	 * Un pago confirmado sobre algo que no es una matrícula no toca nada.
+	 *
+	 * Dos casos con el mismo fondo: un id que no existe y un id que es otro tipo de contenido. Ninguno
+	 * de los dos debe recibir la referencia del pago ni un cambio de estado.
 	 */
-	public function test_un_pago_con_matricula_inexistente_no_revienta(): void {
-		Course_Payment::on_payment_completed( 555, 'courses', 999 );
-
-		// 999 no es una matrícula: no se le escribe nada encima.
-		$this->assertNull( $this->meta( 999, 'referencia_pago' ), 'no se anota la referencia en algo que no es una matrícula' );
-		$this->assertNull( $this->meta( 999, 'estado' ), 'ni se le cambia el estado' );
-	}
-
-	/**
-	 * Un identificador que no es una matrícula (una entrada normal) tampoco se toca.
-	 */
-	public function test_un_pago_sobre_otro_tipo_de_contenido_no_toca_nada(): void {
+	public function test_un_pago_sobre_algo_que_no_es_matricula_no_toca_nada(): void {
+		$this->fijar( 77, 'estado', 'activa' );
 		$GLOBALS['convoca_test_post_types'][77] = 'post';
 
-		Course_Payment::on_payment_completed( 555, 'courses', 77 );
+		$destinatarios = array(
+			'inexistente' => 999,
+			'otro tipo'   => 77,
+		);
 
-		$this->assertNull( $this->meta( 77, 'referencia_pago' ) );
+		foreach ( $destinatarios as $caso => $id ) {
+			Course_Payment::on_payment_completed( 555, 'courses', $id );
+
+			$this->assertNull( $this->meta( $id, 'referencia_pago' ), 'sin referencia en el caso «' . $caso . '»' );
+		}
+
+		$this->assertSame( 'activa', $this->meta( 77, 'estado' ), 'a la entrada no se le cambia el estado' );
+		$this->assertNull( $this->meta( 999, 'estado' ), 'ni se le inventa uno al id inexistente' );
 	}
 
 	/**
@@ -256,8 +258,8 @@ class CoursePaymentCobroTest extends TestCase {
 	public function test_el_texto_del_estado_de_cobro(): void {
 		$this->assertSame( 'ninguno', Course_Payment::label( 44 ) );
 
-		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'pago' ]    = 'transferencia';
-		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'pago_id' ] = '555';
+		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'pago' ] = 'transferencia';
+		$this->fijar( 44, 'pago_id', '555' );
 
 		$this->assertSame( 'pago #555', Course_Payment::label( 44 ) );
 	}
@@ -279,6 +281,17 @@ class CoursePaymentCobroTest extends TestCase {
 	 */
 	private function meta( int $id, string $clave ) {
 		return $GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . $clave ] ?? null;
+	}
+
+	/**
+	 * Escribe la meta de una matrícula.
+	 *
+	 * @param int    $id    Matrícula.
+	 * @param string $clave Clave sin prefijo.
+	 * @param mixed  $valor Valor.
+	 */
+	private function fijar( int $id, string $clave, $valor ): void {
+		$GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . $clave ] = $valor;
 	}
 
 	/**
