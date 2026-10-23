@@ -204,6 +204,7 @@ class AttemptsReglasTest extends TestCase {
 	public function test_sin_persona_o_sin_examen_no_hay_intento_abierto(): void {
 		$this->assertNull( Attempts::current( 0, 3 ) );
 		$this->assertNull( Attempts::current( 3, 0 ) );
+		$this->assertSame( array(), $GLOBALS['wpdb']->consultas, 'sin persona no se busca intento abierto' );
 	}
 
 	/**
@@ -212,6 +213,9 @@ class AttemptsReglasTest extends TestCase {
 	public function test_una_nota_sin_persona_es_cero(): void {
 		$this->assertSame( 0.0, Attempts::best_score( 0, 3 ) );
 		$this->assertSame( 0.0, Attempts::best_score( 3, 0 ) );
+		// Y no se consulta la base: sin esta comprobación, la mutación que quita la guarda
+		// seguía en verde (get_var sin respuesta también da 0.0). Lo destapó el verificador.
+		$this->assertSame( array(), $GLOBALS['wpdb']->consultas, 'sin persona no hay nada que preguntar' );
 	}
 
 	/**
@@ -229,6 +233,7 @@ class AttemptsReglasTest extends TestCase {
 	public function test_aprobar_sin_persona_o_sin_examen_es_falso(): void {
 		$this->assertFalse( Attempts::has_passed( 0, 3 ) );
 		$this->assertFalse( Attempts::has_passed( 3, 0 ) );
+		$this->assertSame( array(), $GLOBALS['wpdb']->consultas, 'sin persona o sin examen no se consulta' );
 	}
 
 	/**
