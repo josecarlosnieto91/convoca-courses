@@ -212,3 +212,111 @@ if ( ! function_exists( 'wp_get_referer' ) ) {
 		return $GLOBALS['convoca_courses_referer'] ?? false;
 	}
 }
+
+if ( ! isset( $GLOBALS['wpdb'] ) ) {
+	// phpcs:disable WordPress.WP.GlobalVariablesOverride -- doble de $wpdb para pruebas, en el arnés.
+	// phpcs:disable Generic.Commenting.DocComment -- los métodos del doble se documentan arriba, no uno a uno.
+	/**
+	 * Doble de $wpdb con respuestas preparadas por la prueba.
+	 */
+	$GLOBALS['wpdb'] = new class() {
+		/** @var string */
+		public $prefix = 'wp_';
+		/** @var string */
+		public $posts = 'wp_posts';
+		/** @var string */
+		public $postmeta = 'wp_postmeta';
+		/** @var string */
+		public $options = 'wp_options';
+		/** @var array<int, mixed> Respuestas para get_var(). */
+		public $vars = array();
+		/** @var array<int, mixed> Respuestas para get_row(). */
+		public $filas = array();
+		/** @var array<int, mixed> Respuestas para get_results(). */
+		public $resultados = array();
+		/** @var array<int, string> Consultas ejecutadas. */
+		public $consultas = array();
+		/** @var array<int, array> Inserciones. */
+		public $inserts = array();
+		/** @var array<int, string> Formatos pedidos en cada lectura. */
+		public $formatos = array();
+
+		/**
+		 * Siguiente valor preparado.
+		 *
+		 * @param string $sql Consulta.
+		 * @return mixed
+		 */
+		public function get_var( $sql = '' ) {
+			$this->consultas[] = (string) $sql;
+			return array_shift( $this->vars );
+		}
+
+		/**
+		 * Siguiente fila preparada.
+		 *
+		 * @param string $sql    Consulta.
+		 * @param string $salida Formato.
+		 * @return mixed
+		 */
+		public function get_row( $sql = '', $salida = null ) {
+			$this->formatos[]  = (string) $salida;
+			$this->consultas[] = (string) $sql;
+			return array_shift( $this->filas );
+		}
+
+		/**
+		 * Siguiente juego de filas preparado.
+		 *
+		 * @param string $sql    Consulta.
+		 * @param string $salida Formato.
+		 * @return mixed
+		 */
+		public function get_results( $sql = '', $salida = null ) {
+			$this->formatos[]  = (string) $salida;
+			$this->consultas[] = (string) $sql;
+			return array_shift( $this->resultados );
+		}
+
+		/**
+		 * Anota una consulta de escritura.
+		 *
+		 * @param string $sql Consulta.
+		 * @return bool
+		 */
+		public function query( $sql ) {
+			$this->consultas[] = (string) $sql;
+			return true;
+		}
+
+		/**
+		 * Anota una inserción.
+		 *
+		 * @param string $tabla   Tabla.
+		 * @param array  $datos   Datos.
+		 * @param array  $formato Formatos.
+		 * @return int
+		 */
+		public function insert( $tabla, $datos, $formato = null ) {
+			$this->inserts[] = array( $tabla, $datos, $formato );
+			return count( $this->inserts );
+		}
+
+		/**
+		 * Sustituye los marcadores por sus valores (doble suficiente).
+		 *
+		 * @param string $sql     Consulta.
+		 * @param mixed  ...$args Valores.
+		 * @return string
+		 */
+		public function prepare( $sql, ...$args ) {
+			$args = ( 1 === count( $args ) && is_array( $args[0] ) ) ? $args[0] : $args;
+			foreach ( $args as $valor ) {
+				$sql = preg_replace( '/%[sdf]/', is_string( $valor ) ? "'" . $valor . "'" : (string) $valor, $sql, 1 );
+			}
+			return (string) $sql;
+		}
+	};
+	// phpcs:enable WordPress.WP.GlobalVariablesOverride
+	// phpcs:enable Generic.Commenting.DocComment
+}
