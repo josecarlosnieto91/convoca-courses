@@ -399,7 +399,9 @@ if ( ! function_exists( 'current_time' ) ) {
 	 * @return string
 	 */
 	function current_time( $formato = 'mysql' ) {
-		return 'mysql' === $formato ? '2026-10-23 10:00:00' : '2026-10-23 10:00:00';
+		$ahora = $GLOBALS['convoca_courses_ahora'] ?? 1_761_220_800;
+
+		return 'timestamp' === $formato ? (int) $ahora : gmdate( 'Y-m-d H:i:s', (int) $ahora );
 	}
 }
 
@@ -495,5 +497,64 @@ if ( ! function_exists( 'esc_attr_e' ) ) {
 	function esc_attr_e( $texto, $dominio = '' ) {
 		unset( $dominio );
 		echo function_exists( 'esc_attr' ) ? esc_attr( $texto ) : $texto; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble de esc_attr_e.
+	}
+}
+
+if ( ! function_exists( 'wp_next_scheduled' ) ) {
+	/**
+	 * ¿Hay un evento programado? (doble que lee convoca_courses_cron).
+	 *
+	 * @param string $hook Gancho.
+	 * @return int|false
+	 */
+	function wp_next_scheduled( $hook ) {
+		return $GLOBALS['convoca_courses_cron'][ (string) $hook ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_schedule_event' ) ) {
+	/**
+	 * Programa un evento (doble que apunta en convoca_courses_cron).
+	 *
+	 * @param int    $cuando Marca de tiempo.
+	 * @param string $periodo Periodicidad.
+	 * @param string $hook   Gancho.
+	 * @return bool
+	 */
+	function wp_schedule_event( $cuando, $periodo, $hook ) {
+		$GLOBALS['convoca_courses_cron'][ (string) $hook ] = array( (int) $cuando, (string) $periodo );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_unschedule_event' ) ) {
+	/**
+	 * Quita un evento programado (doble).
+	 *
+	 * @param int    $cuando Marca de tiempo.
+	 * @param string $hook   Gancho.
+	 * @return bool
+	 */
+	function wp_unschedule_event( $cuando, $hook ) {
+		$GLOBALS['convoca_courses_cron_quitados'][] = array( (int) $cuando, (string) $hook );
+		unset( $GLOBALS['convoca_courses_cron'][ (string) $hook ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_post_time' ) ) {
+	/**
+	 * Fecha de una entrada (doble que lee convoca_courses_fechas).
+	 *
+	 * @param string $formato Formato.
+	 * @param bool   $gmt     GMT.
+	 * @param int    $post_id Entrada.
+	 * @return int|string
+	 */
+	function get_post_time( $formato = 'U', $gmt = false, $post_id = 0 ) {
+		unset( $gmt );
+		$marca = (int) ( $GLOBALS['convoca_courses_fechas'][ (int) $post_id ] ?? 0 );
+
+		return 'U' === $formato ? $marca : gmdate( (string) $formato, $marca );
 	}
 }
