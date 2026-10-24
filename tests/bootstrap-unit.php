@@ -17,6 +17,7 @@ define( 'MINUTE_IN_SECONDS', 60 );
 define( 'CONVOCA_COURSES_VERSION', '0.2.1' );
 
 require_once __DIR__ . '/stubs-clases.php';
+require_once __DIR__ . '/StubRedirect.php';
 require_once __DIR__ . '/StubWpPost.php';
 require_once __DIR__ . '/StubAssets.php';
 require_once __DIR__ . '/StubShortcodes.php';
@@ -415,5 +416,44 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 	 */
 	function esc_url_raw( $url ) {
 		return filter_var( (string) $url, FILTER_SANITIZE_URL );
+	}
+}
+
+if ( ! function_exists( 'wp_safe_redirect' ) ) {
+	/**
+	 * Redirección que **corta** el flujo, como la de WordPress seguida de `exit`.
+	 *
+	 * @param string $url Destino.
+	 * @return never
+	 * @throws \Convoca_Courses_Redirect Siempre: corta con la URL de destino.
+	 */
+	function wp_safe_redirect( $url ) {
+		throw new \Convoca_Courses_Redirect( (string) $url );
+	}
+}
+
+if ( ! function_exists( 'get_edit_post_link' ) ) {
+	/**
+	 * Enlace de edición de la entrada.
+	 *
+	 * @param int    $post_id Identificador.
+	 * @param string $context Contexto.
+	 * @return string
+	 */
+	function get_edit_post_link( $post_id, $context = 'display' ) {
+		unset( $context );
+		return 'https://panel.example.test/wp-admin/post.php?post=' . (int) $post_id . '&action=edit';
+	}
+}
+
+if ( ! function_exists( 'sanitize_textarea_field' ) ) {
+	/**
+	 * Limpia un área de texto conservando los saltos de línea.
+	 *
+	 * @param mixed $valor Valor.
+	 * @return string
+	 */
+	function sanitize_textarea_field( $valor ) {
+		return trim( preg_replace( '/<[^>]*>/', '', (string) $valor ) );
 	}
 }
