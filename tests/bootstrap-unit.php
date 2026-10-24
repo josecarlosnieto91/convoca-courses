@@ -221,6 +221,11 @@ if ( ! function_exists( 'get_posts' ) ) {
 				$post            = new \stdClass();
 				$post->ID        = $id;
 				$post->post_type = get_post_type( $id );
+				// `WP_Post` siempre trae `post_title`: sin él, cualquier selector que lo lea revienta con un aviso
+				// que en producción no existe.
+				$post->post_title = isset( $GLOBALS['convoca_test_titulos'][ $id ] )
+					? (string) $GLOBALS['convoca_test_titulos'][ $id ]
+					: 'Entrada ' . $id;
 				return $post;
 			},
 			$ids
@@ -308,5 +313,107 @@ if ( ! function_exists( 'add_query_arg' ) ) {
 	 */
 	function add_query_arg( $args = array(), $url = '' ) {
 		return (string) $url . '?' . http_build_query( (array) $args );
+	}
+}
+
+if ( ! function_exists( 'add_meta_box' ) ) {
+	/**
+	 * Guarda la caja registrada (pantalla, contexto y callback).
+	 *
+	 * @param string   $id        Identificador.
+	 * @param string   $titulo    Título.
+	 * @param callable $callback  Devolución.
+	 * @param string   $pantalla  Pantalla.
+	 * @param string   $contexto  Contexto.
+	 * @param string   $prioridad Prioridad.
+	 * @return void
+	 */
+	function add_meta_box( $id, $titulo, $callback, $pantalla = 'post', $contexto = 'advanced', $prioridad = 'default' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- se usan en compact().
+		$GLOBALS['convoca_test_cajas'][ $id ] = compact( 'titulo', 'callback', 'pantalla', 'contexto', 'prioridad' );
+	}
+}
+
+if ( ! function_exists( 'wp_nonce_field' ) ) {
+	/**
+	 * Campo oculto del nonce.
+	 *
+	 * @param string $accion Acción.
+	 * @param string $nombre Nombre.
+	 * @return string
+	 */
+	function wp_nonce_field( $accion, $nombre = '_wpnonce' ) {
+		$html = '<input type="hidden" name="' . $nombre . '" value="nonce-' . $accion . '">';
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- campo ya construido y escapado.
+		return $html;
+	}
+}
+
+if ( ! function_exists( 'update_post_meta' ) ) {
+	/**
+	 * Guarda la meta en el mismo mapa que lee `get_post_meta()`.
+	 *
+	 * @param int    $post_id Identificador.
+	 * @param string $key     Clave.
+	 * @param mixed  $value   Valor.
+	 * @return bool
+	 */
+	function update_post_meta( $post_id, $key, $value ) {
+		$GLOBALS['convoca_test_meta'][ (int) $post_id ][ (string) $key ] = is_scalar( $value ) ? (string) $value : $value;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'delete_post_meta' ) ) {
+	/**
+	 * Borra la meta y lo apunta.
+	 *
+	 * @param int    $post_id Identificador.
+	 * @param string $key     Clave.
+	 * @return bool
+	 */
+	function delete_post_meta( $post_id, $key ) {
+		unset( $GLOBALS['convoca_test_meta'][ (int) $post_id ][ (string) $key ] );
+		$GLOBALS['convoca_test_meta_borrada'][] = array( (int) $post_id, (string) $key );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'set_transient' ) ) {
+	/**
+	 * Guarda el aviso temporal.
+	 *
+	 * @param string $clave  Clave.
+	 * @param mixed  $valor  Valor.
+	 * @param int    $expira Segundos.
+	 * @return bool
+	 */
+	function set_transient( $clave, $valor, $expira = 0 ) {
+		unset( $expira );
+		$GLOBALS['convoca_test_transients'][ $clave ] = $valor;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_transient' ) ) {
+	/**
+	 * Lee el aviso temporal.
+	 *
+	 * @param string $clave Clave.
+	 * @return mixed
+	 */
+	function get_transient( $clave ) {
+		return $GLOBALS['convoca_test_transients'][ $clave ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	/**
+	 * Limpia una URL sin escaparla para HTML.
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	function esc_url_raw( $url ) {
+		return filter_var( (string) $url, FILTER_SANITIZE_URL );
 	}
 }
