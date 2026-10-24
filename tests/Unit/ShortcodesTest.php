@@ -123,6 +123,80 @@ class ShortcodesTest extends TestCase {
 		$this->assertStringContainsString( 'No se ha encontrado el curso o la lección', Shortcodes::tasks( array() ) );
 	}
 
+	// ── el árbol de módulos y lecciones ───────────────────────────────────────────
+
+	/**
+	 * La numeración de lecciones es continua entre módulos y cada una trae su estado.
+	 */
+	public function test_las_lecciones_se_numeran_seguidas(): void {
+		$GLOBALS['_cc_posts'][ \Convoca\Courses\CPT_Modulo::TYPE ]  = array(
+			array(
+				'objeto' => (object) array(
+					'ID'           => 21,
+					'post_title'   => 'Módulo uno',
+					'post_content' => 'Intro',
+				),
+				'status' => 'publish',
+				'meta'   => array( '_convoca_curso_id' => '7' ),
+			),
+			array(
+				'objeto' => (object) array(
+					'ID'           => 22,
+					'post_title'   => 'Módulo dos',
+					'post_content' => '',
+				),
+				'status' => 'publish',
+				'meta'   => array( '_convoca_curso_id' => '7' ),
+			),
+		);
+		$GLOBALS['_cc_posts'][ \Convoca\Courses\CPT_Leccion::TYPE ] = array(
+			array(
+				'objeto' => (object) array(
+					'ID'         => 31,
+					'post_title' => 'Primera',
+				),
+				'status' => 'publish',
+				'meta'   => array( '_convoca_modulo_id' => '21' ),
+			),
+			array(
+				'objeto' => (object) array(
+					'ID'         => 32,
+					'post_title' => 'Segunda',
+				),
+				'status' => 'publish',
+				'meta'   => array( '_convoca_modulo_id' => '21' ),
+			),
+			array(
+				'objeto' => (object) array(
+					'ID'         => 33,
+					'post_title' => 'Tercera',
+				),
+				'status' => 'publish',
+				'meta'   => array( '_convoca_modulo_id' => '22' ),
+			),
+		);
+
+		$GLOBALS['convoca_test_meta'][31]['_convoca_duracion'] = '10';
+
+		$datos = Shortcodes::modules_data( 7, 5 );
+
+		$this->assertCount( 2, $datos );
+		$this->assertSame( 'Módulo uno', $datos[0]['title'] );
+		$this->assertSame( 'Intro', $datos[0]['content'] );
+		$this->assertSame(
+			array( 1, 2, 3 ),
+			array(
+				$datos[0]['lessons'][0]['number'],
+				$datos[0]['lessons'][1]['number'],
+				$datos[1]['lessons'][0]['number'],
+			)
+		);
+		$this->assertSame( 10, $datos[0]['lessons'][0]['duration'] );
+		$this->assertSame( 0, $datos[0]['lessons'][1]['duration'], 'sin duración es cero, no nulo' );
+
+		unset( $GLOBALS['_cc_posts'], $GLOBALS['convoca_test_meta'] );
+	}
+
 	// ── el curso de la entrada actual ──────────────────────────────────────────────
 
 	/**
