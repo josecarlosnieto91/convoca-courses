@@ -227,10 +227,28 @@ if ( ! function_exists( 'get_posts' ) ) {
 				$post->post_title = isset( $GLOBALS['convoca_test_titulos'][ $id ] )
 					? (string) $GLOBALS['convoca_test_titulos'][ $id ]
 					: 'Entrada ' . $id;
+				// `WP_Post` también trae siempre el contenido: sin él, cualquier pantalla que lo lea
+				// dispara un aviso que en producción no existe (y el arnés lo tapaba).
+				$post->post_content = isset( $GLOBALS['convoca_test_posts'][ $id ]->post_content )
+					? (string) $GLOBALS['convoca_test_posts'][ $id ]->post_content
+					: '';
 				return $post;
 			},
 			$ids
 		);
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_url' ) ) {
+	/**
+	 * URL de un adjunto desde el mapa que fija la prueba (0 si no está en la biblioteca).
+	 *
+	 * @param int $id Identificador del adjunto.
+	 * @return string
+	 */
+	function wp_get_attachment_url( $id ) {
+		$mapa = isset( $GLOBALS['convoca_test_adjuntos'] ) ? $GLOBALS['convoca_test_adjuntos'] : array();
+		return isset( $mapa[ (int) $id ] ) ? (string) $mapa[ (int) $id ] : '';
 	}
 }
 
