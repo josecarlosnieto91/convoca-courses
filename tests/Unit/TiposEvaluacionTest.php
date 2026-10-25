@@ -2,10 +2,17 @@
 /**
  * El registro de los tipos de contenido de exámenes y tareas.
  *
- * Los dos estaban al 0 % (121 y 75 statements). Aquí hay algo que hay que dejar por escrito con una
- * prueba: **se registran con `capability_type => 'post'`**, es decir, con los permisos de las
- * entradas normales del blog. Eso significa que cualquier autor puede crear y editar exámenes y
- * tareas, y que el tipo no tiene su propio nombre de capacidad.
+ * Los dos estaban al 0 % (121 y 75 statements).
+ *
+ * **Corrección de lo que decía este fichero.** Se escribió afirmando que, como el registro lleva
+ * `capability_type => 'post'`, los exámenes y las tareas usaban los permisos de las entradas del blog y
+ * cualquier autor podía editarlos. **Es falso.** WordPress solo usa `capability_type` para *generar* las
+ * capacidades cuando no le das `capabilities`; en cuanto el array `capabilities` va explícito —y va—, manda
+ * él. Medido: con `CPT_Examen::register()`, las capacidades son `convoca_edit_curso`, `convoca_read_curso`,
+ * `convoca_delete_curso` y `convoca_manage_courses` para el resto. Ninguna es la de las entradas.
+ *
+ * El `capability_type => 'post'` sobra y engaña, pero no cambia nada. Se deja porque quitarlo es un cambio
+ * de producto sin efecto funcional, y lo que sí se hace es **afirmar lo que de verdad ocurre**.
  *
  * No se cambia desde una prueba —es una decisión de permisos, no de cobertura—, pero queda afirmado
  * para que el día que se corrija, esta prueba lo diga.
@@ -75,15 +82,30 @@ final class TiposEvaluacionTest extends TestCase {
 	}
 
 	/**
-	 * Deja afirmado el `capability_type` actual (ver la incidencia abierta en el repo).
+	 * **El examen NO usa las capacidades de las entradas del blog.**
 	 *
-	 * @return void
+	 * Es lo que hay que dejar clavado: `capabilities` explícito manda sobre `capability_type`, así que quien
+	 * pueda `edit_posts` en el blog —cualquier autor— **no** puede tocar un examen. Editar un examen es poder
+	 * cambiar las respuestas correctas, o sea, lo que se evalúa.
 	 */
-	public function test_hoy_el_examen_usa_las_capacidades_de_las_entradas(): void {
+	public function test_el_examen_usa_capacidades_propias_y_no_las_de_las_entradas(): void {
 		CPT_Examen::register();
 
-		// Documentado, no deseado: con «post», manda el permiso de las entradas del blog.
-		$this->assertSame( 'post', $GLOBALS['_cc_cpt'][ CPT_Examen::TYPE ]['capability_type'] );
+		$caps = $GLOBALS['_cc_cpt'][ CPT_Examen::TYPE ]['capabilities'] ?? array();
+
+		$this->assertNotEmpty( $caps, 'el registro trae su mapa de capacidades' );
+		$this->assertTrue( (bool) ( $GLOBALS['_cc_cpt'][ CPT_Examen::TYPE ]['map_meta_cap'] ?? false ) );
+
+		// Las tres primitivas por entrada, con nombre propio del módulo.
+		$this->assertSame( 'convoca_edit_curso', $caps['edit_post'] ?? null );
+		$this->assertSame( 'convoca_read_curso', $caps['read_post'] ?? null );
+		$this->assertSame( 'convoca_delete_curso', $caps['delete_post'] ?? null );
+
+		// Y las globales, a la puerta del módulo: NO a `edit_posts` del blog.
+		foreach ( array( 'edit_posts', 'edit_others_posts', 'publish_posts', 'delete_posts' ) as $capacidad ) {
+			$this->assertSame( 'convoca_manage_courses', $caps[ $capacidad ] ?? null, $capacidad . ' no puede ser la del blog' );
+			$this->assertNotSame( $capacidad, $caps[ $capacidad ] ?? null, 'ni su propio nombre' );
+		}
 	}
 
 	/**
