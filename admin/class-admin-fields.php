@@ -198,25 +198,53 @@ class Admin_Fields {
 	 * @param int $post_id Curso.
 	 * @return void
 	 */
+	/**
+	 * Entero del formulario que **no admite negativos**.
+	 *
+	 * `absint()` está pensado para identificadores y quita el signo: `absint( -5 )` es 5, así que el `max( 0, ... )`
+	 * de después no tenía nada que hacer y un aforo de «-5 plazas» acababa en 5 plazas de más, y un descuento de
+	 * -20 en un 20 % (courses#5). Aquí el signo se mira **antes** de acotar.
+	 *
+	 * @param string $campo Nombre del campo en `$_POST`.
+	 * @return int
+	 */
+	private static function entero_no_negativo( string $campo ): int {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
+		if ( ! isset( $_POST[ $campo ] ) ) {
+			return 0;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- se sanea aquí mismo: `(int)` conserva el signo y `max( 0, ... )` lo acota.
+		return max( 0, (int) wp_unslash( (string) $_POST[ $campo ] ) );
+	}
+
+	/**
+	 * Guarda los campos del curso.
+	 *
+	 * @param int $post_id Identificador del curso.
+	 * @return void
+	 */
 	private function save_course( int $post_id ): void {
 		$prefix = CPT_Base::META_PREFIX;
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
+		// `absint()` **quita el signo**, así que `absint( -5 )` es 5 y el `max( 0, ... )` de después ya no sirve:
+		// un aforo de «-5 plazas» por un formulario manipulado acababa en **5 plazas**, y un descuento de -20 en
+		// **20** (members/courses#5). `(int)` conserva el signo y `max( 0, ... )` lo deja en cero.
 		$price      = isset( $_POST['convoca_precio'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_precio'] ) ) : 0.0;
 		$currency   = isset( $_POST['convoca_moneda'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_moneda'] ) ) : 'EUR';
-		$seats      = isset( $_POST['convoca_plazas'] ) ? absint( wp_unslash( (string) $_POST['convoca_plazas'] ) ) : 0;
+		$seats      = self::entero_no_negativo( 'convoca_plazas' );
 		$cert       = ! empty( $_POST['convoca_certificado'] );
 		$sequential = ! empty( $_POST['convoca_secuencial'] );
 
 		$apertura   = isset( $_POST['convoca_apertura_matricula'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_apertura_matricula'] ) ) : '';
 		$cierre     = isset( $_POST['convoca_cierre_matricula'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_cierre_matricula'] ) ) : '';
 		$fin        = isset( $_POST['convoca_fecha_fin'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_fecha_fin'] ) ) : '';
-		$dias       = isset( $_POST['convoca_caducidad_dias'] ) ? absint( wp_unslash( (string) $_POST['convoca_caducidad_dias'] ) ) : 0;
+		$dias       = self::entero_no_negativo( 'convoca_caducidad_dias' );
 		$minima     = isset( $_POST['convoca_nota_minima'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_nota_minima'] ) ) : 50.0;
 		$acceso     = isset( $_POST['convoca_acceso_examen'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_acceso_examen'] ) ) : 'todas';
-		$acceso_pct = isset( $_POST['convoca_acceso_examen_porcentaje'] ) ? absint( wp_unslash( (string) $_POST['convoca_acceso_examen_porcentaje'] ) ) : 100;
+		$acceso_pct = isset( $_POST['convoca_acceso_examen_porcentaje'] ) ? self::entero_no_negativo( 'convoca_acceso_examen_porcentaje' ) : 100;
 		$socio      = isset( $_POST['convoca_precio_socio'] ) ? (float) sanitize_text_field( wp_unslash( (string) $_POST['convoca_precio_socio'] ) ) : -1.0;
-		$descuento  = isset( $_POST['convoca_descuento_socio'] ) ? absint( wp_unslash( (string) $_POST['convoca_descuento_socio'] ) ) : 0;
+		$descuento  = self::entero_no_negativo( 'convoca_descuento_socio' );
 		$gratis     = ! empty( $_POST['convoca_gratis_socios'] );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
@@ -247,8 +275,8 @@ class Admin_Fields {
 		$prefix = CPT_Base::META_PREFIX;
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
-		$course_id = isset( $_POST['convoca_curso_id'] ) ? absint( wp_unslash( (string) $_POST['convoca_curso_id'] ) ) : 0;
-		$order     = isset( $_POST['convoca_orden'] ) ? absint( wp_unslash( (string) $_POST['convoca_orden'] ) ) : 0;
+		$course_id = self::entero_no_negativo( 'convoca_curso_id' );
+		$order     = self::entero_no_negativo( 'convoca_orden' );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		update_post_meta( $post_id, $prefix . 'orden', $order );
@@ -272,11 +300,11 @@ class Admin_Fields {
 		$prefix = CPT_Base::META_PREFIX;
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- el nonce se verificó en save().
-		$module_id  = isset( $_POST['convoca_modulo_id'] ) ? absint( wp_unslash( (string) $_POST['convoca_modulo_id'] ) ) : 0;
+		$module_id  = self::entero_no_negativo( 'convoca_modulo_id' );
 		$type       = isset( $_POST['convoca_tipo'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_tipo'] ) ) : 'texto';
-		$order      = isset( $_POST['convoca_orden'] ) ? absint( wp_unslash( (string) $_POST['convoca_orden'] ) ) : 0;
-		$duration   = isset( $_POST['convoca_duracion'] ) ? absint( wp_unslash( (string) $_POST['convoca_duracion'] ) ) : 0;
-		$attachment = isset( $_POST['convoca_adjunto_id'] ) ? absint( wp_unslash( (string) $_POST['convoca_adjunto_id'] ) ) : 0;
+		$order      = self::entero_no_negativo( 'convoca_orden' );
+		$duration   = self::entero_no_negativo( 'convoca_duracion' );
+		$attachment = self::entero_no_negativo( 'convoca_adjunto_id' );
 		$video_url  = isset( $_POST['convoca_video_url'] ) ? esc_url_raw( wp_unslash( (string) $_POST['convoca_video_url'] ) ) : '';
 		$video_key  = isset( $_POST['convoca_video_key'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_video_key'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Missing

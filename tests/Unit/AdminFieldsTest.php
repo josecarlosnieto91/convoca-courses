@@ -190,10 +190,13 @@ final class AdminFieldsTest extends TestCase {
 		$m = $GLOBALS['convoca_test_meta'][61];
 		$this->assertSame( 120.5, (float) $m['_convoca_precio'] );
 		$this->assertSame( 'EUR', $m['_convoca_moneda'], 'la moneda se normaliza a mayúsculas de 3' );
-		$this->assertSame( 5, (int) $m['_convoca_plazas'], 'absint quita el signo: un -5 entra como 5 (anotado)' );
+		// **Un aforo negativo se guarda como 0, no como 5.** `absint()` quita el signo —`absint( -5 )` es 5— así que
+		// el `max( 0, ... )` de después no servía de nada: un formulario manipulado dejaba el curso con 5 plazas de
+		// más (courses#5).
+		$this->assertSame( 0, (int) $m['_convoca_plazas'], 'un aforo negativo no puede convertirse en plazas' );
 		$this->assertSame( 1, (int) $m['_convoca_certificado'] );
 		$this->assertSame( 0, (int) $m['_convoca_desbloqueo_secuencial'] );
-		$this->assertSame( 3, (int) $m['_convoca_caducidad_dias'], 'absint quita el signo: -3 entra como 3 (anotado)' );
+		$this->assertSame( 0, (int) $m['_convoca_caducidad_dias'], 'ni una caducidad negativa se vuelve positiva' );
 		$this->assertSame( 75, (int) $m['_convoca_nota_minima'] );
 		$this->assertSame( 100, (int) $m['_convoca_acceso_examen_porcentaje'], 'el porcentaje se recorta' );
 		$this->assertSame( -1.0, (float) $m['_convoca_precio_socio'], 'un precio de socio negativo es «no aplica»' );
@@ -201,6 +204,33 @@ final class AdminFieldsTest extends TestCase {
 		$this->assertSame( 1, (int) $m['_convoca_gratis_socios'] );
 		$this->assertSame( '2026-11-01', $m['_convoca_fecha_apertura_matricula'] );
 		$this->assertSame( '2027-01-15', $m['_convoca_fecha_fin'] );
+	}
+
+	/**
+	 * **Ningún campo numérico se cuela en positivo cuando llega en negativo.**
+	 *
+	 * `absint()` está pensado para identificadores: quita el signo, así que `absint( -5 )` es 5, y el `max( 0, ... )`
+	 * de después ya no tiene nada que hacer. En un aforo eso son 5 plazas de más; en un descuento, un 20 % que nadie
+	 * autorizó (courses#5).
+	 */
+	public function test_los_campos_numericos_negativos_quedan_en_cero(): void {
+		$_POST = array(
+			Admin_Fields::NONCE                => 'bueno',
+			'convoca_plazas'                   => '-5',
+			'convoca_caducidad_dias'           => '-30',
+			'convoca_acceso_examen_porcentaje' => '-20',
+			'convoca_descuento_socio'          => '-20',
+		);
+
+		$this->campos->save( 61, $this->post( CPT_Curso::TYPE ) );
+
+		$m = $GLOBALS['convoca_test_meta'][61] ?? array();
+
+		$this->assertArrayHasKey( '_convoca_plazas', $m, 'el guardado tiene que haber ocurrido' );
+		$this->assertSame( 0, (int) $m['_convoca_plazas'], 'plazas: -5 no son 5 plazas' );
+		$this->assertSame( 0, (int) $m['_convoca_caducidad_dias'], 'caducidad: -30 no son 30 días' );
+		$this->assertSame( 0, (int) $m['_convoca_acceso_examen_porcentaje'], 'porcentaje: un negativo no acaba en positivo' );
+		$this->assertSame( 0, (int) $m['_convoca_descuento_socio'], 'descuento: -20 no es un 20 % de descuento' );
 	}
 
 	/**
