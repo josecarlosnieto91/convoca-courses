@@ -130,27 +130,31 @@ final class HandlersGuardasTest extends TestCase {
 	 */
 	public static function manejadores(): array {
 		$nonce = array( '_convoca_nonce' => 'inventado' );
+		$casos = array();
 
-		return array(
-			'matrícula'          => array( 'handle_enroll', array( 'course_id' => 7 ) + $nonce ),
-			'baja'                => array(
-				'handle_cancel',
-				array(
-					'enrollment_id' => 9,
-					'course_id'     => 7,
-				) + $nonce,
-			),
-			'lección completada' => array( 'handle_complete', array( 'lesson_id' => 11 ) + $nonce ),
-			'abrir examen'        => array( 'handle_exam_open', array( 'exam_id' => 30 ) + $nonce ),
-			'enviar examen'       => array( 'handle_exam_submit', array( 'attempt_id' => 40 ) + $nonce ),
-			'enviar tarea'        => array(
-				'handle_task_submit',
-				array(
-					'task_id'   => 50,
-					'course_id' => 7,
-				) + $nonce,
-			),
+		// Se monta con añadidos y no con un array de claves alineadas: PHPCS calcula el ancho de las
+		// claves de forma distinta según cuente bytes o caracteres, y con claves acentuadas el mismo
+		// fichero pasaba en local y fallaba en el CI. Sin claves alineadas, no hay nada que calcular.
+		$casos[] = array( 'handle_enroll', array( 'course_id' => 7 ) + $nonce );
+		$casos[] = array(
+			'handle_cancel',
+			array(
+				'enrollment_id' => 9,
+				'course_id'     => 7,
+			) + $nonce,
 		);
+		$casos[] = array( 'handle_complete', array( 'lesson_id' => 11 ) + $nonce );
+		$casos[] = array( 'handle_exam_open', array( 'exam_id' => 30 ) + $nonce );
+		$casos[] = array( 'handle_exam_submit', array( 'attempt_id' => 40 ) + $nonce );
+		$casos[] = array(
+			'handle_task_submit',
+			array(
+				'task_id'   => 50,
+				'course_id' => 7,
+			) + $nonce,
+		);
+
+		return $casos;
 	}
 
 	/**
@@ -160,13 +164,14 @@ final class HandlersGuardasTest extends TestCase {
 	 */
 	public static function manejadores_administrativos(): array {
 		$nonce = array( '_convoca_nonce' => 'inventado' );
+		$casos = array();
 
-		return array(
-			'calificar tarea' => array( 'handle_task_grade', array( 'submission_id' => 60 ) + $nonce ),
-			'notas en CSV'    => array( 'handle_gradebook_csv', array( 'course_id' => 7 ) + $nonce ),
-			'correo al grupo' => array( 'handle_group_email', array( 'course_id' => 7 ) + $nonce ),
-			'exportar banco'  => array( 'handle_bank_export', array( 'course_id' => 7 ) + $nonce ),
-			'importar banco'  => array( 'handle_bank_import', array( 'exam_id' => 30 ) + $nonce ),
-		);
+		$casos[] = array( 'handle_task_grade', array( 'submission_id' => 60 ) + $nonce );
+		$casos[] = array( 'handle_gradebook_csv', array( 'course_id' => 7 ) + $nonce );
+		$casos[] = array( 'handle_group_email', array( 'course_id' => 7 ) + $nonce );
+		$casos[] = array( 'handle_bank_export', array( 'course_id' => 7 ) + $nonce );
+		$casos[] = array( 'handle_bank_import', array( 'exam_id' => 30 ) + $nonce );
+
+		return $casos;
 	}
 }
