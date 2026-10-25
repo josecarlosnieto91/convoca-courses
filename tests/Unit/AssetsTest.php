@@ -48,7 +48,10 @@ class AssetsTest extends TestCase {
 
 		$GLOBALS['convoca_courses_singular'] = '';
 		$GLOBALS['convoca_test_posts']       = array();
-		unset( $GLOBALS['convoca_courses_pantalla'] );
+		// El post global TAMBIÉN: `Assets::front()` pregunta `get_post()` sin argumentos, y dos casos de este mismo
+		// fichero lo fijan con un contenido que lleva `[convoca_curso]`. Sin limpiarlo, el caso «una página
+		// cualquiera no encola nada» heredaba el post del anterior y sí encolaba (courses#12).
+		unset( $GLOBALS['convoca_courses_pantalla'], $GLOBALS['post'] );
 	}
 
 	/**

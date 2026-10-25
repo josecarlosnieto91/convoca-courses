@@ -67,10 +67,20 @@ class RemindersTest extends TestCase {
 		$GLOBALS['convoca_courses_cron']          = array();
 		$GLOBALS['convoca_courses_cron_quitados'] = array();
 		$GLOBALS['convoca_courses_fechas']        = array();
-		$GLOBALS['convoca_test_post_types']       = array();
-		$GLOBALS['convoca_test_meta']             = array();
-		$GLOBALS['wpdb']->vars                    = array();
-		$GLOBALS['wpdb']->consultas               = array();
+		// Los usuarios y la bandeja del mailer son de ESTOS casos y no se limpiaban: `curso_con_alumna_inactiva()`
+		// siembra `convoca_courses_usuarios[9]` y un caso posterior lo heredaba. `limpiar()` tiene que devolver
+		// todo lo que el caso toca, no solo lo que parece del módulo (courses#12).
+		$GLOBALS['convoca_courses_usuarios']  = array();
+		$GLOBALS['convoca_courses_mailer_ok'] = true;
+		$GLOBALS['convoca_courses_lock_ok']   = true;
+		$GLOBALS['convoca_test_post_types']   = array();
+		$GLOBALS['convoca_test_meta']         = array();
+		$GLOBALS['wpdb']->vars                = array();
+		$GLOBALS['wpdb']->consultas           = array();
+		// El buzón del doble es una PROPIEDAD ESTÁTICA: no la limpia nadie y los correos de un caso se veían en el
+		// siguiente. `test_la_pasada_con_un_curso_no_rompe` esperaba 1 envío y encontraba 2 según qué hubiera
+		// corrido antes (courses#12).
+		Mailer::$enviados = array();
 	}
 
 	/**
