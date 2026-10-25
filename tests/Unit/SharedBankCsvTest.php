@@ -159,7 +159,15 @@ class SharedBankCsvTest extends TestCase {
 		$this->assertSame( array( '1' ), $preguntas[0]['correctas'], 'el 0 y el negativo se descartan; 2 pasa a 1' );
 
 		$con_errata = Shared_Bank::parse_csv( "unica;Pregunta;A;B;;;1;incalculable;\r\n" );
-		$this->assertSame( 0.0, $con_errata[0]['puntos'], 'una errata en los puntos deja la pregunta a cero (issue abierto)' );
+		$this->assertSame( 1.0, $con_errata[0]['puntos'], 'una errata en los puntos NO puede dejar la pregunta a cero' );
+
+		// La coma decimal se acepta: el separador de columnas es `;`, así que en un CSV español la coma es decimal.
+		$con_coma = Shared_Bank::parse_csv( "unica;Pregunta;A;B;;;1;2,5;\r\n" );
+		$this->assertSame( 2.5, $con_coma[0]['puntos'], '2,5 son dos puntos y medio, no cero ni uno' );
+
+		// Y un número de verdad se respeta.
+		$con_numero = Shared_Bank::parse_csv( "unica;Pregunta;A;B;;;1;3;\r\n" );
+		$this->assertSame( 3.0, $con_numero[0]['puntos'] );
 	}
 
 	/**

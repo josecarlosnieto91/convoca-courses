@@ -150,12 +150,34 @@ class Shared_Bank {
 				}
 			}
 
+			// Los puntos: una celda vacía vale 1; una celda **mal escrita** también, y no 0.
+			// `(float)` convierte cualquier cosa que no sea un número en 0.0, así que una errata —un `?`, una letra,
+			// un `1,5` con coma decimal— dejaba la pregunta **sin peso**: el examen seguía funcionando, esa pregunta
+			// no sumaba y la nota salía más baja sin que nadie se enterara (courses#4). La coma se acepta como
+			// decimal porque el separador de columnas es `;`.
+			$puntos_celda = trim( str_replace( ',', '.', (string) $campos[7] ) );
+			if ( '' === trim( (string) $campos[7] ) ) {
+				$puntos = 1.0;
+			} elseif ( is_numeric( $puntos_celda ) ) {
+				$puntos = (float) $puntos_celda;
+			} else {
+				$puntos = 1.0;
+				\Convoca\Core\Logger::warning(
+					sprintf(
+						'CSV de banco compartido: puntos no numéricos («%s») en la pregunta «%s»; se aplica 1 por defecto.',
+						(string) $campos[7],
+						(string) $campos[1]
+					),
+					'Courses/BancoCompartido'
+				);
+			}
+
 			$preguntas[] = array(
 				'tipo'        => $campos[0],
 				'enunciado'   => $campos[1],
 				'opciones'    => $opciones,
 				'correctas'   => $correctas,
-				'puntos'      => '' !== $campos[7] ? (float) $campos[7] : 1.0,
+				'puntos'      => $puntos,
 				'explicacion' => $campos[8],
 			);
 		}
