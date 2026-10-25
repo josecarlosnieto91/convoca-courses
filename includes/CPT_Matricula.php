@@ -140,6 +140,34 @@ class CPT_Matricula extends CPT_Base {
 	}
 
 	/**
+	 * El estado **tal y como está guardado**, sin normalizar.
+	 *
+	 * `status()` cae a `pendiente` cuando el valor guardado no está en `STATUSES`, y eso está bien para pintar una
+	 * pantalla: siempre enseña algo que el código entiende. Pero para **contar plazas** es un engaño, porque
+	 * `pendiente` ocupa: una matrícula con un estado heredado (`baja`, por ejemplo) se quedaba con la plaza de otra
+	 * persona y no había forma de verlo (courses#3).
+	 *
+	 * Este método existe para que quien tenga que decidir sobre datos raros pueda distinguir «pendiente de verdad»
+	 * de «un estado que no reconozco».
+	 *
+	 * @param int $enrollment_id Identificador de la matrícula.
+	 * @return string
+	 */
+	public static function status_almacenado( int $enrollment_id ): string {
+		return self::get_string( $enrollment_id, 'estado', '' );
+	}
+
+	/**
+	 * ¿El estado guardado es uno de los que el módulo reconoce?
+	 *
+	 * @param int $enrollment_id Identificador de la matrícula.
+	 * @return bool
+	 */
+	public static function tiene_estado_conocido( int $enrollment_id ): bool {
+		return in_array( self::status_almacenado( $enrollment_id ), self::STATUSES, true );
+	}
+
+	/**
 	 * Curso de la matrícula.
 	 *
 	 * @param int $enrollment_id Identificador de la matrícula.

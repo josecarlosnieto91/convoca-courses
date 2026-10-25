@@ -154,16 +154,40 @@ class CohortsTest extends TestCase {
 	}
 
 	/**
-	 * Un estado que no existe cuenta como pendiente: la plaza se queda ocupada.
+	 * **Un estado que el módulo no reconoce NO ocupa plaza.**
 	 *
-	 * Comportamiento real de `CPT_Matricula::status()`, que cae a «pendiente» cuando el estado no está
-	 * en la lista. Se deja escrito aquí a propósito: es conservador (no regala plazas), pero conviene
-	 * saberlo antes de tocar los estados.
+	 * `CPT_Matricula::status()` cae a `pendiente` cuando el valor guardado no está en `STATUSES`, y `pendiente`
+	 * cuenta como ocupante. Con datos heredados —una matrícula con `baja` de una importación o de una versión
+	 * anterior— eso dejaba una plaza bloqueada por alguien que ya no está, sin que nadie pudiera verlo: en un curso
+	 * con sobreventa no hay forma de saber por qué falta sitio (courses#3).
+	 *
+	 * Ahora se decide sobre el estado **guardado**: lo que no se reconoce no ocupa y deja un aviso en el registro.
 	 */
-	public function test_un_estado_inventado_ocupa_plaza(): void {
+	public function test_un_estado_inventado_no_ocupa_plaza(): void {
 		$this->matricula( 5, 'baja' );
 
-		$this->assertSame( 1, Cohorts::occupied( 7 ) );
+		$this->assertSame( 0, Cohorts::occupied( 7 ), 'un estado heredado no puede quedarse con la plaza' );
+	}
+
+	/**
+	 * Y con un estado conocido la cuenta sigue igual: la plaza se cuenta, no se regala.
+	 */
+	public function test_los_estados_conocidos_siguen_ocupando(): void {
+		$this->matricula( 1, 'pendiente' );
+		$this->matricula( 2, 'activa' );
+		$this->matricula( 3, 'completada' );
+		$this->matricula( 4, 'cancelada' );
+
+		$this->assertSame( 3, Cohorts::occupied( 7 ), 'pendiente, activa y completada ocupan; cancelada no' );
+	}
+
+	/**
+	 * Un estado vacío (la meta no está) tampoco ocupa: no hay nada que reconocer.
+	 */
+	public function test_un_estado_vacio_no_ocupa_plaza(): void {
+		$this->matricula( 5, '' );
+
+		$this->assertSame( 0, Cohorts::occupied( 7 ) );
 	}
 
 	/**

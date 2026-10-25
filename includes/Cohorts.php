@@ -212,6 +212,23 @@ class Cohorts {
 
 		$ocupadas = 0;
 		foreach ( $matriculas as $matricula_id ) {
+			// Se decide sobre el estado **guardado**, no sobre el normalizado: `status()` convierte cualquier valor
+			// que no reconoce en `pendiente`, y `pendiente` ocupa, así que una matrícula con un estado heredado
+			// (`baja`, de una importación o de datos viejos) se quedaba con la plaza de otra persona sin que nadie
+			// pudiera verlo. Un estado desconocido **no ocupa** y deja rastro en el registro para poder limpiarlo
+			// (courses#3).
+			if ( ! CPT_Matricula::tiene_estado_conocido( (int) $matricula_id ) ) {
+				\Convoca\Core\Logger::warning(
+					sprintf(
+						'Matrícula #%d con un estado que el módulo no reconoce («%s»): no cuenta como plaza ocupada.',
+						(int) $matricula_id,
+						CPT_Matricula::status_almacenado( (int) $matricula_id )
+					),
+					'Courses/Matriculas'
+				);
+				continue;
+			}
+
 			if ( in_array( CPT_Matricula::status( (int) $matricula_id ), Enrollment::OCCUPYING, true ) ) {
 				++$ocupadas;
 			}
