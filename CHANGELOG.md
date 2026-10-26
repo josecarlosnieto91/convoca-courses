@@ -1,3 +1,10 @@
+## [0.3.3] — 2026-10-26
+
+### Cambiado
+
+- **campos de administracion y tipos de evaluacion**
+- Los campos numericos no aceptan negativos.
+
 # Changelog
 
 Todas las versiones de Convoca Courses. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
