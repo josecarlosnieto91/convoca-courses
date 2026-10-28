@@ -390,24 +390,25 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function lesson_url( int $lesson_id ): string {
-		if ( $lesson_id <= 0 ) {
-			return '';
-		}
-
-		$mapa = self::mapa_lecciones();
-
-		if ( ! isset( $mapa[ $lesson_id ] ) ) {
-			return '';
-		}
-
-		return (string) get_permalink( $mapa[ $lesson_id ] ) . '#leccion-' . $lesson_id;
+		return Lesson_Links::url( $lesson_id );
 	}
 
 	/**
-	 * Mapa lección → página, construido una sola vez por petición.
+	 * Página que publica una lección según el contenido, para el contenido anterior al metadato.
 	 *
-	 * Antes se consultaba una vez por lección y con un tope de 20 páginas del sitio: un curso de 18
-	 * lecciones dejaba el presupuesto a una plaza y las que sobraban se pintaban sin enlace sin avisar.
+	 * @param int $lesson_id Lección.
+	 * @return int
+	 */
+	public static function pagina_por_contenido( int $lesson_id ): int {
+		$mapa = self::mapa_lecciones();
+
+		return isset( $mapa[ $lesson_id ] ) ? (int) $mapa[ $lesson_id ] : 0;
+	}
+
+	/**
+	 * Construye el mapa lección → página leyendo el contenido, una sola vez.
+	 *
+	 * Respaldo para el contenido anterior al metadato `_convoca_pagina_id`.
 	 *
 	 * @return array<int, int>
 	 */

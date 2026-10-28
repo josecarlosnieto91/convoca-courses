@@ -1,3 +1,14 @@
+## [0.4.0] — 2026-10-28
+
+### Añadido
+
+- **vínculo lección → página anotado al guardar**: al guardar una página se extraen sus
+  `[convoca_curso_leccion id="N"]` y se anota `_convoca_pagina_id` en cada lección. Editar la página
+  quitando un shortcode borra el vínculo de esa lección; despublicarla los limpia todos. El contenido
+  anterior a este cambio sigue resolviéndose leyendo el contenido, como respaldo.
+- **URL propia de lección**: `/cursos/<curso>/leccion/<slug>/`. Una lección bloqueada redirige al curso y
+  un slug inexistente responde 404. Sin permalinks, todo sigue funcionando por la página.
+
 ## [0.3.6] — 2026-10-28
 
 ### Corregido

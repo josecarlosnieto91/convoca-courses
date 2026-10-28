@@ -856,3 +856,129 @@ if ( ! function_exists( 'selected' ) ) {
 		return $salida;
 	}
 }
+
+if ( ! function_exists( 'wp_is_post_revision' ) ) {
+	/**
+	 * Revisión (doble: nunca).
+	 *
+	 * @param int $post_id Entrada.
+	 * @return false
+	 */
+	function wp_is_post_revision( $post_id ) {
+		unset( $post_id );
+		return false;
+	}
+}
+
+if ( ! function_exists( 'wp_is_post_autosave' ) ) {
+	/**
+	 * Autoguardado (doble: nunca).
+	 *
+	 * @param int $post_id Entrada.
+	 * @return false
+	 */
+	function wp_is_post_autosave( $post_id ) {
+		unset( $post_id );
+		return false;
+	}
+}
+
+if ( ! function_exists( 'get_post_status' ) ) {
+	/**
+	 * Estado de una entrada (doble sobre convoca_test_posts).
+	 *
+	 * @param int|object $post Entrada o id.
+	 * @return string|false
+	 */
+	function get_post_status( $post ) {
+		$objeto = is_object( $post ) ? $post : get_post( $post );
+		return is_object( $objeto ) ? ( $objeto->post_status ?? false ) : false;
+	}
+}
+
+if ( ! function_exists( 'delete_post_meta' ) ) {
+	/**
+	 * Borra meta (doble sobre convoca_test_meta).
+	 *
+	 * @param int    $post_id Entrada.
+	 * @param string $clave   Clave.
+	 * @return bool
+	 */
+	function delete_post_meta( $post_id, $clave ) {
+		unset( $GLOBALS['convoca_test_meta'][ (int) $post_id ][ (string) $clave ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'user_trailingslashit' ) ) {
+	/**
+	 * Barra final (doble).
+	 *
+	 * @param string $ruta Ruta.
+	 * @return string
+	 */
+	function user_trailingslashit( $ruta ) {
+		return rtrim( (string) $ruta, '/' ) . '/';
+	}
+}
+
+if ( ! function_exists( 'add_rewrite_rule' ) ) {
+	/**
+	 * Regla de rewrite (doble que la apunta).
+	 *
+	 * @param string $regex Regla.
+	 * @param string $query Consulta.
+	 * @param string $after Posición.
+	 * @return bool
+	 */
+	function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
+		$GLOBALS['convoca_test_rewrites'][] = array( (string) $regex, (string) $query, (string) $after );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_query_var' ) ) {
+	/**
+	 * Variable de consulta (doble).
+	 *
+	 * @param string $clave Clave.
+	 * @return mixed
+	 */
+	function get_query_var( $clave ) {
+		return $GLOBALS['convoca_test_query_vars'][ (string) $clave ] ?? '';
+	}
+}
+
+if ( ! function_exists( 'status_header' ) ) {
+	/**
+	 * Cabecera de estado (doble que la apunta).
+	 *
+	 * @param int $codigo Código.
+	 * @return void
+	 */
+	function status_header( $codigo ) {
+		$GLOBALS['convoca_test_status'] = (int) $codigo;
+	}
+}
+
+if ( ! function_exists( 'get_header' ) ) {
+	/**
+	 * Cabecera del tema (doble).
+	 *
+	 * @return void
+	 */
+	function get_header() {
+		$GLOBALS['convoca_test_header'] = true;
+	}
+}
+
+if ( ! function_exists( 'get_footer' ) ) {
+	/**
+	 * Pie del tema (doble).
+	 *
+	 * @return void
+	 */
+	function get_footer() {
+		$GLOBALS['convoca_test_footer'] = true;
+	}
+}

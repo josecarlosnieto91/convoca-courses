@@ -56,7 +56,8 @@ final class MapaLeccionesTest extends TestCase {
 			$filas[] = $this->fila( 200 + $i, '[convoca_curso_lecciones]' );
 		}
 
-		$GLOBALS['wpdb']->resultados = array( $filas );
+		// Primera respuesta: el mapa de metadatos (vacío, contenido anterior al vínculo). Segunda: el contenido.
+		$GLOBALS['wpdb']->resultados = array( array(), $filas );
 
 		for ( $i = 1; $i <= 30; $i++ ) {
 			$this->assertNotSame( '', Shortcodes::lesson_url( $i ), 'la lección ' . $i . ' tiene que quedar enlazada' );
@@ -70,6 +71,7 @@ final class MapaLeccionesTest extends TestCase {
 	 */
 	public function test_el_indice_no_cuenta_como_leccion(): void {
 		$GLOBALS['wpdb']->resultados = array(
+			array(),
 			array( $this->fila( 500, '[convoca_curso_lecciones]' ) ),
 		);
 
@@ -88,17 +90,17 @@ final class MapaLeccionesTest extends TestCase {
 		$GLOBALS['wpdb']->resultados = array( $filas );
 
 		for ( $i = 1; $i <= 30; $i++ ) {
-			Shortcodes::lesson_url( $i );
+			Shortcodes::pagina_por_contenido( $i );
 		}
 
-		$this->assertCount( 1, $GLOBALS['wpdb']->consultas, 'una consulta para todo el índice' );
+		$this->assertCount( 1, $GLOBALS['wpdb']->consultas, 'una consulta para todo el índice, no una por lección' );
 	}
 
 	/**
 	 * La búsqueda no arrastra el índice del curso.
 	 */
 	public function test_la_consulta_descarta_el_indice(): void {
-		$GLOBALS['wpdb']->resultados = array( array() );
+		$GLOBALS['wpdb']->resultados = array( array(), array() );
 
 		Shortcodes::lesson_url( 1 );
 

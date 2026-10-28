@@ -77,6 +77,7 @@ final class Plugin {
 		$entregas->register();
 
 		Reminders::register();
+		Lesson_Links::register();
 
 		if ( is_admin() ) {
 			Settings::register();
