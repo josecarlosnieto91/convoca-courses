@@ -20,11 +20,13 @@ final class LessonLinksTest extends TestCase {
 	 * Arnés limpio entre pruebas.
 	 */
 	protected function setUp(): void {
-		$GLOBALS['convoca_test_posts']      = array();
-		$GLOBALS['convoca_test_post_types'] = array();
-		$GLOBALS['convoca_test_meta']       = array();
-		$GLOBALS['convoca_test_rewrites']   = array();
-		$GLOBALS['convoca_test_query_vars'] = array();
+		$GLOBALS['convoca_test_posts']       = array();
+		$GLOBALS['convoca_test_post_types']  = array();
+		$GLOBALS['convoca_test_meta']        = array();
+		$GLOBALS['convoca_test_rewrites']    = array();
+		$GLOBALS['convoca_test_query_vars']  = array();
+		$GLOBALS['convoca_test_flush']       = 0;
+		$GLOBALS['convoca_courses_opciones'] = array();
 
 		$prop = new ReflectionProperty( Lesson_Links::class, 'mapa_meta' );
 		$prop->setValue( null, null );
@@ -99,6 +101,22 @@ final class LessonLinksTest extends TestCase {
 		Lesson_Links::sync_content( 500, '', 'draft', 'page' );
 
 		$this->assertArrayNotHasKey( '_convoca_pagina_id', $GLOBALS['convoca_test_meta'][4] ?? array() );
+	}
+
+	/**
+	 * Las reglas se regeneran una vez por versión, no en cada carga.
+	 */
+	public function test_las_reglas_se_regeneran_una_vez_por_version(): void {
+		Lesson_Links::maybe_flush();
+
+		$this->assertSame( 1, (int) $GLOBALS['convoca_test_flush'], 'la primera vez hay que regenerar' );
+		$this->assertSame(
+			defined( 'CONVOCA_COURSES_VERSION' ) ? CONVOCA_COURSES_VERSION : '1',
+			$GLOBALS['convoca_courses_opciones']['convoca_courses_rewrite_version'] ?? ''
+		);
+
+		Lesson_Links::maybe_flush();
+		$this->assertSame( 1, (int) $GLOBALS['convoca_test_flush'], 'con la misma versión no se vuelve a regenerar' );
 	}
 
 	/**

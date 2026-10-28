@@ -982,3 +982,16 @@ if ( ! function_exists( 'get_footer' ) ) {
 		$GLOBALS['convoca_test_footer'] = true;
 	}
 }
+
+if ( ! function_exists( 'flush_rewrite_rules' ) ) {
+	/**
+	 * Regenera reglas (doble que cuenta las veces).
+	 *
+	 * @param bool $duro Si es duro.
+	 * @return void
+	 */
+	function flush_rewrite_rules( $duro = true ) {
+		unset( $duro );
+		$GLOBALS['convoca_test_flush'] = ( $GLOBALS['convoca_test_flush'] ?? 0 ) + 1;
+	}
+}

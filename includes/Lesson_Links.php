@@ -47,6 +47,25 @@ class Lesson_Links {
 		add_action( 'init', array( __CLASS__, 'register_rewrite' ) );
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'maybe_serve' ) );
+		// Las reglas guardadas en la base de datos no se regeneran al actualizar ficheros: sin esto, la URL
+		// propia responde 404 hasta que alguien guarde los permalinks a mano.
+		add_action( 'init', array( __CLASS__, 'maybe_flush' ), 99 );
+	}
+
+	/**
+	 * Regenera las reglas una vez por versión.
+	 *
+	 * @return void
+	 */
+	public static function maybe_flush(): void {
+		$guardada = (string) get_option( 'convoca_courses_rewrite_version', '' );
+
+		if ( defined( 'CONVOCA_COURSES_VERSION' ) && CONVOCA_COURSES_VERSION === $guardada ) {
+			return;
+		}
+
+		flush_rewrite_rules( false );
+		update_option( 'convoca_courses_rewrite_version', defined( 'CONVOCA_COURSES_VERSION' ) ? CONVOCA_COURSES_VERSION : '1' );
 	}
 
 	/**
