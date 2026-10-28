@@ -17,6 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Shortcodes {
 
 	/**
+	 * Evita que la portada se llame a sí misma al expandir el contenido del curso.
+	 *
+	 * Sin esta guarda, un `[convoca_curso]` dentro del propio curso desborda la pila: `the_content`
+	 * vuelve a ejecutar el shortcode y no hay tope.
+	 *
+	 * @var bool
+	 */
+	private static bool $renderizando = false;
+
+	/**
 	 * Registra los shortcodes.
 	 *
 	 * @return void
@@ -172,6 +182,10 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function course( $atts ): string {
+		if ( self::$renderizando ) {
+			return '';
+		}
+
 		$atts = shortcode_atts(
 			array(
 				'id' => '0',
@@ -185,6 +199,20 @@ class Shortcodes {
 			return self::error_box();
 		}
 
+		self::$renderizando = true;
+		$html               = self::render_course( $course_id );
+		self::$renderizando = false;
+
+		return $html;
+	}
+
+	/**
+	 * Pinta la portada de un curso ya resuelto.
+	 *
+	 * @param int $course_id Curso.
+	 * @return string
+	 */
+	private static function render_course( int $course_id ): string {
 		$user_id = get_current_user_id();
 		$state   = Access::summary( $user_id, $course_id );
 		$free    = Enrollment::free_seats( $course_id );
@@ -200,7 +228,7 @@ class Shortcodes {
 			array(
 				'course_id'         => $course_id,
 				'title'             => (string) get_the_title( $course_id ),
-				'content'           => (string) apply_filters( 'the_content', (string) get_post_field( 'post_content', $course_id ) ),
+				'content'           => (string) apply_filters( 'the_content', self::contenido_del_curso( $course_id ) ),
 				'price'             => (float) $precio['precio'] > 0 ? CPT_Curso::format_amount( (float) $precio['precio'], CPT_Curso::currency( $course_id ) ) : '',
 				'price_reason'      => Pricing::label( (string) $precio['motivo'] ),
 				'seats'             => $free,
@@ -331,6 +359,64 @@ class Shortcodes {
 	 * @param int $user_id   Persona.
 	 * @return array<int, array<string, mixed>>
 	 */
+	/**
+	 * Contenido del curso listo para `the_content`, sin la portada dentro.
+	 *
+	 * @param int $course_id Curso.
+	 * @return string
+	 */
+	private static function contenido_del_curso( int $course_id ): string {
+		$contenido = (string) get_post_field( 'post_content', $course_id );
+
+		// Solo el shortcode de portada `[convoca_curso ...]`; `[convoca_curso_lecciones]` y compañía se quedan.
+		return (string) preg_replace( '/\[convoca_curso(?=[\s\]])[^\]]*\]/i', '', $contenido );
+	}
+
+	/**
+	 * URL de una lección, si alguna página la publica.
+	 *
+	 * Se busca la página que contiene `[convoca_curso_leccion id="N"]`, igual que el resto del
+	 * ecosistema resuelve páginas por shortcode. Si no existe, se devuelve cadena vacía: mejor un
+	 * título sin enlace que un enlace muerto.
+	 *
+	 * @param int $lesson_id Lección.
+	 * @return string
+	 */
+	public static function lesson_url( int $lesson_id ): string {
+		if ( $lesson_id <= 0 ) {
+			return '';
+		}
+
+		$paginas = get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => 'publish',
+				'posts_per_page' => 20,
+				'fields'         => 'ids',
+				's'              => '[convoca_curso_leccion',
+			)
+		);
+
+		foreach ( $paginas as $pagina_id ) {
+			$contenido = (string) get_post_field( 'post_content', (int) $pagina_id );
+			if ( ! has_shortcode( $contenido, 'convoca_curso_leccion' ) ) {
+				continue;
+			}
+			if ( preg_match( '/\[convoca_curso_leccion[^\]]*id\s*=\s*["\']' . $lesson_id . '["\']/', $contenido ) ) {
+				return (string) get_permalink( (int) $pagina_id ) . '#leccion-' . $lesson_id;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Datos de los módulos y sus lecciones para el índice y la portada.
+	 *
+	 * @param int $course_id Curso.
+	 * @param int $user_id   Usuario.
+	 * @return array<int, array<string, mixed>>
+	 */
 	public static function modules_data( int $course_id, int $user_id ): array {
 		$modules = array();
 		$done    = Progress::completed_lesson_ids( $user_id, $course_id );
@@ -349,6 +435,7 @@ class Shortcodes {
 					'completed' => in_array( (int) $lesson->ID, $done, true ),
 					'locked'    => ! Access::is_unlocked( $user_id, $course_id, (int) $lesson->ID ),
 					'number'    => $index,
+					'url'       => self::lesson_url( (int) $lesson->ID ),
 				);
 			}
 

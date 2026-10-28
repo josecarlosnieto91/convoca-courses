@@ -1,3 +1,16 @@
+## [0.3.4] — 2026-10-28
+
+### Corregido
+
+- **la portada del curso ya no puede desbordar la pila**: si `[convoca_curso]` aparecía dentro del propio
+  curso, `the_content` volvía a ejecutar el shortcode sin tope y la petición moría por recursión. Ahora la
+  guarda de reentrada corta la segunda llamada y ese shortcode se retira del contenido antes de expandirlo.
+- **el temario sale en orden**: módulos y lecciones se ordenaban por su metadato de pertenencia, que vale
+  el mismo id en todas las filas y no ordena nada. Pasan a ordenarse por `menu_order`.
+- **el índice enlaza las lecciones**: cada lección accesible es un enlace a la página que la publica, con su
+  ancla. Las bloqueadas siguen sin enlace, y si no hay página con el shortcode el título va sin enlace en
+  vez de apuntar a ninguna parte.
+
 ## [0.3.3] — 2026-10-26
 
 ### Cambiado

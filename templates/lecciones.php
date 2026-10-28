@@ -42,9 +42,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<h4><?php echo esc_html( (string) $convoca_courses_module['title'] ); ?></h4>
 					<ul class="convoca-courses__lessons">
 						<?php foreach ( $convoca_courses_module['lessons'] as $convoca_courses_lesson ) : ?>
-							<li class="convoca-courses__lesson<?php echo $convoca_courses_lesson['completed'] ? ' is-completed' : ''; ?><?php echo $convoca_courses_lesson['locked'] ? ' is-locked' : ''; ?>">
-								<span class="convoca-courses__lesson-number"><?php echo esc_html( (string) $convoca_courses_lesson['number'] ); ?></span>
-								<span class="convoca-courses__lesson-title"><?php echo esc_html( (string) $convoca_courses_lesson['title'] ); ?></span>
+							<li id="leccion-<?php echo esc_attr( (string) $convoca_courses_lesson['id'] ); ?>" class="convoca-courses__lesson<?php echo $convoca_courses_lesson['completed'] ? ' is-completed' : ''; ?><?php echo $convoca_courses_lesson['locked'] ? ' is-locked' : ''; ?>">
+								<?php
+								$convoca_courses_url = (string) ( $convoca_courses_lesson['url'] ?? '' );
+								if ( '' !== $convoca_courses_url && ! $convoca_courses_lesson['locked'] ) :
+									?>
+									<a class="convoca-courses__lesson-link" href="<?php echo esc_url( $convoca_courses_url ); ?>">
+										<span class="convoca-courses__lesson-number"><?php echo esc_html( (string) $convoca_courses_lesson['number'] ); ?></span>
+										<span class="convoca-courses__lesson-title"><?php echo esc_html( (string) $convoca_courses_lesson['title'] ); ?></span>
+									</a>
+								<?php else : ?>
+									<span class="convoca-courses__lesson-number"><?php echo esc_html( (string) $convoca_courses_lesson['number'] ); ?></span>
+									<span class="convoca-courses__lesson-title"><?php echo esc_html( (string) $convoca_courses_lesson['title'] ); ?></span>
+								<?php endif; ?>
 								<?php if ( $convoca_courses_lesson['completed'] ) : ?>
 									<span class="convoca-courses__badge"><?php esc_html_e( 'completada', 'convoca-courses' ); ?></span>
 								<?php elseif ( $convoca_courses_lesson['locked'] ) : ?>

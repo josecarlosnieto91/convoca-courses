@@ -87,9 +87,10 @@ class CPT_Modulo extends CPT_Base {
 				'post_type'      => self::TYPE,
 				'post_status'    => 'publish',
 				'posts_per_page' => 200,
-				'meta_key'       => self::META_PREFIX . 'curso_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- catálogo pequeño y orden estable.
+				'meta_key'       => self::META_PREFIX . 'curso_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- catálogo pequeño.
 				'meta_value'     => $course_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- idem.
-				'orderby'        => 'meta_value_num',
+				// menu_order, no el metadato del curso: ese vale el mismo id en todos los módulos y no ordena nada.
+				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
 			)
 		);

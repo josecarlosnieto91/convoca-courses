@@ -134,9 +134,10 @@ class CPT_Leccion extends CPT_Base {
 				'post_type'      => self::TYPE,
 				'post_status'    => 'publish',
 				'posts_per_page' => 500,
-				'meta_key'       => self::META_PREFIX . 'modulo_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- catálogo pequeño y orden estable.
+				'meta_key'       => self::META_PREFIX . 'modulo_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- catálogo pequeño.
 				'meta_value'     => $module_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- idem.
-				'orderby'        => 'meta_value_num',
+				// menu_order, no el metadato del módulo: ese vale el mismo id en todas las lecciones y no ordena nada.
+				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
 			)
 		);
