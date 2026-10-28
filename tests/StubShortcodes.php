@@ -995,3 +995,15 @@ if ( ! function_exists( 'flush_rewrite_rules' ) ) {
 		$GLOBALS['convoca_test_flush'] = ( $GLOBALS['convoca_test_flush'] ?? 0 ) + 1;
 	}
 }
+
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	/**
+	 * Sanea HTML de entrada (doble: devuelve el texto tal cual).
+	 *
+	 * @param string $texto Texto.
+	 * @return string
+	 */
+	function wp_kses_post( $texto ) {
+		return (string) $texto;
+	}
+}

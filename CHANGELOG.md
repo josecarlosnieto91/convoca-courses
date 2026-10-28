@@ -1,3 +1,18 @@
+## [0.4.1] — 2026-10-28
+
+### Corregido
+
+- **la portada del curso escribía un aviso de PHP por cada visita de cada persona matriculada**:
+  `$receipt_url` se calculaba en `render_course()` y no se pasaba a la plantilla, que la usa. El refactor
+  que partió `course()` la dejó fuera del array.
+- **el enlace «Ver el recibo del pago» no se pintaba nunca**: con la variable sin definir, la comparación
+  contra cadena vacía siempre daba verdadero y el bloque nunca salía.
+
+### Añadido
+
+- Test de contrato entre la plantilla y el shortcode: las variables que `curso.php` documenta en su `@var`
+  tienen que ser las que recibe, y la plantilla se renderiza comprobando que no hay ningún aviso.
+
 ## [0.4.0] — 2026-10-28
 
 ### Añadido

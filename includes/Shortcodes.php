@@ -249,6 +249,7 @@ class Shortcodes {
 				'needs_payment'     => Course_Payment::course_needs_payment( $course_id, $user_id ),
 				'enrollment_status' => $status,
 				'payment_url'       => $payment_url,
+				'receipt_url'       => $receipt_url,
 			),
 			false
 		);
