@@ -29,6 +29,39 @@ class Certificate {
 	 * @param int $enrollment_id Identificador de la matrícula.
 	 * @return string Código emitido, vacío si no procede.
 	 */
+	/**
+	 * Emite el certificado cuando el intento sale aprobado.
+	 *
+	 * El intento no se usa: el certificado se pide por matrícula y `maybe_issue()` vuelve a comprobar
+	 * progreso, nota mínima y si ya había código.
+	 *
+	 * @param int                  $attempt_id Intento corregido.
+	 * @param int                  $course_id  Curso.
+	 * @param int                  $user_id    Persona.
+	 * @param array<string, mixed> $resultado  Resultado de la corrección.
+	 * @return void
+	 */
+	public static function on_exam_submitted( int $attempt_id, int $course_id, int $user_id, array $resultado ): void {
+		unset( $attempt_id );
+
+		if ( empty( $resultado['aprobado'] ) ) {
+			return;
+		}
+
+		$enrollment = Enrollment::active_id( $user_id, $course_id );
+		if ( $enrollment > 0 ) {
+			self::maybe_issue( $enrollment );
+		}
+	}
+
+	/**
+	 * Emite el certificado si el curso ya cumple todo lo que exige.
+	 *
+	 * Idempotente: si ya hay código, devuelve el que hay.
+	 *
+	 * @param int $enrollment_id Matrícula.
+	 * @return string
+	 */
 	public static function maybe_issue( int $enrollment_id ): string {
 		if ( CPT_Matricula::TYPE !== get_post_type( $enrollment_id ) ) {
 			return '';

@@ -1,3 +1,15 @@
+## [0.3.5] — 2026-10-28
+
+### Corregido
+
+- **aprobar el examen no emitía el certificado**. Completar las lecciones pide el certificado cuando
+  todavía no hay nota; después del examen nadie volvía a preguntar, así que el curso quedaba con el
+  progreso al 100 %, la matrícula completada y el código del certificado vacío para siempre.
+- El gancho `convoca_courses_exam_submitted` pasa a tener oyente: cuando el intento sale aprobado se
+  vuelve a pedir la emisión por la matrícula. `maybe_issue()` ya comprueba progreso, nota mínima y
+  devuelve el código existente, así que llamarlo de más no emite duplicados ni certifica a quien no
+  ha aprobado.
+
 ## [0.3.4] — 2026-10-28
 
 ### Corregido

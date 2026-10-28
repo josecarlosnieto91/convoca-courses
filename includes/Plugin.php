@@ -58,6 +58,10 @@ final class Plugin {
 
 		Shortcodes::register();
 		Handlers::register();
+
+		// Aprobar el examen tiene que cerrar el círculo: completar las lecciones pide el certificado
+		// antes de que exista nota, y hasta ahora nadie volvía a preguntar después.
+		add_action( 'convoca_courses_exam_submitted', array( Certificate::class, 'on_exam_submitted' ), 10, 4 );
 		Assets::register();
 
 		$fields = new Admin_Fields();
