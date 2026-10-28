@@ -54,6 +54,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php else : ?>
 									<span class="convoca-courses__lesson-number"><?php echo esc_html( (string) $convoca_courses_lesson['number'] ); ?></span>
 									<span class="convoca-courses__lesson-title"><?php echo esc_html( (string) $convoca_courses_lesson['title'] ); ?></span>
+									<?php if ( '' === $convoca_courses_url && current_user_can( 'edit_post', (int) $course_id ) ) : ?>
+										<span class="convoca-courses__badge convoca-courses__badge--warning"><?php esc_html_e( 'sin página', 'convoca-courses' ); ?></span>
+									<?php endif; ?>
 								<?php endif; ?>
 								<?php if ( $convoca_courses_lesson['completed'] ) : ?>
 									<span class="convoca-courses__badge"><?php esc_html_e( 'completada', 'convoca-courses' ); ?></span>

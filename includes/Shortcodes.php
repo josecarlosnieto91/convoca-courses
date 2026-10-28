@@ -27,6 +27,13 @@ class Shortcodes {
 	private static bool $renderizando = false;
 
 	/**
+	 * Mapa lección → página, para no consultar una vez por lección.
+	 *
+	 * @var array<int, int>|null
+	 */
+	private static ?array $mapa_lecciones = null;
+
+	/**
 	 * Registra los shortcodes.
 	 *
 	 * @return void
@@ -387,27 +394,55 @@ class Shortcodes {
 			return '';
 		}
 
-		$paginas = get_posts(
-			array(
-				'post_type'      => 'page',
-				'post_status'    => 'publish',
-				'posts_per_page' => 20,
-				'fields'         => 'ids',
-				's'              => '[convoca_curso_leccion',
+		$mapa = self::mapa_lecciones();
+
+		if ( ! isset( $mapa[ $lesson_id ] ) ) {
+			return '';
+		}
+
+		return (string) get_permalink( $mapa[ $lesson_id ] ) . '#leccion-' . $lesson_id;
+	}
+
+	/**
+	 * Mapa lección → página, construido una sola vez por petición.
+	 *
+	 * Antes se consultaba una vez por lección y con un tope de 20 páginas del sitio: un curso de 18
+	 * lecciones dejaba el presupuesto a una plaza y las que sobraban se pintaban sin enlace sin avisar.
+	 *
+	 * @return array<int, int>
+	 */
+	private static function mapa_lecciones(): array {
+		if ( null !== self::$mapa_lecciones ) {
+			return self::$mapa_lecciones;
+		}
+
+		self::$mapa_lecciones = array();
+
+		global $wpdb;
+
+		// El espacio final deja fuera [convoca_curso_lecciones]: el índice del curso no es una lección.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- una lectura por petición, cacheada en el mapa.
+		$filas = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type = 'page' AND post_status = 'publish' AND post_content LIKE %s",
+				'%[convoca_curso_leccion %'
 			)
 		);
 
-		foreach ( $paginas as $pagina_id ) {
-			$contenido = (string) get_post_field( 'post_content', (int) $pagina_id );
-			if ( ! has_shortcode( $contenido, 'convoca_curso_leccion' ) ) {
+		foreach ( (array) $filas as $fila ) {
+			if ( ! preg_match_all( '/\[convoca_curso_leccion\b[^\]]*id\s*=\s*["\'](\d+)["\']/', (string) $fila->post_content, $coincidencias ) ) {
 				continue;
 			}
-			if ( preg_match( '/\[convoca_curso_leccion[^\]]*id\s*=\s*["\']' . $lesson_id . '["\']/', $contenido ) ) {
-				return (string) get_permalink( (int) $pagina_id ) . '#leccion-' . $lesson_id;
+
+			foreach ( $coincidencias[1] as $id ) {
+				$id = (int) $id;
+				if ( $id > 0 && ! isset( self::$mapa_lecciones[ $id ] ) ) {
+					self::$mapa_lecciones[ $id ] = (int) $fila->ID;
+				}
 			}
 		}
 
-		return '';
+		return self::$mapa_lecciones;
 	}
 
 	/**

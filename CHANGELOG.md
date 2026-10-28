@@ -1,3 +1,15 @@
+## [0.3.6] — 2026-10-28
+
+### Corregido
+
+- **el resolvedor de enlaces de lección tenía tope de 20 páginas y fallaba en silencio**: contaba páginas
+  del sitio, no del curso, y la búsqueda también se llevaba `[convoca_curso_lecciones]` (el índice), que
+  gastaba plaza antes de descartarse. Un curso de 18 lecciones dejaba el presupuesto a una.
+- **una sola consulta por petición**: el mapa lección → página se construye una vez y se reutiliza. Antes
+  era una consulta por lección, y en frío una lectura `LIKE` sobre `wp_posts` cada vez.
+- **aviso cuando falta la página**: quien puede editar el curso ve la marca «sin página» en la fila, en vez
+  de un título sin enlace que nadie entiende.
+
 ## [0.3.5] — 2026-10-28
 
 ### Corregido
