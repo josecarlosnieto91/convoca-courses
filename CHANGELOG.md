@@ -1,3 +1,18 @@
+## [0.13.0] — 2026-10-29
+
+### Añadido
+
+- **examen por identidad**: `Attempts::open()`, `submit()`, `current()`, `count_for()` y `best_by_exam()` aceptan
+  `$identidad_id`. La puerta del examen para quien no tiene cuenta es tener matrícula en el curso.
+- **certificado por identidad**: `Certificate::maybe_issue()` y `data()` resuelven el nombre y el progreso por
+  identidad, y la emisión al aprobar sale del intento, no del usuario. `Progress::for_course_identidad()` y
+  `Gradebook::for_user( ..., $identidad_id )`.
+
+### Nota
+
+- Todo es aditivo: sin `$identidad_id` el comportamiento es exactamente el de antes, así que las matrículas con
+  usuario de WordPress no cambian.
+
 ## [0.12.2] — 2026-10-29
 
 ### Corregido

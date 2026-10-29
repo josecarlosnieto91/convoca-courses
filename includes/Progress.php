@@ -234,6 +234,31 @@ class Progress {
 	 * @param int $course_id Curso.
 	 * @return array{done: int, total: int, percent: float}
 	 */
+	/**
+	 * Progreso de una identidad en un curso.
+	 *
+	 * @param int $identidad_id Identidad.
+	 * @param int $course_id    Curso.
+	 * @return array<string, mixed>
+	 */
+	public static function for_course_identidad( int $identidad_id, int $course_id ): array {
+		$total = count( CPT_Leccion::of_course( $course_id ) );
+		$done  = count( self::completed_lesson_ids_identidad( $identidad_id, $course_id ) );
+
+		return array(
+			'done'    => min( $done, $total ),
+			'total'   => $total,
+			'percent' => self::percent( $done, $total ),
+		);
+	}
+
+	/**
+	 * Progreso de una persona en un curso.
+	 *
+	 * @param int $user_id   Persona.
+	 * @param int $course_id Curso.
+	 * @return array<string, mixed>
+	 */
 	public static function for_course( int $user_id, int $course_id ): array {
 		$total = count( CPT_Leccion::of_course( $course_id ) );
 		$done  = self::completed_count( $user_id, $course_id );

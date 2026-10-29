@@ -65,11 +65,12 @@ class Attempts {
 	 * @param int $user_id Persona.
 	 * @param int $exam_id Examen.
 	 * @return int|\WP_Error Identificador del intento o error.
+	 * @param int $identidad_id Identidad (0 si va con usuario de WordPress).
 	 */
-	public static function open( int $user_id, int $exam_id ) {
+	public static function open( int $user_id, int $exam_id, int $identidad_id = 0 ) {
 		global $wpdb;
 
-		if ( $user_id <= 0 ) {
+		if ( $user_id <= 0 && $identidad_id <= 0 ) {
 			return new \WP_Error( 'convoca_courses_no_user', __( 'Hay que iniciar sesión para hacer el examen.', 'convoca-courses' ) );
 		}
 
@@ -82,7 +83,12 @@ class Attempts {
 			return new \WP_Error( 'convoca_courses_exam_orphan', __( 'El examen no cuelga de ningún curso.', 'convoca-courses' ) );
 		}
 
-		if ( ! Access::can_take_exam( $user_id, $course_id, CPT_Examen::module_id( $exam_id ) ) ) {
+		if ( $identidad_id > 0 ) {
+			// Alumnado sin cuenta: la puerta es tener matrícula en el curso.
+			if ( Enrollment::find_por_identidad( $identidad_id, $course_id ) <= 0 ) {
+				return new \WP_Error( 'convoca_courses_exam_locked', __( 'Todavía no puedes abrir este examen.', 'convoca-courses' ) );
+			}
+		} elseif ( ! Access::can_take_exam( $user_id, $course_id, CPT_Examen::module_id( $exam_id ) ) ) {
 			return new \WP_Error( 'convoca_courses_exam_locked', __( 'Todavía no puedes abrir este examen.', 'convoca-courses' ) );
 		}
 
@@ -91,7 +97,7 @@ class Attempts {
 			return (int) $abierto['id'];
 		}
 
-		$usados     = self::count_for( $user_id, $exam_id );
+		$usados     = self::count_for( $user_id, $exam_id, $identidad_id );
 		$permitidos = CPT_Examen::max_attempts( $exam_id );
 		if ( self::remaining( $permitidos, $usados ) === 0 ) {
 			return new \WP_Error( 'convoca_courses_no_attempts', __( 'Has agotado los intentos de este examen.', 'convoca-courses' ) );
@@ -121,18 +127,19 @@ class Attempts {
 				'exam_id'       => $exam_id,
 				'course_id'     => $course_id,
 				'user_id'       => $user_id,
+				'identidad_id'  => $identidad_id,
 				'enrollment_id' => (int) $enrollment,
 				'intento'       => $numero,
 				'preguntas'     => (string) wp_json_encode( array_values( $elegidas ) ),
 				'iniciado_en'   => (string) current_time( 'mysql' ),
 				'estado'        => 'abierto',
 			),
-			array( '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' )
+			array( '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery
 
 		if ( false === $ok ) {
-			$existente = self::current( $user_id, $exam_id );
+			$existente = self::current( $user_id, $exam_id, $identidad_id );
 			if ( null !== $existente ) {
 				return (int) $existente['id'];
 			}
@@ -162,8 +169,9 @@ class Attempts {
 	 * @param int                      $user_id    Persona que envía.
 	 * @param array<int|string, mixed> $respuestas Respuestas indexadas por pregunta.
 	 * @return array<string, mixed>|\WP_Error
+	 * @param int                      $identidad_id Identidad (0 si va con usuario de WordPress).
 	 */
-	public static function submit( int $attempt_id, int $user_id, array $respuestas ) {
+	public static function submit( int $attempt_id, int $user_id, array $respuestas, int $identidad_id = 0 ) {
 		global $wpdb;
 
 		$attempt = self::get( $attempt_id );
@@ -171,7 +179,11 @@ class Attempts {
 			return new \WP_Error( 'convoca_courses_no_attempt', __( 'El intento no existe.', 'convoca-courses' ) );
 		}
 
-		if ( (int) $attempt['user_id'] !== $user_id ) {
+		$dueno_ok = $identidad_id > 0
+			? (int) $attempt['identidad_id'] === $identidad_id
+			: (int) $attempt['user_id'] === $user_id;
+
+		if ( ! $dueno_ok ) {
 			return new \WP_Error( 'convoca_courses_attempt_owner', __( 'Este intento no es tuyo.', 'convoca-courses' ) );
 		}
 
@@ -297,25 +309,37 @@ class Attempts {
 	 * @param int $user_id Persona.
 	 * @param int $exam_id Examen.
 	 * @return array<string, mixed>|null
+	 * @param int $identidad_id Identidad (0 si va con usuario de WordPress).
 	 */
-	public static function current( int $user_id, int $exam_id ): ?array {
+	public static function current( int $user_id, int $exam_id, int $identidad_id = 0 ): ?array {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $exam_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $exam_id <= 0 ) {
 			return null;
 		}
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
-		$row = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE user_id = %d AND exam_id = %d AND estado = 'abierto' ORDER BY id DESC LIMIT 1",
-				$user_id,
-				$exam_id
-			),
-			'ARRAY_A'
-		);
+		if ( $identidad_id > 0 ) {
+			$row = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT * FROM {$table} WHERE identidad_id = %d AND exam_id = %d AND estado = 'abierto' ORDER BY id DESC LIMIT 1",
+					$identidad_id,
+					$exam_id
+				),
+				'ARRAY_A'
+			);
+		} else {
+			$row = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT * FROM {$table} WHERE user_id = %d AND exam_id = %d AND estado = 'abierto' ORDER BY id DESC LIMIT 1",
+					$user_id,
+					$exam_id
+				),
+				'ARRAY_A'
+			);
+		}
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return is_array( $row ) ? self::decode( $row ) : null;
@@ -355,24 +379,35 @@ class Attempts {
 	 * @param int $user_id Persona.
 	 * @param int $exam_id Examen.
 	 * @return int
+	 * @param int $identidad_id Identidad (0 si va con usuario de WordPress).
 	 */
-	public static function count_for( int $user_id, int $exam_id ): int {
+	public static function count_for( int $user_id, int $exam_id, int $identidad_id = 0 ): int {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $exam_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $exam_id <= 0 ) {
 			return 0;
 		}
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
-		$count = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND exam_id = %d",
-				$user_id,
-				$exam_id
-			)
-		);
+		if ( $identidad_id > 0 ) {
+			$count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$table} WHERE identidad_id = %d AND exam_id = %d",
+					$identidad_id,
+					$exam_id
+				)
+			);
+		} else {
+			$count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND exam_id = %d",
+					$user_id,
+					$exam_id
+				)
+			);
+		}
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return (int) $count;
@@ -413,25 +448,37 @@ class Attempts {
 	 * @param int $user_id   Persona.
 	 * @param int $course_id Curso.
 	 * @return array<int, float> Nota indexada por identificador de examen.
+	 * @param int $identidad_id Identidad (0 si va con usuario de WordPress).
 	 */
-	public static function best_by_exam( int $user_id, int $course_id ): array {
+	public static function best_by_exam( int $user_id, int $course_id, int $identidad_id = 0 ): array {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $course_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $course_id <= 0 ) {
 			return array();
 		}
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT exam_id, MAX(puntuacion) AS nota FROM {$table} WHERE user_id = %d AND course_id = %d AND estado = 'enviado' GROUP BY exam_id",
-				$user_id,
-				$course_id
-			),
-			'ARRAY_A'
-		);
+		if ( $identidad_id > 0 ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT exam_id, MAX(puntuacion) AS nota FROM {$table} WHERE identidad_id = %d AND course_id = %d AND estado = 'enviado' GROUP BY exam_id",
+					$identidad_id,
+					$course_id
+				),
+				'ARRAY_A'
+			);
+		} else {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT exam_id, MAX(puntuacion) AS nota FROM {$table} WHERE user_id = %d AND course_id = %d AND estado = 'enviado' GROUP BY exam_id",
+					$user_id,
+					$course_id
+				),
+				'ARRAY_A'
+			);
+		}
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$salida = array();

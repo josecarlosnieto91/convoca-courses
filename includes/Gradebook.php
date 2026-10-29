@@ -129,12 +129,13 @@ class Gradebook {
 	/**
 	 * Nota final de una persona en un curso, con el detalle por pieza.
 	 *
-	 * @param int $user_id   Persona.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Persona.
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad (0 si va con usuario de WordPress).
 	 * @return array{nota: float|null, peso: float, completo: bool, minimo: float, aprobado: bool, piezas: array<int, array<string, mixed>>}
 	 */
-	public static function for_user( int $user_id, int $course_id ): array {
-		$notas_examen = Attempts::best_by_exam( $user_id, $course_id );
+	public static function for_user( int $user_id, int $course_id, int $identidad_id = 0 ): array {
+		$notas_examen = Attempts::best_by_exam( $user_id, $course_id, $identidad_id );
 		$notas_tarea  = Task::grades_by_task( $user_id, $course_id );
 		$piezas       = array();
 

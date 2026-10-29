@@ -42,9 +42,18 @@ class Certificate {
 	 * @return void
 	 */
 	public static function on_exam_submitted( int $attempt_id, int $course_id, int $user_id, array $resultado ): void {
-		unset( $attempt_id );
-
 		if ( empty( $resultado['aprobado'] ) ) {
+			return;
+		}
+
+		// Identidad propia: la matrícula se busca por el intento, no por el usuario.
+		$intento = Attempts::get( $attempt_id );
+		if ( null !== $intento && (int) ( $intento['identidad_id'] ?? 0 ) > 0 ) {
+			$enrollment = Enrollment::find_por_identidad( (int) $intento['identidad_id'], $course_id );
+			if ( $enrollment > 0 ) {
+				self::maybe_issue( $enrollment );
+			}
+
 			return;
 		}
 
@@ -67,10 +76,11 @@ class Certificate {
 			return '';
 		}
 
-		$course_id = CPT_Matricula::course_id( $enrollment_id );
-		$user_id   = CPT_Matricula::user_id( $enrollment_id );
+		$course_id    = CPT_Matricula::course_id( $enrollment_id );
+		$user_id      = CPT_Matricula::user_id( $enrollment_id );
+		$identidad_id = (int) get_post_meta( $enrollment_id, Identidad::META_MATRICULA, true );
 
-		if ( 0 === $course_id || 0 === $user_id || ! CPT_Curso::issues_certificate( $course_id ) ) {
+		if ( 0 === $course_id || ( 0 === $user_id && $identidad_id <= 0 ) || ! CPT_Curso::issues_certificate( $course_id ) ) {
 			return '';
 		}
 
@@ -79,7 +89,10 @@ class Certificate {
 			return $existing;
 		}
 
-		$progress = Progress::for_course( $user_id, $course_id );
+		$progress = $identidad_id > 0
+			? Progress::for_course_identidad( $identidad_id, $course_id )
+			: Progress::for_course( $user_id, $course_id );
+
 		if ( $progress['total'] <= 0 || $progress['done'] < $progress['total'] ) {
 			return '';
 		}
@@ -87,7 +100,7 @@ class Certificate {
 		// Curso que evalúa: el certificado exige aprobado, no solo haber visto las lecciones.
 		// Es la puerta que impide certificar a quien no ha demostrado nada.
 		if ( Gradebook::has_evaluation( $course_id ) ) {
-			$notas = Gradebook::for_user( $user_id, $course_id );
+			$notas = Gradebook::for_user( $user_id, $course_id, $identidad_id );
 			if ( ! $notas['aprobado'] ) {
 				return '';
 			}
@@ -99,7 +112,7 @@ class Certificate {
 
 		// La nota del certificado se congela aquí: un certificado no puede cambiar de nota después.
 		if ( Gradebook::has_evaluation( $course_id ) ) {
-			$notas = Gradebook::for_user( $user_id, $course_id );
+			$notas = Gradebook::for_user( $user_id, $course_id, $identidad_id );
 			update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'cert_nota', null === $notas['nota'] ? '' : (float) $notas['nota'] );
 		}
 
@@ -115,7 +128,9 @@ class Certificate {
 		 */
 		do_action( 'convoca_courses_certificate_issued', $enrollment_id, $code );
 
-		Notifications::certificate_issued( $user_id, $course_id, $code, self::verify_url( $code ) );
+		if ( $user_id > 0 ) {
+			Notifications::certificate_issued( $user_id, $course_id, $code, self::verify_url( $code ) );
+		}
 
 		return $code;
 	}
@@ -214,7 +229,20 @@ class Certificate {
 
 		$course_id = CPT_Matricula::course_id( $enrollment_id );
 		$user_id   = CPT_Matricula::user_id( $enrollment_id );
-		$user      = get_userdata( $user_id );
+		$user      = $user_id > 0 ? get_userdata( $user_id ) : null;
+
+		// Alumnado sin cuenta: el nombre sale de su identidad.
+		if ( null === $user ) {
+			$identidad_id = (int) get_post_meta( $enrollment_id, Identidad::META_MATRICULA, true );
+			$fila         = Identidad::por_id( $identidad_id );
+
+			if ( null !== $fila ) {
+				$user = (object) array(
+					'display_name' => (string) $fila['nombre'],
+					'user_email'   => (string) $fila['email'],
+				);
+			}
+		}
 
 		$nota = CPT_Matricula::get_string( $enrollment_id, 'cert_nota', '' );
 
