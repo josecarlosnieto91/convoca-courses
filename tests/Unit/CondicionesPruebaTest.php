@@ -206,34 +206,78 @@ final class CondicionesPruebaTest extends TestCase {
 	}
 
 	/**
+	 * El texto de fábrica no nombra a una entidad concreta: usa la de Ajustes o «la entidad».
+	 */
+	public function test_el_texto_de_fabrica_usa_la_entidad_configurada(): void {
+		$GLOBALS['convoca_courses_opciones'][ \Convoca\Courses\Entidad::OPTION ] = array( 'nombre' => 'Asociación de Prueba' );
+
+		$texto = \Convoca\Courses\Condiciones::texto_renuncia();
+
+		$this->assertStringContainsString( 'Asociación de Prueba me enviará', $texto );
+		$this->assertStringNotContainsString( '{{entidad}}', $texto );
+		$this->assertStringNotContainsString( 'la asociación', $texto );
+	}
+
+	/**
+	 * Sin nombre configurado se dice «la entidad», no una entidad inventada.
+	 */
+	public function test_sin_entidad_dice_la_entidad(): void {
+		$texto = \Convoca\Courses\Condiciones::texto_renuncia();
+
+		$this->assertStringContainsString( 'la entidad me enviará', $texto );
+	}
+
+	/**
+	 * La versión del texto de fábrica es legible y va en la prueba.
+	 */
+	public function test_la_prueba_guarda_la_version_del_texto(): void {
+		$prueba = \Convoca\Courses\Condiciones::prueba( 'texto' );
+
+		$this->assertSame( \Convoca\Courses\Condiciones::TEXTO_RENUNCIA_VERSION, $prueba['version'] );
+		$this->assertMatchesRegularExpression( '/^\d{4}-\d{2}-\d{2}$/', \Convoca\Courses\Condiciones::TEXTO_RENUNCIA_VERSION );
+	}
+
+	/**
+	 * Si la entidad cambia el texto, la versión deja de ser la de fábrica.
+	 */
+	public function test_texto_propio_cambia_la_version(): void {
+		$GLOBALS['convoca_courses_opciones'][ \Convoca\Courses\Condiciones::OPTION_RENUNCIA_TEXTO ]            = 'Texto propio.';
+		$GLOBALS['convoca_courses_opciones'][ \Convoca\Courses\Condiciones::OPTION_RENUNCIA_TEXTO . '_fecha' ] = '2026-11-01';
+
+		$this->assertSame( 'propia-2026-11-01', \Convoca\Courses\Condiciones::version_texto() );
+	}
+
+	/**
 	 * La confirmación del 98.7 lleva el texto literal que se aceptó y el nombre del curso.
 	 */
 	public function test_la_confirmacion_lleva_el_texto_literal(): void {
 		$GLOBALS['convoca_test_meta'][600]['_convoca_precio'] = '5';
 		$GLOBALS['convoca_courses_correos']                   = array();
 
+		\Convoca\Core\Mailer::$enviados = array();
+
 		$ok = Condiciones::confirmar( 904, 600, 'quien@example.org', 'Ana', true, 1 );
 
 		$this->assertTrue( $ok );
-		$this->assertCount( 1, $GLOBALS['convoca_courses_correos'] );
+		$this->assertCount( 1, \Convoca\Core\Mailer::$enviados );
 
-		$correo = $GLOBALS['convoca_courses_correos'][0];
+		$correo = \Convoca\Core\Mailer::$enviados[0];
 
-		$this->assertSame( 'quien@example.org', $correo['para'] );
-		$this->assertStringContainsString( Condiciones::texto_renuncia(), $correo['mensaje'], 'el texto literal' );
-		$this->assertStringContainsString( 'Ana', $correo['mensaje'] );
-		$this->assertStringContainsString( 'art. 103.m', $correo['mensaje'] );
+		$this->assertSame( 'quien@example.org', $correo[0] );
+		$this->assertStringContainsString( Condiciones::texto_renuncia(), $correo[2], 'el texto literal' );
+		$this->assertStringContainsString( 'Ana', $correo[2] );
+		$this->assertStringContainsString( 'art. 103.m', $correo[2] );
 	}
 
 	/**
 	 * Sin renuncia, la confirmación dice que conserva los 14 días y no reproduce renuncia ninguna.
 	 */
 	public function test_sin_renuncia_la_confirmacion_deja_los_14_dias(): void {
-		$GLOBALS['convoca_courses_correos'] = array();
+		\Convoca\Core\Mailer::$enviados = array();
 
 		Condiciones::confirmar( 905, 600, 'quien@example.org', 'Ana', false, 0 );
 
-		$mensaje = $GLOBALS['convoca_courses_correos'][0]['mensaje'];
+		$mensaje = \Convoca\Core\Mailer::$enviados[0][2];
 
 		$this->assertStringContainsString( '14 días naturales', $mensaje );
 		$this->assertStringNotContainsString( Condiciones::texto_renuncia(), $mensaje );

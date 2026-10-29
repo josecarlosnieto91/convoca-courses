@@ -126,7 +126,7 @@ class Identidad_Acceso {
 		$email = (string) $fila['email'];
 		$par   = Identidad::emitir( $id );
 
-		wp_mail(
+		Notifications::send_to_email(
 			$email,
 			__( 'Tu acceso al curso', 'convoca-courses' ),
 			sprintf(
@@ -142,7 +142,8 @@ class Identidad_Acceso {
 				),
 				__( 'O usa este código:', 'convoca-courses' ),
 				$par['codigo']
-			)
+			),
+			'acceso_identidad'
 		);
 	}
 

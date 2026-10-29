@@ -1,3 +1,22 @@
+## [0.16.2] — 2026-10-29
+
+### Corregido
+
+- **la confirmación del art. 98.7 ya no sale por `wp_mail()` directo**: va por `Convoca\Core\Mailer`, con la
+  identidad visual y el remitente del núcleo, la copia a la asociación y el registro. Si el núcleo no está o el
+  envío falla, **el aviso no se pierde**: queda apuntado con su correo para reenviarlo, y `confirmacion_enviada`
+  no se marca. El enlace de acceso del alumnado (`Identidad_Acceso::enviar()`) pasa por el mismo camino.
+- Un aviso que no se ha podido enviar a alguien **sin cuenta** ya se puede apuntar: `record_pending_email()`
+  guarda el correo, no un `user_id` que no existe.
+
+### Añadido
+
+- **texto de fábrica de la renuncia con versión** (`Condiciones::TEXTO_RENUNCIA_VERSION`, 2026-10-29), revisado
+  contra el TRLGDCU. Ya no nombra a una entidad concreta: usa la de *Ajustes → Entidad* o «la entidad».
+- La prueba registra la **versión del texto** que se mostró; si la entidad lo cambia, pasa a `propia-<fecha>`.
+- **Aviso en Ajustes**: el texto de fábrica está revisado y, si se cambia, el redactado pasa a ser
+  responsabilidad de la entidad, con la fecha del último cambio.
+
 ## [0.16.1] — 2026-10-29
 
 ### Cambiado

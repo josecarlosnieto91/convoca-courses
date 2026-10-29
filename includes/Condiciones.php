@@ -60,9 +60,35 @@ class Condiciones {
 	public const META_CONSENTIMIENTO_TEXTO = '_convoca_consentimiento_texto';
 
 	/**
+	 * Versión del texto de fábrica de la renuncia.
+	 *
+	 * Se guarda con cada prueba para poder decir «se le mostró la versión X» sin recalcular huellas.
+	 */
+	public const TEXTO_RENUNCIA_VERSION = '2026-10-29';
+
+	/**
 	 * Meta de la matrícula: prueba de la renuncia (texto, fecha, IP y navegador).
 	 */
 	public const META_RENUNCIA_PRUEBA = '_convoca_renuncia_prueba';
+
+	/**
+	 * Versión del texto que se mostró.
+	 *
+	 * Si la instalación lo ha cambiado en Ajustes, la versión de fábrica ya no aplica: se marca como propia.
+	 *
+	 * @return string
+	 */
+	public static function version_texto(): string {
+		$propio = (string) get_option( self::OPTION_RENUNCIA_TEXTO, '' );
+
+		if ( '' !== trim( $propio ) ) {
+			$sello = (string) get_option( self::OPTION_RENUNCIA_TEXTO . '_fecha', '' );
+
+			return 'propia' . ( '' !== $sello ? '-' . $sello : '' );
+		}
+
+		return self::TEXTO_RENUNCIA_VERSION;
+	}
 
 	/**
 	 * Texto por defecto de la casilla obligatoria.
@@ -131,7 +157,12 @@ class Condiciones {
 			return $propio;
 		}
 
-		return __( 'Quiero empezar el curso ahora, sin esperar a que terminen los 14 días naturales de desistimiento. Sé que, al abrir el contenido digital del curso —las lecciones y sus materiales—, empieza su ejecución y pierdo el derecho de desistimiento sobre ese contenido digital, de modo que no podré pedir la devolución de lo que ya haya consumido (art. 103.m del TRLGDCU). Sé también que la parte del curso que no sea contenido digital —sesiones en directo, tutorías o material impreso, si las hubiera— sigue sujeta al derecho de desistimiento, aunque marque esta casilla. Entiendo que esta casilla es opcional: si no la marco, hago el curso igual y conservo los 14 días naturales completos. Y sé que la asociación me enviará por correo la confirmación de esta contratación y de este consentimiento, y que la aceptación quedará registrada con su fecha y los datos técnicos de la conexión, según la política de privacidad.', 'convoca-courses' );
+		$datos  = Entidad::datos();
+		$sujeto = '' !== trim( (string) $datos['nombre'] ) ? (string) $datos['nombre'] : __( 'la entidad', 'convoca-courses' );
+
+		$texto = __( 'Quiero empezar el curso ahora, sin esperar a que terminen los 14 días naturales de desistimiento. Sé que, al abrir el contenido digital del curso —las lecciones y sus materiales—, empieza su ejecución y pierdo el derecho de desistimiento sobre ese contenido digital, de modo que no podré pedir la devolución de lo que ya haya consumido (art. 103.m del TRLGDCU). Sé también que la parte del curso que no sea contenido digital —sesiones en directo, tutorías o material impreso, si las hubiera— sigue sujeta al derecho de desistimiento, aunque marque esta casilla. Entiendo que esta casilla es opcional: si no la marco, hago el curso igual y conservo los 14 días naturales completos. Y sé que {{entidad}} me enviará por correo la confirmación de esta contratación y de este consentimiento, y que la aceptación quedará registrada con su fecha y los datos técnicos de la conexión, según la política de privacidad.', 'convoca-courses' );
+
+		return str_replace( '{{entidad}}', $sujeto, $texto );
 	}
 
 	/**
@@ -155,7 +186,7 @@ class Condiciones {
 			'ip'      => $ip,
 			'agente'  => mb_substr( $agente, 0, 255 ),
 			'ambito'  => $ambito,
-			'version' => defined( 'CONVOCA_COURSES_VERSION' ) ? (string) CONVOCA_COURSES_VERSION : '',
+			'version' => self::version_texto(),
 		);
 	}
 
@@ -276,14 +307,16 @@ class Condiciones {
 		$lineas[] = '';
 		$lineas[] = __( 'Conserva este correo: es la confirmación de tu contratación.', 'convoca-courses' );
 
-		$enviado = wp_mail(
+		$enviado = Notifications::send_to_email(
 			$email,
 			sprintf(
 				/* translators: %s: nombre del curso. */
 				__( 'Confirmación de tu matrícula en «%s»', 'convoca-courses' ),
 				$curso
 			),
-			implode( "\n", $lineas )
+			implode( "\n", $lineas ),
+			'confirmacion_98_7',
+			array( 'matricula_id' => $matricula_id )
 		);
 
 		if ( $enviado && $prueba_id > 0 ) {

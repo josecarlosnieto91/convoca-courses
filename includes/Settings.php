@@ -108,7 +108,16 @@ class Settings {
 			array(
 				'type'              => 'string',
 				'sanitize_callback' => static function ( $value ) {
-					return sanitize_text_field( (string) $value );
+					$nuevo    = sanitize_text_field( (string) $value );
+					$anterior = (string) get_option( Condiciones::OPTION_RENUNCIA_TEXTO, '' );
+
+					// Si la entidad cambia el texto, la revisión jurídica de fábrica deja de aplicar:
+					// se sella la fecha del cambio para poder decirlo.
+					if ( $nuevo !== $anterior ) {
+						update_option( Condiciones::OPTION_RENUNCIA_TEXTO . '_fecha', (string) current_time( 'Y-m-d' ), false );
+					}
+
+					return $nuevo;
 				},
 				'default'           => '',
 			)
@@ -194,30 +203,33 @@ class Settings {
 		Certificate::render_template(
 			'ajustes.php',
 			array(
-				'group'                  => self::GROUP,
-				'page'                   => self::PAGE,
-				'config'                 => $config,
-				'pro'                    => $pro,
-				'keep_data'              => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
-				'video_option'           => Video::OPTION,
-				'keep_option'            => Installer::KEEP_DATA_OPTION,
-				'entidad'                => Entidad::datos(),
-				'entidad_option'         => Entidad::OPTION,
-				'entidad_campos'         => Entidad::campos(),
-				'condiciones_texto'      => (string) get_option( Condiciones::OPTION, '' ),
-				'condiciones_option'     => Condiciones::OPTION,
-				'condiciones_plantilla'  => Condiciones::plantilla(),
-				'consentimiento_texto'   => (string) get_option( Condiciones::OPTION_CONSENTIMIENTO, '' ),
-				'consentimiento_option'  => Condiciones::OPTION_CONSENTIMIENTO,
-				'consentimiento_defecto' => Condiciones::texto_consentimiento(),
-				'renuncia_activa'        => Condiciones::renuncia_activa(),
-				'renuncia_option'        => Condiciones::OPTION_RENUNCIA,
-				'renuncia_texto'         => (string) get_option( Condiciones::OPTION_RENUNCIA_TEXTO, '' ),
-				'renuncia_texto_option'  => Condiciones::OPTION_RENUNCIA_TEXTO,
-				'renuncia_defecto'       => Condiciones::texto_renuncia(),
-				'plantilla_propia'       => Course_Template::activa(),
-				'plantilla_option'       => Course_Template::OPTION,
-				'entidad_faltan'         => array_map(
+				'group'                   => self::GROUP,
+				'page'                    => self::PAGE,
+				'config'                  => $config,
+				'pro'                     => $pro,
+				'keep_data'               => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
+				'video_option'            => Video::OPTION,
+				'keep_option'             => Installer::KEEP_DATA_OPTION,
+				'entidad'                 => Entidad::datos(),
+				'entidad_option'          => Entidad::OPTION,
+				'entidad_campos'          => Entidad::campos(),
+				'condiciones_texto'       => (string) get_option( Condiciones::OPTION, '' ),
+				'condiciones_option'      => Condiciones::OPTION,
+				'condiciones_plantilla'   => Condiciones::plantilla(),
+				'consentimiento_texto'    => (string) get_option( Condiciones::OPTION_CONSENTIMIENTO, '' ),
+				'consentimiento_option'   => Condiciones::OPTION_CONSENTIMIENTO,
+				'consentimiento_defecto'  => Condiciones::texto_consentimiento(),
+				'renuncia_activa'         => Condiciones::renuncia_activa(),
+				'renuncia_option'         => Condiciones::OPTION_RENUNCIA,
+				'renuncia_texto'          => (string) get_option( Condiciones::OPTION_RENUNCIA_TEXTO, '' ),
+				'renuncia_texto_option'   => Condiciones::OPTION_RENUNCIA_TEXTO,
+				'renuncia_version'        => Condiciones::TEXTO_RENUNCIA_VERSION,
+				'renuncia_version_actual' => Condiciones::version_texto(),
+				'renuncia_fecha_cambio'   => (string) get_option( Condiciones::OPTION_RENUNCIA_TEXTO . '_fecha', '' ),
+				'renuncia_defecto'        => Condiciones::texto_renuncia(),
+				'plantilla_propia'        => Course_Template::activa(),
+				'plantilla_option'        => Course_Template::OPTION,
+				'entidad_faltan'          => array_map(
 					static function ( $campo ) {
 						return Entidad::campos()[ $campo ] ?? $campo;
 					},

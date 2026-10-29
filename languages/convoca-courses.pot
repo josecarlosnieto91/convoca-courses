@@ -2,2250 +2,1853 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.16.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 21:13+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: Convoca Courses 0.16.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-29T20:25:53+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
 
-#: includes/CPT_Base.php:83
-#, php-format
-msgctxt "convoca-courses"
-msgid "Todos: %s"
+#. Plugin Name of the plugin
+#: convoca-courses.php
+msgid "Convoca Courses"
 msgstr ""
 
-#: includes/CPT_Base.php:85
-#, php-format
-msgctxt "convoca-courses"
-msgid "Añadir %s"
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: convoca-courses.php
+msgid "https://getconvoca.app"
 msgstr ""
 
-#: includes/CPT_Base.php:87
-#, php-format
-msgctxt "convoca-courses"
-msgid "Editar %s"
+#. Description of the plugin
+#: convoca-courses.php
+msgid "Cursos online con módulos, lecciones, matrícula, progreso y certificado. Funciona solo con Convoca Core."
 msgstr ""
 
-#: includes/CPT_Base.php:89
-#, php-format
-msgctxt "convoca-courses"
-msgid "Nuevo %s"
+#. Author of the plugin
+#: convoca-courses.php
+msgid "Jose Carlos Nieto Ramos"
 msgstr ""
 
-#: includes/CPT_Base.php:91
-#, php-format
-msgctxt "convoca-courses"
-msgid "Ver %s"
-msgstr ""
-
-#: includes/CPT_Base.php:93
-#, php-format
-msgctxt "convoca-courses"
-msgid "Buscar %s"
-msgstr ""
-
-#: includes/CPT_Base.php:95
-#, php-format
-msgctxt "convoca-courses"
-msgid "No hay %s"
-msgstr ""
-
-#: includes/CPT_Base.php:97
-#, php-format
-msgctxt "convoca-courses"
-msgid "No hay %s en la papelera"
-msgstr ""
-
-#: includes/Hierarchy.php:119
-msgctxt "convoca-courses"
-msgid "La lección no cuelga de ningún módulo."
-msgstr ""
-
-#: includes/Hierarchy.php:124
-msgctxt "convoca-courses"
-msgid "El módulo de la lección no existe."
-msgstr ""
-
-#: includes/Hierarchy.php:129
-msgctxt "convoca-courses"
-msgid "El módulo de la lección no cuelga de ningún curso."
-msgstr ""
-
-#: includes/Verification.php:87
-msgctxt "convoca-courses"
-msgid "El certificado no está disponible en PDF."
-msgstr ""
-
-#: includes/Certificate_QR.php:70
-msgctxt "convoca-courses"
-msgid "QR de verificación"
-msgstr ""
-
-#: includes/Pricing.php:117
-msgctxt "convoca-courses"
-msgid "gratis por ser socio"
-msgstr ""
-
-#: includes/Pricing.php:119
-msgctxt "convoca-courses"
-msgid "precio de socio"
-msgstr ""
-
-#: includes/Pricing.php:121
-msgctxt "convoca-courses"
-msgid "descuento de socio"
-msgstr ""
-
-#: includes/Pricing.php:123
-msgctxt "convoca-courses"
-msgid "precio general"
-msgstr ""
-
-#: includes/Group_Email.php:41
-msgctxt "convoca-courses"
-msgid "El correo al grupo es una función PRO."
-msgstr ""
-
-#: includes/Group_Email.php:45
-msgctxt "convoca-courses"
-msgid "El curso no existe."
-msgstr ""
-
-#: includes/Group_Email.php:52
-msgctxt "convoca-courses"
-msgid "Hacen falta asunto y mensaje."
-msgstr ""
-
-#: includes/CPT_Examen.php:54
-msgctxt "convoca-courses"
-msgid "Examen"
-msgstr ""
-
-#: includes/CPT_Examen.php:54
-msgctxt "convoca-courses"
-msgid "Exámenes"
-msgstr ""
-
-#: includes/Notifications.php:82
-#, php-format
-msgctxt "convoca-courses"
-msgid "Tarea corregida: %s"
-msgstr ""
-
-#: includes/Notifications.php:89
-#, php-format
-msgctxt "convoca-courses"
-msgid "Curso: %1$s. Tarea: %2$s."
-msgstr ""
-
-#: includes/Notifications.php:95
-#, php-format
-msgctxt "convoca-courses"
-msgid "Nota: %s sobre 100."
-msgstr ""
-
-#: includes/Notifications.php:101
-msgctxt "convoca-courses"
-msgid "Comentario:"
-msgstr ""
-
-#: includes/Notifications.php:131
-#, php-format
-msgctxt "convoca-courses"
-msgid "Certificado emitido: %s"
-msgstr ""
-
-#: includes/Notifications.php:138
-#, php-format
-msgctxt "convoca-courses"
-msgid "Tu certificado del curso ya está disponible. Código: %s"
-msgstr ""
-
-#: includes/Notifications.php:169
-#, php-format
-msgctxt "convoca-courses"
-msgid "Te esperamos en %s"
-msgstr ""
-
-#: includes/Notifications.php:173
-msgctxt "convoca-courses"
-msgid ""
-"Hace días que no avanzas en el curso. Cuando quieras, lo tienes donde lo "
-"dejaste."
-msgstr ""
-
-#: includes/Notifications.php:193
-#, php-format
-msgctxt "convoca-courses"
-msgid "Te queda el examen de %s"
-msgstr ""
-
-#: includes/Notifications.php:197
-msgctxt "convoca-courses"
-msgid ""
-"Has completado las lecciones y el examen sigue pendiente. Puedes hacerlo "
-"cuando quieras."
-msgstr ""
-
-#: includes/Questions.php:46
-msgctxt "convoca-courses"
-msgid "El tipo de pregunta no es válido."
-msgstr ""
-
-#: includes/Questions.php:52
-msgctxt "convoca-courses"
-msgid "La pregunta necesita un enunciado."
-msgstr ""
-
-#: includes/Questions.php:61
-msgctxt "convoca-courses"
-msgid "La pregunta necesita al menos dos opciones distintas."
-msgstr ""
-
-#: includes/Questions.php:75
-msgctxt "convoca-courses"
-msgid "Hay que marcar cuál es la respuesta correcta."
-msgstr ""
-
-#: includes/Questions.php:79
-msgctxt "convoca-courses"
-msgid "Una pregunta de respuesta única solo puede tener una correcta."
-msgstr ""
-
-#: includes/Questions.php:83
-msgctxt "convoca-courses"
-msgid "Una pregunta de respuesta múltiple necesita al menos dos correctas."
-msgstr ""
-
-#: includes/Questions.php:289 admin/class-admin-examen.php:315
-msgctxt "convoca-courses"
-msgid "No se ha podido guardar la pregunta."
-msgstr ""
-
-#: includes/Questions.php:306
-msgctxt "convoca-courses"
-msgid "La pregunta no existe."
-msgstr ""
-
-#: includes/CPT_Curso.php:58 admin/class-admin-columns.php:47
-#: templates/verificar.php:51 templates/metabox-modulo.php:16
-#: templates/metabox-examen.php:17 templates/entregas.php:24
-msgctxt "convoca-courses"
-msgid "Curso"
-msgstr ""
-
-#: includes/CPT_Curso.php:58
-msgctxt "convoca-courses"
-msgid "Cursos"
-msgstr ""
-
-#: includes/Task.php:103
-msgctxt "convoca-courses"
-msgid "La tarea no existe."
-msgstr ""
-
-#: includes/Task.php:108
-msgctxt "convoca-courses"
-msgid "No puedes entregar esta tarea."
-msgstr ""
-
-#: includes/Task.php:112
-msgctxt "convoca-courses"
-msgid "La entrega está vacía: escribe algo o adjunta un fichero."
-msgstr ""
-
-#: includes/Task.php:158
-msgctxt "convoca-courses"
-msgid "No se ha podido guardar la entrega."
-msgstr ""
-
-#: includes/Task.php:252
-msgctxt "convoca-courses"
-msgid "La entrega no existe."
-msgstr ""
-
-#: includes/Task.php:274
-msgctxt "convoca-courses"
-msgid "No se ha podido guardar la corrección."
-msgstr ""
-
-#: includes/Handlers.php:281
-msgctxt "convoca-courses"
-msgid "No tienes acceso a este vídeo."
-msgstr ""
-
-#: includes/Handlers.php:286
-msgctxt "convoca-courses"
-msgid "El vídeo no está configurado."
-msgstr ""
-
-#: includes/Handlers.php:500 includes/Handlers.php:555
-#: includes/Handlers.php:587 includes/Handlers.php:612
-#: includes/Handlers.php:648 includes/Handlers.php:825
-#: admin/class-admin-examen.php:218 admin/class-admin-examen.php:263
-msgctxt "convoca-courses"
-msgid "La sesión ha caducado. Vuelve a intentarlo."
-msgstr ""
-
-#: includes/Handlers.php:504 admin/class-admin-entregas.php:59
-msgctxt "convoca-courses"
-msgid "No tienes permiso para corregir entregas."
-msgstr ""
-
-#: includes/Handlers.php:559 includes/Shortcodes.php:118
-msgctxt "convoca-courses"
-msgid "El acta de notas solo la ve quien gestiona el curso."
-msgstr ""
-
-#: includes/Handlers.php:591
-msgctxt "convoca-courses"
-msgid "No tienes permiso para escribir al alumnado."
-msgstr ""
-
-#: includes/Handlers.php:616
-msgctxt "convoca-courses"
-msgid "No tienes permiso para exportar el banco de preguntas."
-msgstr ""
-
-#: includes/Handlers.php:652
-msgctxt "convoca-courses"
-msgid "No tienes permiso para importar preguntas."
-msgstr ""
-
-#: includes/Handlers.php:787
-msgctxt "convoca-courses"
-msgid "Matrícula realizada. Ya puedes empezar el curso."
-msgstr ""
-
-#: includes/Handlers.php:789
-msgctxt "convoca-courses"
-msgid "Matrícula cancelada."
-msgstr ""
-
-#: includes/Handlers.php:791
-msgctxt "convoca-courses"
-msgid "Lección marcada como completada."
-msgstr ""
-
-#: includes/Handlers.php:793
-msgctxt "convoca-courses"
-msgid "Examen enviado y corregido."
-msgstr ""
-
-#: includes/Handlers.php:795
-msgctxt "convoca-courses"
-msgid ""
-"Se ha pasado el tiempo del examen: el intento se ha cerrado sin corregir."
-msgstr ""
-
-#: includes/Handlers.php:797
-msgctxt "convoca-courses"
-msgid ""
-"El examen todavía no está abierto: completa antes las lecciones que pide el "
-"curso."
-msgstr ""
-
-#: includes/Handlers.php:799 includes/Attempts.php:103
-msgctxt "convoca-courses"
-msgid "Has agotado los intentos de este examen."
-msgstr ""
-
-#: includes/Handlers.php:801 includes/Attempts.php:108
-msgctxt "convoca-courses"
-msgid "El examen no tiene preguntas todavía."
-msgstr ""
-
-#: includes/Handlers.php:803
-msgctxt "convoca-courses"
-msgid "No se ha podido completar la operación con el examen."
-msgstr ""
-
-#: includes/Handlers.php:805
-msgctxt "convoca-courses"
-msgid "Tarea entregada."
-msgstr ""
-
-#: includes/Handlers.php:807
-msgctxt "convoca-courses"
-msgid "Entrega corregida y alumno avisado."
-msgstr ""
-
-#: includes/Handlers.php:809
-msgctxt "convoca-courses"
-msgid ""
-"No se ha podido subir el fichero: revisa el tipo y el tamaño que admite el "
-"sitio."
-msgstr ""
-
-#: includes/Handlers.php:811
-msgctxt "convoca-courses"
-msgid "No se ha podido completar la operación con la tarea."
-msgstr ""
-
-#: includes/Handlers.php:813
-msgctxt "convoca-courses"
-msgid "Mensaje enviado al alumnado del curso."
-msgstr ""
-
-#: includes/Handlers.php:815
-msgctxt "convoca-courses"
-msgid "No se ha podido enviar el mensaje al alumnado."
-msgstr ""
-
-#: includes/Handlers.php:817
-msgctxt "convoca-courses"
-msgid "Preguntas importadas."
-msgstr ""
-
-#: includes/Handlers.php:819
-msgctxt "convoca-courses"
-msgid "No se ha podido importar el banco de preguntas."
-msgstr ""
-
-#: includes/Handlers.php:821
-msgctxt "convoca-courses"
-msgid "Matrícula reservada. Completa el pago para activarla."
-msgstr ""
-
-#: includes/Handlers.php:823
-msgctxt "convoca-courses"
-msgid ""
-"No se ha podido preparar el pago. La matrícula queda pendiente: inténtalo de "
-"nuevo o contacta con el centro."
-msgstr ""
-
-#: includes/Handlers.php:827
-msgctxt "convoca-courses"
-msgid "No se ha podido completar la operación."
-msgstr ""
-
-#: includes/CPT_Matricula.php:38 templates/metabox-curso.php:89
-msgctxt "convoca-courses"
-msgid "Matrícula"
-msgstr ""
-
-#: includes/CPT_Matricula.php:38 admin/class-admin-columns.php:129
-msgctxt "convoca-courses"
-msgid "Matrículas"
-msgstr ""
-
-#: includes/Cohorts.php:58
-msgctxt "convoca-courses"
-msgid "Convocatorias"
-msgstr ""
-
-#: includes/Cohorts.php:59
-msgctxt "convoca-courses"
-msgid "Convocatoria"
-msgstr ""
-
-#: includes/Cohorts.php:60
-msgctxt "convoca-courses"
-msgid "Añadir convocatoria"
-msgstr ""
-
-#: includes/Cohorts.php:61
-msgctxt "convoca-courses"
-msgid "Editar convocatoria"
-msgstr ""
-
-#: includes/Shared_Bank.php:48 includes/Shared_Bank.php:198
-msgctxt "convoca-courses"
-msgid "El banco compartido es una función PRO."
-msgstr ""
-
-#: includes/Shared_Bank.php:58
-msgctxt "convoca-courses"
-msgid "No hay preguntas que exportar."
-msgstr ""
-
-#: includes/Shared_Bank.php:203
-msgctxt "convoca-courses"
-msgid "El CSV no tiene preguntas legibles."
-msgstr ""
-
-#: includes/CPT_Modulo.php:31 admin/class-admin-columns.php:97
-#: templates/metabox-leccion.php:16 templates/metabox-examen.php:30
-msgctxt "convoca-courses"
-msgid "Módulo"
-msgstr ""
-
-#: includes/CPT_Modulo.php:31
-msgctxt "convoca-courses"
-msgid "Módulos"
-msgstr ""
-
-#: includes/CPT_Leccion.php:36
-msgctxt "convoca-courses"
-msgid "Lección"
-msgstr ""
-
-#: includes/CPT_Leccion.php:36
-msgctxt "convoca-courses"
-msgid "Lecciones"
-msgstr ""
-
-#: includes/Material.php:147
-msgctxt "convoca-courses"
-msgid "Este material es para el alumnado matriculado."
-msgstr ""
-
-#: includes/Material.php:148
-msgctxt "convoca-courses"
-msgid "Acceso restringido"
-msgstr ""
-
-#: includes/Material.php:157
-msgctxt "convoca-courses"
-msgid "El fichero no está disponible."
-msgstr ""
-
-#: includes/Material.php:158
-msgctxt "convoca-courses"
-msgid "No encontrado"
-msgstr ""
-
-#: includes/Shortcodes.php:517
-msgctxt "convoca-courses"
-msgid "No se ha encontrado el curso o la lección indicados."
-msgstr ""
-
-#: includes/Entidad.php:34
-msgctxt "convoca-courses"
-msgid "Nombre o razón social"
-msgstr ""
-
-#: includes/Entidad.php:35
-msgctxt "convoca-courses"
-msgid "NIF / CIF"
-msgstr ""
-
-#: includes/Entidad.php:36
-msgctxt "convoca-courses"
-msgid "Correo para desistimientos"
-msgstr ""
-
-#: includes/Entidad.php:37
-msgctxt "convoca-courses"
-msgid "Dirección postal"
-msgstr ""
-
-#: includes/Entidad.php:38
-msgctxt "convoca-courses"
-msgid "Teléfono de contacto"
-msgstr ""
-
-#: includes/Entidad.php:124
-msgctxt "convoca-courses"
-msgid "(correo de desistimiento sin configurar)"
-msgstr ""
-
-#: includes/CPT_Tarea.php:46 templates/entregas.php:45
-msgctxt "convoca-courses"
-msgid "Tarea"
-msgstr ""
-
-#: includes/CPT_Tarea.php:46
-msgctxt "convoca-courses"
-msgid "Tareas"
-msgstr ""
-
-#: includes/Course_Payment.php:97
-msgctxt "convoca-courses"
-msgid "El cobro no está disponible en este sitio."
-msgstr ""
-
-#: includes/Course_Payment.php:106
-msgctxt "convoca-courses"
-msgid "El curso no tiene importe que cobrar."
-msgstr ""
-
-#: includes/Course_Payment.php:118
-#, php-format
-msgctxt "convoca-courses"
-msgid "%1$s — Matrícula del curso %2$s"
-msgstr ""
-
-#: includes/Course_Payment.php:281
-#, php-format
-msgctxt "convoca-courses"
-msgid "pago #%d"
-msgstr ""
-
-#: includes/Enrollment.php:133 includes/Identidad_Acceso.php:93
-msgctxt "convoca-courses"
-msgid "Ese correo no vale."
-msgstr ""
-
-#: includes/Enrollment.php:193
-msgctxt "convoca-courses"
-msgid "Hay que iniciar sesión para matricularse."
-msgstr ""
-
-#: includes/Enrollment.php:198
-msgctxt "convoca-courses"
-msgid "El curso no existe o no está publicado."
-msgstr ""
-
-#: includes/Enrollment.php:208
-msgctxt "convoca-courses"
-msgid "Ya estás matriculado en este curso."
-msgstr ""
-
-#: includes/Enrollment.php:217
-msgctxt "convoca-courses"
-msgid "No hay ninguna convocatoria abierta con plazas para este curso."
-msgstr ""
-
-#: includes/Enrollment.php:228
-msgctxt "convoca-courses"
-msgid "No se ha podido reservar la plaza. Inténtalo de nuevo en unos segundos."
-msgstr ""
-
-#: includes/Enrollment.php:232
-msgctxt "convoca-courses"
-msgid "No quedan plazas en este curso."
-msgstr ""
-
-#: includes/Enrollment.php:249
-#, php-format
-msgctxt "convoca-courses"
-msgid "%1$s — %2$s"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:87 includes/Matricula_Identidad.php:150
-msgctxt "convoca-courses"
-msgid "La petición ha caducado. Vuelve a intentarlo."
-msgstr ""
-
-#: includes/Identidad_Acceso.php:98
-msgctxt "convoca-courses"
-msgid "El código no es válido o ha caducado. Pide otro."
-msgstr ""
-
-#: includes/Identidad_Acceso.php:131
-msgctxt "convoca-courses"
-msgid "Tu acceso al curso"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:135
-msgctxt "convoca-courses"
-msgid "Entra con este enlace (caduca en 30 minutos):"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:143
-msgctxt "convoca-courses"
-msgid "O usa este código:"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:200
-#, php-format
-msgctxt "convoca-courses"
-msgid "Has entrado como %s."
-msgstr ""
-
-#: includes/Identidad_Acceso.php:208
-msgctxt "convoca-courses"
-msgid "Te hemos enviado un enlace y un código. Revisa el correo."
-msgstr ""
-
-#: includes/Identidad_Acceso.php:226 includes/Matricula_Identidad.php:112
-msgctxt "convoca-courses"
-msgid "Tu correo"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:228
-msgctxt "convoca-courses"
-msgid "Enviarme el acceso"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:234
-msgctxt "convoca-courses"
-msgid "¿Ya tienes un código?"
-msgstr ""
-
-#: includes/Identidad_Acceso.php:237
-msgctxt "convoca-courses"
-msgid "Entrar con el código"
-msgstr ""
-
-#: includes/Attempts.php:74
-msgctxt "convoca-courses"
-msgid "Hay que iniciar sesión para hacer el examen."
-msgstr ""
-
-#: includes/Attempts.php:78
-msgctxt "convoca-courses"
-msgid "El examen no existe."
-msgstr ""
-
-#: includes/Attempts.php:83
-msgctxt "convoca-courses"
-msgid "El examen no cuelga de ningún curso."
-msgstr ""
-
-#: includes/Attempts.php:89 includes/Attempts.php:92
-msgctxt "convoca-courses"
-msgid "Todavía no puedes abrir este examen."
-msgstr ""
-
-#: includes/Attempts.php:146
-msgctxt "convoca-courses"
-msgid "No se ha podido abrir el intento."
-msgstr ""
-
-#: includes/Attempts.php:179
-msgctxt "convoca-courses"
-msgid "El intento no existe."
-msgstr ""
-
-#: includes/Attempts.php:187
-msgctxt "convoca-courses"
-msgid "Este intento no es tuyo."
-msgstr ""
-
-#: includes/Attempts.php:191
-msgctxt "convoca-courses"
-msgid "Este intento ya está cerrado."
-msgstr ""
-
-#: includes/Settings.php:47 templates/ajustes.php:15
-msgctxt "convoca-courses"
-msgid "Ajustes de Convoca Courses"
-msgstr ""
-
-#: includes/Settings.php:48
-msgctxt "convoca-courses"
-msgid "Ajustes"
-msgstr ""
-
-#: includes/Settings.php:188
-msgctxt "convoca-courses"
-msgid "No tienes permisos para ver esta página."
-msgstr ""
-
-#: includes/Matricula_Identidad.php:76
-#, php-format
-msgctxt "convoca-courses"
-msgid "Tu matrícula está en estado: %s."
-msgstr ""
-
-#: includes/Matricula_Identidad.php:88
-msgctxt "convoca-courses"
-msgid "Matrícula hecha. Revisa tu correo para entrar al curso."
-msgstr ""
-
-#: includes/Matricula_Identidad.php:94
-msgctxt "convoca-courses"
-msgid "No se ha podido completar la matrícula. Revisa el correo."
-msgstr ""
-
-#: includes/Matricula_Identidad.php:114
-msgctxt "convoca-courses"
-msgid "Tu nombre"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:128 templates/curso.php:105
-msgctxt "convoca-courses"
-msgid "Matricularme"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:155
-msgctxt "convoca-courses"
-msgid "Hay que aceptar las condiciones de venta para matricularte."
-msgstr ""
-
-#: includes/Condiciones.php:79
-msgctxt "convoca-courses"
-msgid ""
-"He leído las condiciones de venta y sé que tengo 14 días naturales para "
-"desistir sin justificar el motivo."
-msgstr ""
-
-#: includes/Condiciones.php:134
-msgctxt "convoca-courses"
-msgid ""
-"Quiero empezar el curso ahora, sin esperar a que terminen los 14 días "
-"naturales de desistimiento. Sé que, al abrir el contenido digital del curso —"
-"las lecciones y sus materiales—, empieza su ejecución y pierdo el derecho de "
-"desistimiento sobre ese contenido digital, de modo que no podré pedir la "
-"devolución de lo que ya haya consumido (art. 103.m del TRLGDCU). Sé también "
-"que la parte del curso que no sea contenido digital —sesiones en directo, "
-"tutorías o material impreso, si las hubiera— sigue sujeta al derecho de "
-"desistimiento, aunque marque esta casilla. Entiendo que esta casilla es "
-"opcional: si no la marco, hago el curso igual y conservo los 14 días "
-"naturales completos. Y sé que la asociación me enviará por correo la "
-"confirmación de esta contratación y de este consentimiento, y que la "
-"aceptación quedará registrada con su fecha y los datos técnicos de la "
-"conexión, según la política de privacidad."
-msgstr ""
-
-#: includes/Condiciones.php:233
-#, php-format
-msgctxt "convoca-courses"
-msgid "Hola %1$s: queda confirmada tu matrícula en «%2$s»."
-msgstr ""
-
-#: includes/Condiciones.php:234
-msgctxt "convoca-courses"
-msgid "alumna"
-msgstr ""
-
-#: includes/Condiciones.php:240
-#, php-format
-msgctxt "convoca-courses"
-msgid "Fecha: %1$s. Importe: %2$s."
-msgstr ""
-
-#: includes/Condiciones.php:247
-msgctxt "convoca-courses"
-msgid ""
-"Has pedido empezar el curso sin esperar los 14 días naturales de "
-"desistimiento. Este es el texto exacto que aceptaste:"
-msgstr ""
-
-#: includes/Condiciones.php:251
-msgctxt "convoca-courses"
-msgid ""
-"En consecuencia, el contenido digital que ya has consumido queda fuera del "
-"derecho de desistimiento. Lo que no sea contenido digital (sesiones en "
-"directo, tutorías o material impreso) sigue sujeto a ese derecho."
-msgstr ""
-
-#: includes/Condiciones.php:253
-msgctxt "convoca-courses"
-msgid ""
-"No has renunciado al desistimiento: dispones de 14 días naturales desde hoy "
-"para desistir sin justificar el motivo y sin coste, salvo los gastos de "
-"devolución si los hubiera. No necesitas marcar ninguna casilla para hacer el "
-"curso."
-msgstr ""
-
-#: includes/Condiciones.php:257
-msgctxt "convoca-courses"
-msgid ""
-"Cómo desistir: escribe un correo a la dirección que figura abajo indicando "
-"tu nombre, el curso y la fecha de la compra. Puedes usar el formulario "
-"oficial de desistimiento de la web. Te confirmaremos la recepción en soporte "
-"duradero."
-msgstr ""
-
-#: includes/Condiciones.php:267
-msgctxt "convoca-courses"
-msgid "Desistimientos y consultas:"
-msgstr ""
-
-#: includes/Condiciones.php:273
-#, php-format
-msgctxt "convoca-courses"
-msgid ""
-"Guardamos esta confirmación y el registro de tu consentimiento de forma "
-"separada durante %d años, para poder atender cualquier reclamación. La "
-"información completa sobre el tratamiento está en la política de privacidad "
-"de la web."
-msgstr ""
-
-#: includes/Condiciones.php:277
-msgctxt "convoca-courses"
-msgid "Conserva este correo: es la confirmación de tu contratación."
-msgstr ""
-
-#: includes/Condiciones.php:283
-#, php-format
-msgctxt "convoca-courses"
-msgid "Confirmación de tu matrícula en «%s»"
-msgstr ""
-
-#: includes/Condiciones.php:347
-msgctxt "convoca-courses"
-msgid ""
-"Faltan el nombre, el NIF o el correo de desistimiento de la entidad. "
-"Rellénalos en Cursos → Ajustes antes de publicar esta página."
-msgstr ""
-
-#: admin/class-admin-columns.php:46 templates/verificar.php:52
-msgctxt "convoca-courses"
+#: admin/class-admin-columns.php:46
+#: templates/verificar.php:52
 msgid "Persona"
 msgstr ""
 
-#: admin/class-admin-columns.php:48 templates/acta.php:43
-#: templates/entregas.php:47 templates/examen.php:206
-msgctxt "convoca-courses"
+#: admin/class-admin-columns.php:47
+#: includes/CPT_Curso.php:58
+#: templates/entregas.php:24
+#: templates/metabox-examen.php:17
+#: templates/metabox-modulo.php:16
+#: templates/verificar.php:51
+msgid "Curso"
+msgstr ""
+
+#: admin/class-admin-columns.php:48
+#: templates/acta.php:43
+#: templates/entregas.php:47
+#: templates/examen.php:206
 msgid "Estado"
 msgstr ""
 
-#: admin/class-admin-columns.php:49 templates/curso.php:47
+#: admin/class-admin-columns.php:49
+#: templates/curso.php:47
 #: templates/metabox-curso.php:60
-msgctxt "convoca-courses"
 msgid "Certificado"
 msgstr ""
 
-#: admin/class-admin-columns.php:96 templates/leccion.php:18
+#: admin/class-admin-columns.php:96
+#: templates/leccion.php:18
 #: templates/metabox-preguntas.php:80
-msgctxt "convoca-courses"
 msgid "Tipo"
 msgstr ""
 
-#: admin/class-admin-columns.php:128 templates/curso.php:34
+#: admin/class-admin-columns.php:97
+#: includes/CPT_Modulo.php:31
+#: templates/metabox-examen.php:30
+#: templates/metabox-leccion.php:16
+msgid "Módulo"
+msgstr ""
+
+#: admin/class-admin-columns.php:128
+#: templates/curso.php:34
 #: templates/metabox-curso.php:16
-msgctxt "convoca-courses"
 msgid "Precio"
 msgstr ""
 
+#: admin/class-admin-columns.php:129
+#: includes/CPT_Matricula.php:38
+msgid "Matrículas"
+msgstr ""
+
 #: admin/class-admin-columns.php:145
-msgctxt "convoca-courses"
 msgid "Gratis"
 msgstr ""
 
-#: admin/class-admin-entregas.php:44 admin/class-admin-entregas.php:45
-msgctxt "convoca-courses"
+#: admin/class-admin-entregas.php:44
+#: admin/class-admin-entregas.php:45
 msgid "Entregas"
 msgstr ""
 
+#: admin/class-admin-entregas.php:59
+#: includes/Handlers.php:504
+msgid "No tienes permiso para corregir entregas."
+msgstr ""
+
 #: admin/class-admin-examen.php:58
-msgctxt "convoca-courses"
 msgid "Configuración del examen"
 msgstr ""
 
 #: admin/class-admin-examen.php:67
-msgctxt "convoca-courses"
 msgid "Preguntas del examen"
 msgstr ""
 
-#: admin/class-admin-examen.php:222 admin/class-admin-examen.php:267
-msgctxt "convoca-courses"
+#: admin/class-admin-examen.php:218
+#: admin/class-admin-examen.php:263
+#: includes/Handlers.php:500
+#: includes/Handlers.php:555
+#: includes/Handlers.php:587
+#: includes/Handlers.php:612
+#: includes/Handlers.php:648
+#: includes/Handlers.php:825
+msgid "La sesión ha caducado. Vuelve a intentarlo."
+msgstr ""
+
+#: admin/class-admin-examen.php:222
+#: admin/class-admin-examen.php:267
 msgid "No tienes permiso para editar este examen."
 msgstr ""
 
 #: admin/class-admin-examen.php:309
-msgctxt "convoca-courses"
 msgid "Pregunta añadida."
 msgstr ""
 
 #: admin/class-admin-examen.php:311
-msgctxt "convoca-courses"
 msgid "Pregunta actualizada."
 msgstr ""
 
 #: admin/class-admin-examen.php:313
-msgctxt "convoca-courses"
 msgid "Pregunta borrada."
 msgstr ""
 
-#: admin/class-admin-examen.php:346 admin/class-admin-fields.php:469
+#: admin/class-admin-examen.php:315
+#: includes/Questions.php:289
+msgid "No se ha podido guardar la pregunta."
+msgstr ""
+
+#: admin/class-admin-examen.php:346
+#: admin/class-admin-fields.php:469
 #: templates/entregas.php:26
-msgctxt "convoca-courses"
 msgid "— Selecciona un curso —"
 msgstr ""
 
 #: admin/class-admin-examen.php:369
-msgctxt "convoca-courses"
 msgid "— Todo el curso —"
 msgstr ""
 
 #: admin/class-admin-fields.php:43
-msgctxt "convoca-courses"
 msgid "Datos del curso"
 msgstr ""
 
 #: admin/class-admin-fields.php:52
-msgctxt "convoca-courses"
 msgid "Datos del módulo"
 msgstr ""
 
 #: admin/class-admin-fields.php:61
-msgctxt "convoca-courses"
 msgid "Datos de la lección"
 msgstr ""
 
 #: admin/class-admin-fields.php:70
-msgctxt "convoca-courses"
 msgid "Evaluación de la tarea"
 msgstr ""
 
 #: admin/class-admin-fields.php:91
-msgctxt "convoca-courses"
 msgid "Examen que la corrige"
 msgstr ""
 
 #: admin/class-admin-fields.php:93
-msgctxt "convoca-courses"
 msgid "— Corrección manual —"
 msgstr ""
 
 #: admin/class-admin-fields.php:105
-msgctxt "convoca-courses"
-msgid ""
-"Si eliges un examen, la tarea es tipo test y la nota sale del examen: nadie "
-"tiene que corregirla a mano."
+msgid "Si eliges un examen, la tarea es tipo test y la nota sale del examen: nadie tiene que corregirla a mano."
 msgstr ""
 
 #: admin/class-admin-fields.php:108
-msgctxt "convoca-courses"
 msgid "Guarda primero la tarea con su curso para poder elegir examen."
 msgstr ""
 
 #: admin/class-admin-fields.php:412
-msgctxt "convoca-courses"
-msgid ""
-"Falta la relación de jerarquía: un módulo tiene que colgar de un curso y una "
-"lección de un módulo. La entrada se ha guardado sin relación."
+msgid "Falta la relación de jerarquía: un módulo tiene que colgar de un curso y una lección de un módulo. La entrada se ha guardado sin relación."
 msgstr ""
 
 #: admin/class-admin-fields.php:457
-msgctxt "convoca-courses"
 msgid "El módulo no cuelga de ningún curso."
 msgstr ""
 
 #: admin/class-admin-fields.php:530
-msgctxt "convoca-courses"
 msgid "Módulos sin curso"
 msgstr ""
 
-#: templates/curso.php:37 templates/metabox-curso.php:26
-msgctxt "convoca-courses"
-msgid "Plazas"
+#: convoca-courses.php:92
+msgid "Convoca Courses necesita el plugin Convoca Core activo para funcionar."
 msgstr ""
 
-#: templates/curso.php:40
-msgctxt "convoca-courses"
-msgid "sin límite"
+#: includes/Attempts.php:74
+msgid "Hay que iniciar sesión para hacer el examen."
 msgstr ""
 
-#: templates/curso.php:47
-msgctxt "convoca-courses"
-msgid "sí"
+#: includes/Attempts.php:78
+msgid "El examen no existe."
 msgstr ""
 
-#: templates/curso.php:58
-msgctxt "convoca-courses"
-msgid "Tu matrícula está pendiente de pago."
+#: includes/Attempts.php:83
+msgid "El examen no cuelga de ningún curso."
 msgstr ""
 
-#: templates/curso.php:62
-msgctxt "convoca-courses"
-msgid "Completar el pago"
+#: includes/Attempts.php:89
+#: includes/Attempts.php:92
+msgid "Todavía no puedes abrir este examen."
 msgstr ""
 
-#: templates/curso.php:76 templates/lecciones.php:26
+#: includes/Attempts.php:103
+#: includes/Handlers.php:799
+msgid "Has agotado los intentos de este examen."
+msgstr ""
+
+#: includes/Attempts.php:108
+#: includes/Handlers.php:801
+msgid "El examen no tiene preguntas todavía."
+msgstr ""
+
+#: includes/Attempts.php:146
+msgid "No se ha podido abrir el intento."
+msgstr ""
+
+#: includes/Attempts.php:179
+msgid "El intento no existe."
+msgstr ""
+
+#: includes/Attempts.php:187
+msgid "Este intento no es tuyo."
+msgstr ""
+
+#: includes/Attempts.php:191
+msgid "Este intento ya está cerrado."
+msgstr ""
+
+#: includes/Certificate_QR.php:70
+msgid "QR de verificación"
+msgstr ""
+
+#: includes/Cohorts.php:58
+msgid "Convocatorias"
+msgstr ""
+
+#: includes/Cohorts.php:59
+msgid "Convocatoria"
+msgstr ""
+
+#: includes/Cohorts.php:60
+msgid "Añadir convocatoria"
+msgstr ""
+
+#: includes/Cohorts.php:61
+msgid "Editar convocatoria"
+msgstr ""
+
+#: includes/Condiciones.php:105
+msgid "He leído las condiciones de venta y sé que tengo 14 días naturales para desistir sin justificar el motivo."
+msgstr ""
+
+#: includes/Condiciones.php:161
+msgid "la entidad"
+msgstr ""
+
+#: includes/Condiciones.php:163
+msgid "Quiero empezar el curso ahora, sin esperar a que terminen los 14 días naturales de desistimiento. Sé que, al abrir el contenido digital del curso —las lecciones y sus materiales—, empieza su ejecución y pierdo el derecho de desistimiento sobre ese contenido digital, de modo que no podré pedir la devolución de lo que ya haya consumido (art. 103.m del TRLGDCU). Sé también que la parte del curso que no sea contenido digital —sesiones en directo, tutorías o material impreso, si las hubiera— sigue sujeta al derecho de desistimiento, aunque marque esta casilla. Entiendo que esta casilla es opcional: si no la marco, hago el curso igual y conservo los 14 días naturales completos. Y sé que {{entidad}} me enviará por correo la confirmación de esta contratación y de este consentimiento, y que la aceptación quedará registrada con su fecha y los datos técnicos de la conexión, según la política de privacidad."
+msgstr ""
+
+#. translators: 1: nombre de la persona, 2: nombre del curso.
+#: includes/Condiciones.php:264
 #, php-format
-msgctxt "convoca-courses"
-msgid "%1$d de %2$d lecciones completadas (%3$s %%)."
+msgid "Hola %1$s: queda confirmada tu matrícula en «%2$s»."
 msgstr ""
 
-#: templates/curso.php:86
-msgctxt "convoca-courses"
-msgid "Ver el recibo del pago"
+#: includes/Condiciones.php:265
+msgid "alumna"
 msgstr ""
 
-#: templates/curso.php:101
+#. translators: 1: fecha, 2: importe.
+#: includes/Condiciones.php:271
 #, php-format
-msgctxt "convoca-courses"
-msgid "Comprar plaza — %s"
+msgid "Fecha: %1$s. Importe: %2$s."
 msgstr ""
 
-#: templates/curso.php:121
-msgctxt "convoca-courses"
-msgid "Si ya tienes cuenta en la web, entra por aquí."
+#: includes/Condiciones.php:278
+msgid "Has pedido empezar el curso sin esperar los 14 días naturales de desistimiento. Este es el texto exacto que aceptaste:"
 msgstr ""
 
-#: templates/curso.php:127
-msgctxt "convoca-courses"
-msgid "Inicia sesión para matricularte"
+#: includes/Condiciones.php:282
+msgid "En consecuencia, el contenido digital que ya has consumido queda fuera del derecho de desistimiento. Lo que no sea contenido digital (sesiones en directo, tutorías o material impreso) sigue sujeto a ese derecho."
 msgstr ""
 
-#: templates/curso.php:134
-msgctxt "convoca-courses"
-msgid "Contenido del curso"
+#: includes/Condiciones.php:284
+msgid "No has renunciado al desistimiento: dispones de 14 días naturales desde hoy para desistir sin justificar el motivo y sin coste, salvo los gastos de devolución si los hubiera. No necesitas marcar ninguna casilla para hacer el curso."
 msgstr ""
 
-#: templates/leccion.php:21
-msgctxt "convoca-courses"
-msgid "Duración"
+#: includes/Condiciones.php:288
+msgid "Cómo desistir: escribe un correo a la dirección que figura abajo indicando tu nombre, el curso y la fecha de la compra. Puedes usar el formulario oficial de desistimiento de la web. Te confirmaremos la recepción en soporte duradero."
 msgstr ""
 
-#: templates/leccion.php:25
+#: includes/Condiciones.php:298
+msgid "Desistimientos y consultas:"
+msgstr ""
+
+#. translators: %d: años de conservación.
+#: includes/Condiciones.php:304
 #, php-format
-msgctxt "convoca-courses"
-msgid "%d min"
+msgid "Guardamos esta confirmación y el registro de tu consentimiento de forma separada durante %d años, para poder atender cualquier reclamación. La información completa sobre el tratamiento está en la política de privacidad de la web."
 msgstr ""
 
-#: templates/leccion.php:37
-msgctxt "convoca-courses"
-msgid ""
-"El vídeo de esta lección requiere una licencia PRO activa. El resto del "
-"curso sigue disponible."
+#: includes/Condiciones.php:308
+msgid "Conserva este correo: es la confirmación de tu contratación."
 msgstr ""
 
-#: templates/leccion.php:43
-msgctxt "convoca-courses"
-msgid "Tu navegador no puede reproducir este vídeo."
-msgstr ""
-
-#: templates/leccion.php:44
-msgctxt "convoca-courses"
-msgid "Descargar el vídeo"
-msgstr ""
-
-#: templates/leccion.php:48
-msgctxt "convoca-courses"
-msgid "El vídeo de esta lección todavía no está configurado."
-msgstr ""
-
-#: templates/leccion.php:62
-msgctxt "convoca-courses"
-msgid "Abrir el PDF de la lección"
-msgstr ""
-
-#: templates/leccion.php:63
-msgctxt "convoca-courses"
-msgid "Descargar el adjunto"
-msgstr ""
-
-#: templates/leccion.php:68
-msgctxt "convoca-courses"
-msgid "Esta lección todavía no tiene el fichero adjunto."
-msgstr ""
-
-#: templates/leccion.php:74
-msgctxt "convoca-courses"
-msgid "Lección completada"
-msgstr ""
-
-#: templates/leccion.php:80
-msgctxt "convoca-courses"
-msgid "Marcar como completada"
-msgstr ""
-
-#: templates/leccion.php:85
-msgctxt "convoca-courses"
-msgid "Volver al curso"
-msgstr ""
-
-#: templates/leccion-bloqueada.php:19
-msgctxt "convoca-courses"
-msgid "Esta lección se abre cuando completes las anteriores."
-msgstr ""
-
-#: templates/leccion-bloqueada.php:21
-msgctxt "convoca-courses"
-msgid "Necesitas matricularte en el curso para ver esta lección."
-msgstr ""
-
-#: templates/leccion-bloqueada.php:26
-msgctxt "convoca-courses"
-msgid "Ir a la portada del curso"
-msgstr ""
-
-#: templates/verificar.php:26
+#. translators: %s: nombre del curso.
+#: includes/Condiciones.php:314
 #, php-format
-msgctxt "convoca-courses"
-msgid "Verificación de certificado — %s"
+msgid "Confirmación de tu matrícula en «%s»"
 msgstr ""
 
-#: templates/verificar.php:36
-msgctxt "convoca-courses"
-msgid "Verificación de certificado"
+#: includes/Condiciones.php:380
+msgid "Faltan el nombre, el NIF o el correo de desistimiento de la entidad. Rellénalos en Cursos → Ajustes antes de publicar esta página."
 msgstr ""
 
-#: templates/verificar.php:39
-msgctxt "convoca-courses"
-msgid "Código del certificado"
+#: includes/Course_Payment.php:97
+msgid "El cobro no está disponible en este sitio."
 msgstr ""
 
-#: templates/verificar.php:41
-msgctxt "convoca-courses"
-msgid "Verificar"
+#: includes/Course_Payment.php:106
+msgid "El curso no tiene importe que cobrar."
 msgstr ""
 
-#: templates/verificar.php:45
-msgctxt "convoca-courses"
-msgid ""
-"Introduce el código que aparece en el certificado para comprobar que es "
-"auténtico."
-msgstr ""
-
-#: templates/verificar.php:48
-msgctxt "convoca-courses"
-msgid "Certificado válido."
-msgstr ""
-
-#: templates/verificar.php:50
-msgctxt "convoca-courses"
-msgid "Código"
-msgstr ""
-
-#: templates/verificar.php:53 templates/examen.php:204
-msgctxt "convoca-courses"
-msgid "Fecha"
-msgstr ""
-
-#: templates/verificar.php:54
-msgctxt "convoca-courses"
-msgid "Entidad"
-msgstr ""
-
-#: templates/verificar.php:70
-msgctxt "convoca-courses"
-msgid "Ver el certificado en PDF"
-msgstr ""
-
-#: templates/verificar.php:76
-msgctxt "convoca-courses"
-msgid "No existe ningún certificado con ese código."
-msgstr ""
-
-#: templates/certificado.php:35
-msgctxt "convoca-courses"
-msgid "Certificado de aprovechamiento"
-msgstr ""
-
-#: templates/certificado.php:37
-msgctxt "convoca-courses"
-msgid "Se certifica que"
-msgstr ""
-
-#: templates/certificado.php:39
-msgctxt "convoca-courses"
-msgid "ha completado el curso"
-msgstr ""
-
-#: templates/certificado.php:46
+#. translators: 1: site name, 2: course title.
+#: includes/Course_Payment.php:118
 #, php-format
-msgctxt "convoca-courses"
-msgid "Fecha de emisión: %s"
+msgid "%1$s — Matrícula del curso %2$s"
 msgstr ""
 
-#: templates/certificado.php:57
+#. translators: %d: payment identifier.
+#: includes/Course_Payment.php:281
 #, php-format
-msgctxt "convoca-courses"
-msgid "Nota final: %s sobre 100"
+msgid "pago #%d"
 msgstr ""
 
-#: templates/certificado.php:86
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:83
 #, php-format
-msgctxt "convoca-courses"
-msgid "Verificable en %s"
+msgid "Todos: %s"
 msgstr ""
 
-#: templates/metabox-modulo.php:31 templates/metabox-leccion.php:51
-#: templates/metabox-preguntas.php:118
-msgctxt "convoca-courses"
-msgid "Orden"
-msgstr ""
-
-#: templates/metabox-modulo.php:35
-msgctxt "convoca-courses"
-msgid "Número dentro del curso. Los módulos se muestran de menor a mayor."
-msgstr ""
-
-#: templates/metabox-leccion.php:19
-msgctxt "convoca-courses"
-msgid "— Selecciona un módulo —"
-msgstr ""
-
-#: templates/metabox-leccion.php:36
-msgctxt "convoca-courses"
-msgid "Tipo de lección"
-msgstr ""
-
-#: templates/metabox-leccion.php:46
-msgctxt "convoca-courses"
-msgid ""
-"El tipo «video» necesita licencia PRO: sin ella la lección se muestra sin "
-"vídeo."
-msgstr ""
-
-#: templates/metabox-leccion.php:58
-msgctxt "convoca-courses"
-msgid "Duración (min)"
-msgstr ""
-
-#: templates/metabox-leccion.php:65
-msgctxt "convoca-courses"
-msgid "Adjunto o PDF"
-msgstr ""
-
-#: templates/metabox-leccion.php:69
-msgctxt "convoca-courses"
-msgid "Identificador del fichero en la biblioteca de medios."
-msgstr ""
-
-#: templates/metabox-leccion.php:73
-msgctxt "convoca-courses"
-msgid "URL externa de vídeo"
-msgstr ""
-
-#: templates/metabox-leccion.php:77
-msgctxt "convoca-courses"
-msgid "Alternativa al almacenamiento propio: URL directa de vídeo."
-msgstr ""
-
-#: templates/metabox-leccion.php:81
-msgctxt "convoca-courses"
-msgid "Objeto en el almacenamiento"
-msgstr ""
-
-#: templates/metabox-leccion.php:85
-msgctxt "convoca-courses"
-msgid ""
-"Ruta del objeto dentro del bucket. Se sirve con URL firmada de corta "
-"duración."
-msgstr ""
-
-#: templates/metabox-examen.php:26
-msgctxt "convoca-courses"
-msgid "El examen se abre desde el curso al que pertenece."
-msgstr ""
-
-#: templates/metabox-examen.php:39
-msgctxt "convoca-courses"
-msgid ""
-"Si el examen es del módulo, el acceso se mide sobre las lecciones de ese "
-"módulo."
-msgstr ""
-
-#: templates/metabox-examen.php:43
-msgctxt "convoca-courses"
-msgid "Preguntas por intento"
-msgstr ""
-
-#: templates/metabox-examen.php:46
-msgctxt "convoca-courses"
-msgid "0 = todas las preguntas del examen y del banco del curso."
-msgstr ""
-
-#: templates/metabox-examen.php:50
-msgctxt "convoca-courses"
-msgid "Aleatorio"
-msgstr ""
-
-#: templates/metabox-examen.php:54
-msgctxt "convoca-courses"
-msgid "Barajar y elegir preguntas al azar en cada intento"
-msgstr ""
-
-#: templates/metabox-examen.php:59
-msgctxt "convoca-courses"
-msgid "Intentos"
-msgstr ""
-
-#: templates/metabox-examen.php:62
-msgctxt "convoca-courses"
-msgid "0 = intentos ilimitados."
-msgstr ""
-
-#: templates/metabox-examen.php:66 templates/metabox-curso.php:113
-msgctxt "convoca-courses"
-msgid "Nota mínima"
-msgstr ""
-
-#: templates/metabox-examen.php:69
-msgctxt "convoca-courses"
-msgid "0 = la que tenga el curso."
-msgstr ""
-
-#: templates/metabox-examen.php:73
-msgctxt "convoca-courses"
-msgid "Tiempo máximo (minutos)"
-msgstr ""
-
-#: templates/metabox-examen.php:76
-msgctxt "convoca-courses"
-msgid "0 = sin límite. El tiempo se comprueba en el servidor al enviar."
-msgstr ""
-
-#: templates/metabox-examen.php:80
-msgctxt "convoca-courses"
-msgid "Corrección visible"
-msgstr ""
-
-#: templates/metabox-examen.php:88
-msgctxt "convoca-courses"
-msgid "Al enviar: nota y detalle"
-msgstr ""
-
-#: templates/metabox-examen.php:91
-msgctxt "convoca-courses"
-msgid "Al cerrar el examen: solo la nota"
-msgstr ""
-
-#: templates/metabox-examen.php:94
-msgctxt "convoca-courses"
-msgid "Nunca: solo la nota, sin detalle"
-msgstr ""
-
-#: templates/metabox-examen.php:104
-msgctxt "convoca-courses"
-msgid "Peso en la nota final"
-msgstr ""
-
-#: templates/metabox-examen.php:107
-msgctxt "convoca-courses"
-msgid "Los pesos de los exámenes de un curso deben sumar 100."
-msgstr ""
-
-#: templates/metabox-preguntas.php:24
-msgctxt "convoca-courses"
-msgid "Este examen todavía no tiene preguntas."
-msgstr ""
-
-#: templates/metabox-preguntas.php:30
-msgctxt "convoca-courses"
-msgid "puntos"
-msgstr ""
-
-#: templates/metabox-preguntas.php:41
-msgctxt "convoca-courses"
-msgid "Editar"
-msgstr ""
-
-#: templates/metabox-preguntas.php:60
-msgctxt "convoca-courses"
-msgid "¿Borrar esta pregunta?"
-msgstr ""
-
-#: templates/metabox-preguntas.php:61
-msgctxt "convoca-courses"
-msgid "Borrar"
-msgstr ""
-
-#: templates/metabox-preguntas.php:71
-msgctxt "convoca-courses"
-msgid "Editar pregunta"
-msgstr ""
-
-#: templates/metabox-preguntas.php:71 templates/metabox-preguntas.php:129
-msgctxt "convoca-courses"
-msgid "Añadir pregunta"
-msgstr ""
-
-#: templates/metabox-preguntas.php:91
-msgctxt "convoca-courses"
-msgid "Enunciado"
-msgstr ""
-
-#: templates/metabox-preguntas.php:95
-msgctxt "convoca-courses"
-msgid "Opciones"
-msgstr ""
-
-#: templates/metabox-preguntas.php:108
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:85
 #, php-format
-msgctxt "convoca-courses"
-msgid "Opción %d"
+msgid "Añadir %s"
 msgstr ""
 
-#: templates/metabox-preguntas.php:112
-msgctxt "convoca-courses"
-msgid ""
-"Marca la casilla de la respuesta correcta. En las de respuesta múltiple, "
-"marca todas: una de más anula la pregunta. En verdadero/falso, las opciones "
-"son siempre Verdadero y Falso."
-msgstr ""
-
-#: templates/metabox-preguntas.php:116
-msgctxt "convoca-courses"
-msgid "Puntos"
-msgstr ""
-
-#: templates/metabox-preguntas.php:123
-msgctxt "convoca-courses"
-msgid "Explicación (se enseña al corregir)"
-msgstr ""
-
-#: templates/metabox-preguntas.php:129
-msgctxt "convoca-courses"
-msgid "Guardar pregunta"
-msgstr ""
-
-#: templates/metabox-preguntas.php:136
-msgctxt "convoca-courses"
-msgid "Banco compartido (PRO)"
-msgstr ""
-
-#: templates/metabox-preguntas.php:139
-msgctxt "convoca-courses"
-msgid "Exportar preguntas en CSV"
-msgstr ""
-
-#: templates/metabox-preguntas.php:148
-msgctxt "convoca-courses"
-msgid "Importar preguntas (CSV con cabecera)"
-msgstr ""
-
-#: templates/metabox-preguntas.php:152
-msgctxt "convoca-courses"
-msgid ""
-"Columnas: "
-"tipo;enunciado;opcion1;opcion2;opcion3;opcion4;correctas;puntos;explicacion. "
-"En «correctas», los números de opción empezando en 1."
-msgstr ""
-
-#: templates/metabox-preguntas.php:155
-msgctxt "convoca-courses"
-msgid "Importar"
-msgstr ""
-
-#: templates/tareas.php:20
-msgctxt "convoca-courses"
-msgid "Este curso no tiene tareas."
-msgstr ""
-
-#: templates/tareas.php:23
-msgctxt "convoca-courses"
-msgid "Inicia sesión para ver y entregar las tareas."
-msgstr ""
-
-#: templates/tareas.php:27
-msgctxt "convoca-courses"
-msgid "Necesitas estar matriculado en el curso para entregar tareas."
-msgstr ""
-
-#: templates/tareas.php:44
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:87
 #, php-format
-msgctxt "convoca-courses"
-msgid "Plazo: %s"
+msgid "Editar %s"
 msgstr ""
 
-#: templates/tareas.php:49
-msgctxt "convoca-courses"
-msgid "Sin plazo de entrega."
-msgstr ""
-
-#: templates/tareas.php:57
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:89
 #, php-format
-msgctxt "convoca-courses"
-msgid "Peso en la nota: %s"
+msgid "Nuevo %s"
 msgstr ""
 
-#: templates/tareas.php:74
+#. translators: %s: singular name of the post type.
+#: includes/CPT_Base.php:91
 #, php-format
-msgctxt "convoca-courses"
-msgid "Entregada el %s."
+msgid "Ver %s"
 msgstr ""
 
-#: templates/tareas.php:79
-msgctxt "convoca-courses"
-msgid "(fuera de plazo)"
-msgstr ""
-
-#: templates/tareas.php:90
-msgctxt "convoca-courses"
-msgid "Fichero entregado"
-msgstr ""
-
-#: templates/tareas.php:100 templates/examen.php:175
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:93
 #, php-format
-msgctxt "convoca-courses"
-msgid "Nota: %s"
+msgid "Buscar %s"
 msgstr ""
 
-#: templates/tareas.php:109
-msgctxt "convoca-courses"
-msgid "Pendiente de corrección."
-msgstr ""
-
-#: templates/tareas.php:116
-msgctxt "convoca-courses"
-msgid "Tu acceso al curso no permite entregar tareas ahora mismo."
-msgstr ""
-
-#: templates/tareas.php:127
-msgctxt "convoca-courses"
-msgid "Volver a entregar (sustituye la entrega anterior)"
-msgstr ""
-
-#: templates/tareas.php:127
-msgctxt "convoca-courses"
-msgid "Tu entrega"
-msgstr ""
-
-#: templates/tareas.php:139
-msgctxt "convoca-courses"
-msgid "Fichero (opcional)"
-msgstr ""
-
-#: templates/tareas.php:147
-msgctxt "convoca-courses"
-msgid "Entregar"
-msgstr ""
-
-#: templates/notas.php:21
-msgctxt "convoca-courses"
-msgid "Inicia sesión para ver tus notas."
-msgstr ""
-
-#: templates/notas.php:25
-msgctxt "convoca-courses"
-msgid "Necesitas estar matriculado en el curso para ver tus notas."
-msgstr ""
-
-#: templates/notas.php:28
-msgctxt "convoca-courses"
-msgid "Este curso no tiene exámenes ni tareas: no hay nota que calcular."
-msgstr ""
-
-#: templates/notas.php:33
-msgctxt "convoca-courses"
-msgid "Pieza"
-msgstr ""
-
-#: templates/notas.php:34
-msgctxt "convoca-courses"
-msgid "Peso"
-msgstr ""
-
-#: templates/notas.php:35 templates/entregas.php:92 templates/examen.php:205
-msgctxt "convoca-courses"
-msgid "Nota"
-msgstr ""
-
-#: templates/notas.php:43
-msgctxt "convoca-courses"
-msgid "examen"
-msgstr ""
-
-#: templates/notas.php:43
-msgctxt "convoca-courses"
-msgid "tarea"
-msgstr ""
-
-#: templates/notas.php:48
-msgctxt "convoca-courses"
-msgid "pendiente"
-msgstr ""
-
-#: templates/notas.php:58 templates/acta.php:42
-msgctxt "convoca-courses"
-msgid "Nota final"
-msgstr ""
-
-#: templates/notas.php:62
-msgctxt "convoca-courses"
-msgid "sin nota todavía"
-msgstr ""
-
-#: templates/notas.php:75
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:95
 #, php-format
-msgctxt "convoca-courses"
-msgid "Mínimo para aprobar: %s sobre 100."
+msgid "No hay %s"
 msgstr ""
 
-#: templates/notas.php:80
-msgctxt "convoca-courses"
-msgid "Aprobado."
+#. translators: %s: plural name of the post type.
+#: includes/CPT_Base.php:97
+#, php-format
+msgid "No hay %s en la papelera"
 msgstr ""
 
-#: templates/notas.php:82
-msgctxt "convoca-courses"
-msgid "Todavía no aprobado."
+#: includes/CPT_Curso.php:58
+msgid "Cursos"
 msgstr ""
 
-#: templates/notas.php:85
-msgctxt "convoca-courses"
-msgid "La nota es provisional: faltan piezas sin corregir."
+#: includes/CPT_Examen.php:54
+msgid "Examen"
+msgstr ""
+
+#: includes/CPT_Examen.php:54
+msgid "Exámenes"
+msgstr ""
+
+#: includes/CPT_Leccion.php:36
+msgid "Lección"
+msgstr ""
+
+#: includes/CPT_Leccion.php:36
+msgid "Lecciones"
+msgstr ""
+
+#: includes/CPT_Matricula.php:38
+#: templates/metabox-curso.php:89
+msgid "Matrícula"
+msgstr ""
+
+#: includes/CPT_Modulo.php:31
+msgid "Módulos"
+msgstr ""
+
+#: includes/CPT_Tarea.php:46
+#: templates/entregas.php:45
+msgid "Tarea"
+msgstr ""
+
+#: includes/CPT_Tarea.php:46
+msgid "Tareas"
+msgstr ""
+
+#: includes/Enrollment.php:133
+#: includes/Identidad_Acceso.php:93
+msgid "Ese correo no vale."
+msgstr ""
+
+#: includes/Enrollment.php:193
+msgid "Hay que iniciar sesión para matricularse."
+msgstr ""
+
+#: includes/Enrollment.php:198
+msgid "El curso no existe o no está publicado."
+msgstr ""
+
+#: includes/Enrollment.php:208
+msgid "Ya estás matriculado en este curso."
+msgstr ""
+
+#: includes/Enrollment.php:217
+msgid "No hay ninguna convocatoria abierta con plazas para este curso."
+msgstr ""
+
+#: includes/Enrollment.php:228
+msgid "No se ha podido reservar la plaza. Inténtalo de nuevo en unos segundos."
+msgstr ""
+
+#: includes/Enrollment.php:232
+msgid "No quedan plazas en este curso."
+msgstr ""
+
+#. translators: 1: course title, 2: user display name.
+#: includes/Enrollment.php:249
+#, php-format
+msgid "%1$s — %2$s"
+msgstr ""
+
+#: includes/Entidad.php:34
+msgid "Nombre o razón social"
+msgstr ""
+
+#: includes/Entidad.php:35
+msgid "NIF / CIF"
+msgstr ""
+
+#: includes/Entidad.php:36
+msgid "Correo para desistimientos"
+msgstr ""
+
+#: includes/Entidad.php:37
+msgid "Dirección postal"
+msgstr ""
+
+#: includes/Entidad.php:38
+msgid "Teléfono de contacto"
+msgstr ""
+
+#: includes/Entidad.php:124
+msgid "(correo de desistimiento sin configurar)"
+msgstr ""
+
+#: includes/Group_Email.php:41
+msgid "El correo al grupo es una función PRO."
+msgstr ""
+
+#: includes/Group_Email.php:45
+msgid "El curso no existe."
+msgstr ""
+
+#: includes/Group_Email.php:52
+msgid "Hacen falta asunto y mensaje."
+msgstr ""
+
+#: includes/Handlers.php:281
+msgid "No tienes acceso a este vídeo."
+msgstr ""
+
+#: includes/Handlers.php:286
+msgid "El vídeo no está configurado."
+msgstr ""
+
+#: includes/Handlers.php:559
+#: includes/Shortcodes.php:118
+msgid "El acta de notas solo la ve quien gestiona el curso."
+msgstr ""
+
+#: includes/Handlers.php:591
+msgid "No tienes permiso para escribir al alumnado."
+msgstr ""
+
+#: includes/Handlers.php:616
+msgid "No tienes permiso para exportar el banco de preguntas."
+msgstr ""
+
+#: includes/Handlers.php:652
+msgid "No tienes permiso para importar preguntas."
+msgstr ""
+
+#: includes/Handlers.php:787
+msgid "Matrícula realizada. Ya puedes empezar el curso."
+msgstr ""
+
+#: includes/Handlers.php:789
+msgid "Matrícula cancelada."
+msgstr ""
+
+#: includes/Handlers.php:791
+msgid "Lección marcada como completada."
+msgstr ""
+
+#: includes/Handlers.php:793
+msgid "Examen enviado y corregido."
+msgstr ""
+
+#: includes/Handlers.php:795
+msgid "Se ha pasado el tiempo del examen: el intento se ha cerrado sin corregir."
+msgstr ""
+
+#: includes/Handlers.php:797
+msgid "El examen todavía no está abierto: completa antes las lecciones que pide el curso."
+msgstr ""
+
+#: includes/Handlers.php:803
+msgid "No se ha podido completar la operación con el examen."
+msgstr ""
+
+#: includes/Handlers.php:805
+msgid "Tarea entregada."
+msgstr ""
+
+#: includes/Handlers.php:807
+msgid "Entrega corregida y alumno avisado."
+msgstr ""
+
+#: includes/Handlers.php:809
+msgid "No se ha podido subir el fichero: revisa el tipo y el tamaño que admite el sitio."
+msgstr ""
+
+#: includes/Handlers.php:811
+msgid "No se ha podido completar la operación con la tarea."
+msgstr ""
+
+#: includes/Handlers.php:813
+msgid "Mensaje enviado al alumnado del curso."
+msgstr ""
+
+#: includes/Handlers.php:815
+msgid "No se ha podido enviar el mensaje al alumnado."
+msgstr ""
+
+#: includes/Handlers.php:817
+msgid "Preguntas importadas."
+msgstr ""
+
+#: includes/Handlers.php:819
+msgid "No se ha podido importar el banco de preguntas."
+msgstr ""
+
+#: includes/Handlers.php:821
+msgid "Matrícula reservada. Completa el pago para activarla."
+msgstr ""
+
+#: includes/Handlers.php:823
+msgid "No se ha podido preparar el pago. La matrícula queda pendiente: inténtalo de nuevo o contacta con el centro."
+msgstr ""
+
+#: includes/Handlers.php:827
+msgid "No se ha podido completar la operación."
+msgstr ""
+
+#: includes/Hierarchy.php:119
+msgid "La lección no cuelga de ningún módulo."
+msgstr ""
+
+#: includes/Hierarchy.php:124
+msgid "El módulo de la lección no existe."
+msgstr ""
+
+#: includes/Hierarchy.php:129
+msgid "El módulo de la lección no cuelga de ningún curso."
+msgstr ""
+
+#: includes/Identidad_Acceso.php:87
+#: includes/Matricula_Identidad.php:150
+msgid "La petición ha caducado. Vuelve a intentarlo."
+msgstr ""
+
+#: includes/Identidad_Acceso.php:98
+msgid "El código no es válido o ha caducado. Pide otro."
+msgstr ""
+
+#: includes/Identidad_Acceso.php:131
+msgid "Tu acceso al curso"
+msgstr ""
+
+#: includes/Identidad_Acceso.php:135
+msgid "Entra con este enlace (caduca en 30 minutos):"
+msgstr ""
+
+#: includes/Identidad_Acceso.php:143
+msgid "O usa este código:"
+msgstr ""
+
+#. translators: %s: correo.
+#: includes/Identidad_Acceso.php:201
+#, php-format
+msgid "Has entrado como %s."
+msgstr ""
+
+#: includes/Identidad_Acceso.php:209
+msgid "Te hemos enviado un enlace y un código. Revisa el correo."
+msgstr ""
+
+#: includes/Identidad_Acceso.php:227
+#: includes/Matricula_Identidad.php:112
+msgid "Tu correo"
+msgstr ""
+
+#: includes/Identidad_Acceso.php:229
+msgid "Enviarme el acceso"
+msgstr ""
+
+#: includes/Identidad_Acceso.php:235
+msgid "¿Ya tienes un código?"
+msgstr ""
+
+#: includes/Identidad_Acceso.php:238
+msgid "Entrar con el código"
+msgstr ""
+
+#: includes/Material.php:147
+msgid "Este material es para el alumnado matriculado."
+msgstr ""
+
+#: includes/Material.php:148
+msgid "Acceso restringido"
+msgstr ""
+
+#: includes/Material.php:157
+msgid "El fichero no está disponible."
+msgstr ""
+
+#: includes/Material.php:158
+msgid "No encontrado"
+msgstr ""
+
+#. translators: %s: estado de la matrícula.
+#: includes/Matricula_Identidad.php:76
+#, php-format
+msgid "Tu matrícula está en estado: %s."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:88
+msgid "Matrícula hecha. Revisa tu correo para entrar al curso."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:94
+msgid "No se ha podido completar la matrícula. Revisa el correo."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:114
+msgid "Tu nombre"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:128
+#: templates/curso.php:105
+msgid "Matricularme"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:155
+msgid "Hay que aceptar las condiciones de venta para matricularte."
+msgstr ""
+
+#. translators: %s: task title.
+#: includes/Notifications.php:82
+#, php-format
+msgid "Tarea corregida: %s"
+msgstr ""
+
+#. translators: 1: course title, 2: task title.
+#: includes/Notifications.php:89
+#, php-format
+msgid "Curso: %1$s. Tarea: %2$s."
+msgstr ""
+
+#. translators: %s: score, 0-100.
+#: includes/Notifications.php:95
+#, php-format
+msgid "Nota: %s sobre 100."
+msgstr ""
+
+#: includes/Notifications.php:101
+msgid "Comentario:"
+msgstr ""
+
+#. translators: %s: course title.
+#: includes/Notifications.php:131
+#, php-format
+msgid "Certificado emitido: %s"
+msgstr ""
+
+#. translators: %s: certificate code.
+#: includes/Notifications.php:138
+#, php-format
+msgid "Tu certificado del curso ya está disponible. Código: %s"
+msgstr ""
+
+#. translators: %s: course title.
+#: includes/Notifications.php:169
+#, php-format
+msgid "Te esperamos en %s"
+msgstr ""
+
+#: includes/Notifications.php:173
+msgid "Hace días que no avanzas en el curso. Cuando quieras, lo tienes donde lo dejaste."
+msgstr ""
+
+#. translators: %s: course title.
+#: includes/Notifications.php:193
+#, php-format
+msgid "Te queda el examen de %s"
+msgstr ""
+
+#: includes/Notifications.php:197
+msgid "Has completado las lecciones y el examen sigue pendiente. Puedes hacerlo cuando quieras."
+msgstr ""
+
+#: includes/Pricing.php:117
+msgid "gratis por ser socio"
+msgstr ""
+
+#: includes/Pricing.php:119
+msgid "precio de socio"
+msgstr ""
+
+#: includes/Pricing.php:121
+msgid "descuento de socio"
+msgstr ""
+
+#: includes/Pricing.php:123
+msgid "precio general"
+msgstr ""
+
+#: includes/Questions.php:46
+msgid "El tipo de pregunta no es válido."
+msgstr ""
+
+#: includes/Questions.php:52
+msgid "La pregunta necesita un enunciado."
+msgstr ""
+
+#: includes/Questions.php:61
+msgid "La pregunta necesita al menos dos opciones distintas."
+msgstr ""
+
+#: includes/Questions.php:75
+msgid "Hay que marcar cuál es la respuesta correcta."
+msgstr ""
+
+#: includes/Questions.php:79
+msgid "Una pregunta de respuesta única solo puede tener una correcta."
+msgstr ""
+
+#: includes/Questions.php:83
+msgid "Una pregunta de respuesta múltiple necesita al menos dos correctas."
+msgstr ""
+
+#: includes/Questions.php:306
+msgid "La pregunta no existe."
+msgstr ""
+
+#: includes/Settings.php:47
+#: templates/ajustes.php:15
+msgid "Ajustes de Convoca Courses"
+msgstr ""
+
+#: includes/Settings.php:48
+msgid "Ajustes"
+msgstr ""
+
+#: includes/Settings.php:197
+msgid "No tienes permisos para ver esta página."
+msgstr ""
+
+#: includes/Shared_Bank.php:48
+#: includes/Shared_Bank.php:198
+msgid "El banco compartido es una función PRO."
+msgstr ""
+
+#: includes/Shared_Bank.php:58
+msgid "No hay preguntas que exportar."
+msgstr ""
+
+#: includes/Shared_Bank.php:203
+msgid "El CSV no tiene preguntas legibles."
+msgstr ""
+
+#: includes/Shortcodes.php:517
+msgid "No se ha encontrado el curso o la lección indicados."
+msgstr ""
+
+#: includes/Task.php:103
+msgid "La tarea no existe."
+msgstr ""
+
+#: includes/Task.php:108
+msgid "No puedes entregar esta tarea."
+msgstr ""
+
+#: includes/Task.php:112
+msgid "La entrega está vacía: escribe algo o adjunta un fichero."
+msgstr ""
+
+#: includes/Task.php:158
+msgid "No se ha podido guardar la entrega."
+msgstr ""
+
+#: includes/Task.php:252
+msgid "La entrega no existe."
+msgstr ""
+
+#: includes/Task.php:274
+msgid "No se ha podido guardar la corrección."
+msgstr ""
+
+#: includes/Verification.php:87
+msgid "El certificado no está disponible en PDF."
 msgstr ""
 
 #: templates/acta.php:17
-msgctxt "convoca-courses"
 msgid "Descargar acta en CSV"
 msgstr ""
 
 #: templates/acta.php:20
-msgctxt "convoca-courses"
 msgid "Los pesos suman 100."
 msgstr ""
 
+#. translators: %s: sum of weights.
 #: templates/acta.php:26
 #, php-format
-msgctxt "convoca-courses"
 msgid "Los pesos suman %s: revisa el peso de cada examen y cada tarea."
 msgstr ""
 
 #: templates/acta.php:35
-msgctxt "convoca-courses"
 msgid "Este curso no tiene alumnado matriculado."
 msgstr ""
 
-#: templates/acta.php:40 templates/entregas.php:44
-msgctxt "convoca-courses"
+#: templates/acta.php:40
+#: templates/entregas.php:44
 msgid "Alumno"
 msgstr ""
 
 #: templates/acta.php:41
-msgctxt "convoca-courses"
 msgid "Progreso"
 msgstr ""
 
+#: templates/acta.php:42
+#: templates/notas.php:58
+msgid "Nota final"
+msgstr ""
+
+#. translators: %s: percentage.
 #: templates/acta.php:54
 #, php-format
-msgctxt "convoca-courses"
 msgid "%s %%"
 msgstr ""
 
 #: templates/acta.php:61
-msgctxt "convoca-courses"
 msgid "sin nota"
 msgstr ""
 
-#: templates/acta.php:67 templates/examen.php:179 templates/examen.php:220
-msgctxt "convoca-courses"
+#: templates/acta.php:67
+#: templates/examen.php:179
+#: templates/examen.php:220
 msgid "aprobado"
 msgstr ""
 
-#: templates/acta.php:67 templates/examen.php:179 templates/examen.php:220
-msgctxt "convoca-courses"
+#: templates/acta.php:67
+#: templates/examen.php:179
+#: templates/examen.php:220
 msgid "no aprobado"
 msgstr ""
 
 #: templates/acta.php:69
-msgctxt "convoca-courses"
 msgid "(provisional)"
 msgstr ""
 
-#: templates/entregas.php:15
-msgctxt "convoca-courses"
-msgid "Entregas del alumnado"
-msgstr ""
-
-#: templates/entregas.php:33
-msgctxt "convoca-courses"
-msgid "Ver entregas"
-msgstr ""
-
-#: templates/entregas.php:37
-msgctxt "convoca-courses"
-msgid "Este curso no tiene entregas todavía."
-msgstr ""
-
-#: templates/entregas.php:46
-msgctxt "convoca-courses"
-msgid "Entregada"
-msgstr ""
-
-#: templates/entregas.php:48
-msgctxt "convoca-courses"
-msgid "Nota y comentario"
-msgstr ""
-
-#: templates/entregas.php:49
-msgctxt "convoca-courses"
-msgid "Corregir"
-msgstr ""
-
-#: templates/entregas.php:66
-msgctxt "convoca-courses"
-msgid "fichero"
-msgstr ""
-
-#: templates/entregas.php:70
-msgctxt "convoca-courses"
-msgid "ver texto"
-msgstr ""
-
-#: templates/entregas.php:82
-msgctxt "convoca-courses"
-msgid "sin corregir"
-msgstr ""
-
-#: templates/entregas.php:103
-msgctxt "convoca-courses"
-msgid "Comentario para el alumno"
-msgstr ""
-
-#: templates/entregas.php:106
-msgctxt "convoca-courses"
-msgid "Guardar corrección"
-msgstr ""
-
-#: templates/entregas.php:116
-msgctxt "convoca-courses"
-msgid "Escribir a todo el alumnado"
-msgstr ""
-
-#: templates/entregas.php:122
-msgctxt "convoca-courses"
-msgid "Asunto"
-msgstr ""
-
-#: templates/entregas.php:126
-msgctxt "convoca-courses"
-msgid "Mensaje para el alumnado"
-msgstr ""
-
-#: templates/entregas.php:132
-#, php-format
-msgctxt "convoca-courses"
-msgid ""
-"Se manda a %d personas, una a una, por la cola de correo del ecosistema."
-msgstr ""
-
-#: templates/entregas.php:138
-msgctxt "convoca-courses"
-msgid "Enviar mensaje"
-msgstr ""
-
-#: templates/entregas.php:145
-msgctxt "convoca-courses"
-msgid ""
-"Corrección en lote disponible con licencia PRO: cada entrega se guarda por "
-"separado, así que no se pisa la corrección de otro tutor."
-msgstr ""
-
-#: templates/lecciones.php:37
-msgctxt "convoca-courses"
-msgid "Este curso todavía no tiene lecciones publicadas."
-msgstr ""
-
-#: templates/lecciones.php:58
-msgctxt "convoca-courses"
-msgid "sin página"
-msgstr ""
-
-#: templates/lecciones.php:62
-msgctxt "convoca-courses"
-msgid "completada"
-msgstr ""
-
-#: templates/lecciones.php:64
-msgctxt "convoca-courses"
-msgid "bloqueada"
-msgstr ""
-
-#: templates/examen.php:47
-#, php-format
-msgctxt "convoca-courses"
-msgid "Nota mínima para aprobar: %s sobre 100."
-msgstr ""
-
-#: templates/examen.php:55
-#, php-format
-msgctxt "convoca-courses"
-msgid ""
-" Tiempo máximo: %d minutos; al pasarse, el intento se cierra sin corregir."
-msgstr ""
-
-#: templates/examen.php:64
-#, php-format
-msgctxt "convoca-courses"
-msgid " Intentos: %1$d de %2$d usados."
-msgstr ""
-
-#: templates/examen.php:74
-msgctxt "convoca-courses"
-msgid "Inicia sesión para hacer el examen."
-msgstr ""
-
-#: templates/examen.php:78
-msgctxt "convoca-courses"
-msgid "Necesitas estar matriculado en el curso para hacer el examen."
-msgstr ""
-
-#: templates/examen.php:80
-msgctxt "convoca-courses"
-msgid "Ver el curso"
-msgstr ""
-
-#: templates/examen.php:85
-msgctxt "convoca-courses"
-msgid ""
-"Tu acceso a este curso ha caducado: puedes consultar tus notas, pero ya no "
-"abrir exámenes."
-msgstr ""
-
-#: templates/examen.php:89
-msgctxt "convoca-courses"
-msgid "El examen se abre cuando completes las lecciones que pide el curso."
-msgstr ""
-
-#: templates/examen.php:93
-msgctxt "convoca-courses"
-msgid "Has usado todos los intentos de este examen."
-msgstr ""
-
-#: templates/examen.php:116
-#, php-format
-msgctxt "convoca-courses"
-msgid "(%s puntos)"
-msgstr ""
-
-#: templates/examen.php:144
-msgctxt "convoca-courses"
-msgid "Enviar examen"
-msgstr ""
-
-#: templates/examen.php:155
-msgctxt "convoca-courses"
-msgid "Abrir examen"
-msgstr ""
-
-#: templates/examen.php:167
-msgctxt "convoca-courses"
-msgid "Resultado del intento"
-msgstr ""
-
-#: templates/examen.php:169
-msgctxt "convoca-courses"
-msgid "El intento se ha cerrado por tiempo: no se ha corregido."
-msgstr ""
-
-#: templates/examen.php:188
-msgctxt "convoca-courses"
-msgid "correcta"
-msgstr ""
-
-#: templates/examen.php:188
-msgctxt "convoca-courses"
-msgid "incorrecta"
-msgstr ""
-
-#: templates/examen.php:203
-msgctxt "convoca-courses"
-msgid "Intento"
-msgstr ""
-
-#: templates/examen.php:218
-msgctxt "convoca-courses"
-msgid "cerrado por tiempo"
-msgstr ""
-
 #: templates/ajustes.php:19
-msgctxt "convoca-courses"
-msgid ""
-"Las lecciones de vídeo son una función PRO. Sin licencia, los cursos "
-"funcionan con texto, adjuntos y PDF."
+msgid "Las lecciones de vídeo son una función PRO. Sin licencia, los cursos funcionan con texto, adjuntos y PDF."
 msgstr ""
 
 #: templates/ajustes.php:26
-msgctxt "convoca-courses"
 msgid "Vídeo (PRO)"
 msgstr ""
 
 #: templates/ajustes.php:28
-msgctxt "convoca-courses"
-msgid ""
-"El vídeo no se aloja en este plugin: se firma una URL de corta duración "
-"contra un almacenamiento compatible con S3 (R2, B2, Wasabi, MinIO)."
+msgid "El vídeo no se aloja en este plugin: se firma una URL de corta duración contra un almacenamiento compatible con S3 (R2, B2, Wasabi, MinIO)."
 msgstr ""
 
 #: templates/ajustes.php:33
-msgctxt "convoca-courses"
 msgid "Endpoint"
 msgstr ""
 
 #: templates/ajustes.php:42
-msgctxt "convoca-courses"
 msgid "Bucket"
 msgstr ""
 
 #: templates/ajustes.php:50
-msgctxt "convoca-courses"
 msgid "Región"
 msgstr ""
 
 #: templates/ajustes.php:58
-msgctxt "convoca-courses"
 msgid "Clave de acceso"
 msgstr ""
 
 #: templates/ajustes.php:66
-msgctxt "convoca-courses"
 msgid "Secreto"
 msgstr ""
 
 #: templates/ajustes.php:70
-msgctxt "convoca-courses"
 msgid "Se guarda cifrado. Déjalo vacío para conservar el actual."
 msgstr ""
 
 #: templates/ajustes.php:74
-msgctxt "convoca-courses"
 msgid "Prefijo de objetos"
 msgstr ""
 
 #: templates/ajustes.php:82
-msgctxt "convoca-courses"
 msgid "Estilo de ruta"
 msgstr ""
 
 #: templates/ajustes.php:86
-msgctxt "convoca-courses"
-msgid ""
-"Usar estilo de ruta (bucket en la ruta). Desmarca para estilo virtual-host."
+msgid "Usar estilo de ruta (bucket en la ruta). Desmarca para estilo virtual-host."
 msgstr ""
 
 #: templates/ajustes.php:92
-msgctxt "convoca-courses"
 msgid "Datos de la entidad"
 msgstr ""
 
 #: templates/ajustes.php:94
-msgctxt "convoca-courses"
-msgid ""
-"Los usan las condiciones de venta y el recibo. Cada organización rellena los "
-"suyos; no vienen escritos en el código."
+msgid "Los usan las condiciones de venta y el recibo. Cada organización rellena los suyos; no vienen escritos en el código."
 msgstr ""
 
+#. translators: %s: lista de campos que faltan.
 #: templates/ajustes.php:102
 #, php-format
-msgctxt "convoca-courses"
 msgid "Faltan datos para publicar las condiciones de venta: %s."
 msgstr ""
 
 #: templates/ajustes.php:128
-msgctxt "convoca-courses"
 msgid "Texto de las condiciones"
 msgstr ""
 
 #: templates/ajustes.php:130
-msgctxt "convoca-courses"
-msgid ""
-"Déjalo vacío para usar el texto de fábrica. Si escribes el tuyo, sustituye "
-"al de fábrica: cada instalación pone el que le corresponda. Puedes usar los "
-"marcadores {{nombre}}, {{nif}}, {{email_desistimiento}}, {{direccion}} y "
-"{{telefono}}."
+msgid "Déjalo vacío para usar el texto de fábrica. Si escribes el tuyo, sustituye al de fábrica: cada instalación pone el que le corresponda. Puedes usar los marcadores {{nombre}}, {{nif}}, {{email_desistimiento}}, {{direccion}} y {{telefono}}."
 msgstr ""
 
 #: templates/ajustes.php:140
-msgctxt "convoca-courses"
 msgid "Casilla de consentimiento"
 msgstr ""
 
 #: templates/ajustes.php:142
-msgctxt "convoca-courses"
-msgid ""
-"Es la casilla que hay que marcar para matricularse. Sin ella no se puede "
-"invocar la excepción del artículo 103.m: los 14 días de desistimiento se "
-"respetan completos."
+msgid "Es la casilla que hay que marcar para matricularse. Sin ella no se puede invocar la excepción del artículo 103.m: los 14 días de desistimiento se respetan completos."
 msgstr ""
 
 #: templates/ajustes.php:155
-msgctxt "convoca-courses"
-msgid ""
-"Ofrecer también la renuncia expresa al desistimiento (solo si la entidad lo "
-"tiene autorizado)."
+msgid "Ofrecer también la renuncia expresa al desistimiento (solo si la entidad lo tiene autorizado)."
 msgstr ""
 
 #: templates/ajustes.php:159
-msgctxt "convoca-courses"
-msgid ""
-"La casilla es opcional y solo alcanza al contenido digital: quien no la "
-"marque conserva los 14 días completos. Al guardar la matrícula se archiva el "
-"texto exacto que se mostró, con la fecha, la IP y el navegador, para poder "
-"demostrar el consentimiento."
+msgid "La casilla es opcional y solo alcanza al contenido digital: quien no la marque conserva los 14 días completos. Al guardar la matrícula se archiva el texto exacto que se mostró, con la fecha, la IP y el navegador, para poder demostrar el consentimiento."
 msgstr ""
 
 #: templates/ajustes.php:162
-msgctxt "convoca-courses"
-msgid ""
-"Solo se ofrece en los cursos marcados como «100 % digital»: si el curso "
-"tiene sesiones en directo, tutorías o material físico, esa parte queda fuera "
-"de la excepción y la casilla no aparece."
+msgid "Solo se ofrece en los cursos marcados como «100 % digital»: si el curso tiene sesiones en directo, tutorías o material físico, esa parte queda fuera de la excepción y la casilla no aparece."
 msgstr ""
 
 #: templates/ajustes.php:172
-msgctxt "convoca-courses"
-msgid ""
-"Texto de la casilla de renuncia. Debe decir con claridad que se pierde el "
-"derecho al empezar a consumir el contenido, que la casilla es opcional y que "
-"el alcance es solo el contenido digital. Si se deja vacío, se usa la "
-"redacción de fábrica."
+msgid "Texto de la casilla de renuncia. Debe decir con claridad que se pierde el derecho al empezar a consumir el contenido, que la casilla es opcional y que el alcance es solo el contenido digital. Si se deja vacío, se usa la redacción de fábrica."
 msgstr ""
 
-#: templates/ajustes.php:175
-msgctxt "convoca-courses"
-msgid "Datos"
-msgstr ""
-
-#: templates/ajustes.php:178
-msgctxt "convoca-courses"
-msgid "Ficha del curso"
+#. translators: 1: versión de fábrica, 2: fecha del cambio.
+#: templates/ajustes.php:180
+#, php-format
+msgid "Estás usando un texto propio, no el de fábrica (versión %1$s). Desde el cambio, la responsabilidad del redactado es de la entidad. Fecha del último cambio: %2$s."
 msgstr ""
 
 #: templates/ajustes.php:182
-msgctxt "convoca-courses"
+msgid "sin registrar"
+msgstr ""
+
+#. translators: %s: versión del texto de fábrica.
+#: templates/ajustes.php:192
+#, php-format
+msgid "El texto de fábrica está revisado contra el TRLGDCU (versión %s). Si lo cambias, la revisión deja de aplicar y el redactado pasa a ser responsabilidad de la entidad."
+msgstr ""
+
+#: templates/ajustes.php:199
+msgid "Datos"
+msgstr ""
+
+#: templates/ajustes.php:202
+msgid "Ficha del curso"
+msgstr ""
+
+#: templates/ajustes.php:206
 msgid "Usar la plantilla del plugin para la ficha del curso."
 msgstr ""
 
-#: templates/ajustes.php:185
-msgctxt "convoca-courses"
-msgid ""
-"Desmarcado (por defecto), la ficha la pinta el tema. Márcalo si el tema la "
-"muestra como una entrada cualquiera, sin matrícula ni programa. Un tema "
-"puede sustituirla con convoca-curso.php."
+#: templates/ajustes.php:209
+msgid "Desmarcado (por defecto), la ficha la pinta el tema. Márcalo si el tema la muestra como una entrada cualquiera, sin matrícula ni programa. Un tema puede sustituirla con convoca-curso.php."
 msgstr ""
 
-#: templates/ajustes.php:190
-msgctxt "convoca-courses"
+#: templates/ajustes.php:214
 msgid "Al desinstalar"
 msgstr ""
 
-#: templates/ajustes.php:194
-msgctxt "convoca-courses"
+#: templates/ajustes.php:218
 msgid "Conservar cursos, matrículas y progreso al desinstalar el plugin."
 msgstr ""
 
+#: templates/certificado.php:35
+msgid "Certificado de aprovechamiento"
+msgstr ""
+
+#: templates/certificado.php:37
+msgid "Se certifica que"
+msgstr ""
+
+#: templates/certificado.php:39
+msgid "ha completado el curso"
+msgstr ""
+
+#. translators: %s: issue date.
+#: templates/certificado.php:46
+#, php-format
+msgid "Fecha de emisión: %s"
+msgstr ""
+
+#. translators: %s: score, 0-100.
+#: templates/certificado.php:57
+#, php-format
+msgid "Nota final: %s sobre 100"
+msgstr ""
+
+#. translators: %s: verification URL.
+#: templates/certificado.php:86
+#, php-format
+msgid "Verificable en %s"
+msgstr ""
+
+#: templates/curso.php:37
+#: templates/metabox-curso.php:26
+msgid "Plazas"
+msgstr ""
+
+#: templates/curso.php:40
+msgid "sin límite"
+msgstr ""
+
+#: templates/curso.php:47
+msgid "sí"
+msgstr ""
+
+#: templates/curso.php:58
+msgid "Tu matrícula está pendiente de pago."
+msgstr ""
+
+#: templates/curso.php:62
+msgid "Completar el pago"
+msgstr ""
+
+#. translators: 1: completed lessons, 2: total lessons, 3: percentage.
+#: templates/curso.php:76
+#: templates/lecciones.php:26
+#, php-format
+msgid "%1$d de %2$d lecciones completadas (%3$s %%)."
+msgstr ""
+
+#: templates/curso.php:86
+msgid "Ver el recibo del pago"
+msgstr ""
+
+#. translators: %s: course price.
+#: templates/curso.php:101
+#, php-format
+msgid "Comprar plaza — %s"
+msgstr ""
+
+#: templates/curso.php:121
+msgid "Si ya tienes cuenta en la web, entra por aquí."
+msgstr ""
+
+#: templates/curso.php:127
+msgid "Inicia sesión para matricularte"
+msgstr ""
+
+#: templates/curso.php:134
+msgid "Contenido del curso"
+msgstr ""
+
+#: templates/entregas.php:15
+msgid "Entregas del alumnado"
+msgstr ""
+
+#: templates/entregas.php:33
+msgid "Ver entregas"
+msgstr ""
+
+#: templates/entregas.php:37
+msgid "Este curso no tiene entregas todavía."
+msgstr ""
+
+#: templates/entregas.php:46
+msgid "Entregada"
+msgstr ""
+
+#: templates/entregas.php:48
+msgid "Nota y comentario"
+msgstr ""
+
+#: templates/entregas.php:49
+msgid "Corregir"
+msgstr ""
+
+#: templates/entregas.php:66
+msgid "fichero"
+msgstr ""
+
+#: templates/entregas.php:70
+msgid "ver texto"
+msgstr ""
+
+#: templates/entregas.php:82
+msgid "sin corregir"
+msgstr ""
+
+#: templates/entregas.php:92
+#: templates/examen.php:205
+#: templates/notas.php:35
+msgid "Nota"
+msgstr ""
+
+#: templates/entregas.php:103
+msgid "Comentario para el alumno"
+msgstr ""
+
+#: templates/entregas.php:106
+msgid "Guardar corrección"
+msgstr ""
+
+#: templates/entregas.php:116
+msgid "Escribir a todo el alumnado"
+msgstr ""
+
+#: templates/entregas.php:122
+msgid "Asunto"
+msgstr ""
+
+#: templates/entregas.php:126
+msgid "Mensaje para el alumnado"
+msgstr ""
+
+#. translators: %d: number of students.
+#: templates/entregas.php:132
+#, php-format
+msgid "Se manda a %d personas, una a una, por la cola de correo del ecosistema."
+msgstr ""
+
+#: templates/entregas.php:138
+msgid "Enviar mensaje"
+msgstr ""
+
+#: templates/entregas.php:145
+msgid "Corrección en lote disponible con licencia PRO: cada entrega se guarda por separado, así que no se pisa la corrección de otro tutor."
+msgstr ""
+
+#. translators: %s: minimum score, 0-100.
+#: templates/examen.php:47
+#, php-format
+msgid "Nota mínima para aprobar: %s sobre 100."
+msgstr ""
+
+#. translators: %d: minutes.
+#: templates/examen.php:55
+#, php-format
+msgid " Tiempo máximo: %d minutos; al pasarse, el intento se cierra sin corregir."
+msgstr ""
+
+#. translators: 1: attempts used, 2: attempts allowed.
+#: templates/examen.php:64
+#, php-format
+msgid " Intentos: %1$d de %2$d usados."
+msgstr ""
+
+#: templates/examen.php:74
+msgid "Inicia sesión para hacer el examen."
+msgstr ""
+
+#: templates/examen.php:78
+msgid "Necesitas estar matriculado en el curso para hacer el examen."
+msgstr ""
+
+#: templates/examen.php:80
+msgid "Ver el curso"
+msgstr ""
+
+#: templates/examen.php:85
+msgid "Tu acceso a este curso ha caducado: puedes consultar tus notas, pero ya no abrir exámenes."
+msgstr ""
+
+#: templates/examen.php:89
+msgid "El examen se abre cuando completes las lecciones que pide el curso."
+msgstr ""
+
+#: templates/examen.php:93
+msgid "Has usado todos los intentos de este examen."
+msgstr ""
+
+#. translators: %s: points.
+#: templates/examen.php:116
+#, php-format
+msgid "(%s puntos)"
+msgstr ""
+
+#: templates/examen.php:144
+msgid "Enviar examen"
+msgstr ""
+
+#: templates/examen.php:155
+msgid "Abrir examen"
+msgstr ""
+
+#: templates/examen.php:167
+msgid "Resultado del intento"
+msgstr ""
+
+#: templates/examen.php:169
+msgid "El intento se ha cerrado por tiempo: no se ha corregido."
+msgstr ""
+
+#. translators: %s: score, 0-100.
+#: templates/examen.php:175
+#: templates/tareas.php:100
+#, php-format
+msgid "Nota: %s"
+msgstr ""
+
+#: templates/examen.php:188
+msgid "correcta"
+msgstr ""
+
+#: templates/examen.php:188
+msgid "incorrecta"
+msgstr ""
+
+#: templates/examen.php:203
+msgid "Intento"
+msgstr ""
+
+#: templates/examen.php:204
+#: templates/verificar.php:53
+msgid "Fecha"
+msgstr ""
+
+#: templates/examen.php:218
+msgid "cerrado por tiempo"
+msgstr ""
+
+#: templates/leccion-bloqueada.php:19
+msgid "Esta lección se abre cuando completes las anteriores."
+msgstr ""
+
+#: templates/leccion-bloqueada.php:21
+msgid "Necesitas matricularte en el curso para ver esta lección."
+msgstr ""
+
+#: templates/leccion-bloqueada.php:26
+msgid "Ir a la portada del curso"
+msgstr ""
+
+#: templates/leccion.php:21
+msgid "Duración"
+msgstr ""
+
+#. translators: %d: minutes.
+#: templates/leccion.php:25
+#, php-format
+msgid "%d min"
+msgstr ""
+
+#: templates/leccion.php:37
+msgid "El vídeo de esta lección requiere una licencia PRO activa. El resto del curso sigue disponible."
+msgstr ""
+
+#: templates/leccion.php:43
+msgid "Tu navegador no puede reproducir este vídeo."
+msgstr ""
+
+#: templates/leccion.php:44
+msgid "Descargar el vídeo"
+msgstr ""
+
+#: templates/leccion.php:48
+msgid "El vídeo de esta lección todavía no está configurado."
+msgstr ""
+
+#: templates/leccion.php:62
+msgid "Abrir el PDF de la lección"
+msgstr ""
+
+#: templates/leccion.php:63
+msgid "Descargar el adjunto"
+msgstr ""
+
+#: templates/leccion.php:68
+msgid "Esta lección todavía no tiene el fichero adjunto."
+msgstr ""
+
+#: templates/leccion.php:74
+msgid "Lección completada"
+msgstr ""
+
+#: templates/leccion.php:80
+msgid "Marcar como completada"
+msgstr ""
+
+#: templates/leccion.php:85
+msgid "Volver al curso"
+msgstr ""
+
+#: templates/lecciones.php:37
+msgid "Este curso todavía no tiene lecciones publicadas."
+msgstr ""
+
+#: templates/lecciones.php:58
+msgid "sin página"
+msgstr ""
+
+#: templates/lecciones.php:62
+msgid "completada"
+msgstr ""
+
+#: templates/lecciones.php:64
+msgid "bloqueada"
+msgstr ""
+
 #: templates/metabox-curso.php:22
-msgctxt "convoca-courses"
 msgid "Deja 0 para un curso gratuito. Moneda en tres letras (EUR, USD)."
 msgstr ""
 
 #: templates/metabox-curso.php:30
-msgctxt "convoca-courses"
-msgid ""
-"0 significa sin límite. Con plazas limitadas, dos personas no pueden coger "
-"la última a la vez."
+msgid "0 significa sin límite. Con plazas limitadas, dos personas no pueden coger la última a la vez."
 msgstr ""
 
 #: templates/metabox-curso.php:35
-msgctxt "convoca-courses"
 msgid "Precio de socio"
 msgstr ""
 
 #: templates/metabox-curso.php:39
-msgctxt "convoca-courses"
-msgid ""
-"-1 = sin precio especial. Si pones un importe, manda sobre el descuento."
+msgid "-1 = sin precio especial. Si pones un importe, manda sobre el descuento."
 msgstr ""
 
 #: templates/metabox-curso.php:43
-msgctxt "convoca-courses"
 msgid "Descuento de socio (%)"
 msgstr ""
 
 #: templates/metabox-curso.php:50
-msgctxt "convoca-courses"
 msgid "Socios gratis"
 msgstr ""
 
 #: templates/metabox-curso.php:54
-msgctxt "convoca-courses"
 msgid "Los socios activos no pagan este curso"
 msgstr ""
 
 #: templates/metabox-curso.php:64
-msgctxt "convoca-courses"
 msgid "Emitir certificado al completar el 100 % del curso"
 msgstr ""
 
 #: templates/metabox-curso.php:69
-msgctxt "convoca-courses"
 msgid "Contenido digital"
 msgstr ""
 
 #: templates/metabox-curso.php:73
-msgctxt "convoca-courses"
-msgid ""
-"Curso 100 % digital: todo el contenido es digital, sin sesiones en directo, "
-"tutorías ni material físico"
+msgid "Curso 100 % digital: todo el contenido es digital, sin sesiones en directo, tutorías ni material físico"
 msgstr ""
 
 #: templates/metabox-curso.php:75
-msgctxt "convoca-courses"
-msgid ""
-"Solo en estos cursos se ofrece la renuncia al desistimiento (art. 103.m). Si "
-"hay directos, tutorías o material físico, esa parte sigue siendo "
-"reembolsable y la casilla no debe ofrecerse: déjalo sin marcar."
+msgid "Solo en estos cursos se ofrece la renuncia al desistimiento (art. 103.m). Si hay directos, tutorías o material físico, esa parte sigue siendo reembolsable y la casilla no debe ofrecerse: déjalo sin marcar."
 msgstr ""
 
 #: templates/metabox-curso.php:79
-msgctxt "convoca-courses"
 msgid "Desbloqueo"
 msgstr ""
 
 #: templates/metabox-curso.php:83
-msgctxt "convoca-courses"
 msgid "Desbloqueo secuencial: cada lección se abre al completar la anterior"
 msgstr ""
 
 #: templates/metabox-curso.php:85
-msgctxt "convoca-courses"
-msgid ""
-"Los cursos creados antes de la 0.3.0 que no tengan esta casilla marcada "
-"siguen abiertos: cambiarlo es decisión tuya."
+msgid "Los cursos creados antes de la 0.3.0 que no tengan esta casilla marcada siguen abiertos: cambiarlo es decisión tuya."
 msgstr ""
 
 #: templates/metabox-curso.php:91
-msgctxt "convoca-courses"
 msgid "Abre"
 msgstr ""
 
 #: templates/metabox-curso.php:94
-msgctxt "convoca-courses"
 msgid "Cierra"
 msgstr ""
 
 #: templates/metabox-curso.php:97
-msgctxt "convoca-courses"
 msgid "En blanco, la matrícula está siempre abierta."
 msgstr ""
 
 #: templates/metabox-curso.php:101
-msgctxt "convoca-courses"
 msgid "Fechas y caducidad"
 msgstr ""
 
 #: templates/metabox-curso.php:103
-msgctxt "convoca-courses"
 msgid "Fin del curso"
 msgstr ""
 
 #: templates/metabox-curso.php:106
-msgctxt "convoca-courses"
 msgid "Días de acceso"
 msgstr ""
 
 #: templates/metabox-curso.php:109
-msgctxt "convoca-courses"
-msgid ""
-"Días contados desde la matrícula; 0 = sin caducidad. Al vencer, el curso "
-"queda en solo lectura: se ven el progreso, las notas y el certificado, pero "
-"no se avanza."
+msgid "Días contados desde la matrícula; 0 = sin caducidad. Al vencer, el curso queda en solo lectura: se ven el progreso, las notas y el certificado, pero no se avanza."
+msgstr ""
+
+#: templates/metabox-curso.php:113
+#: templates/metabox-examen.php:66
+msgid "Nota mínima"
 msgstr ""
 
 #: templates/metabox-curso.php:117
-msgctxt "convoca-courses"
-msgid ""
-"Sobre 100. Por debajo de esta nota no se aprueba el curso y no hay "
-"certificado."
+msgid "Sobre 100. Por debajo de esta nota no se aprueba el curso y no hay certificado."
 msgstr ""
 
 #: templates/metabox-curso.php:121
-msgctxt "convoca-courses"
 msgid "Acceso al examen"
 msgstr ""
 
 #: templates/metabox-curso.php:124
-msgctxt "convoca-courses"
 msgid "Al completar todas las lecciones"
 msgstr ""
 
 #: templates/metabox-curso.php:125
-msgctxt "convoca-courses"
 msgid "Al completar las lecciones de su módulo"
 msgstr ""
 
 #: templates/metabox-curso.php:126
-msgctxt "convoca-courses"
 msgid "Al alcanzar un porcentaje del curso"
 msgstr ""
 
 #: templates/metabox-curso.php:131
-msgctxt "convoca-courses"
-msgid ""
-"El porcentaje solo se usa en la tercera opción. La comprobación se hace en "
-"el servidor."
+msgid "El porcentaje solo se usa en la tercera opción. La comprobación se hace en el servidor."
 msgstr ""
 
-#: convoca-courses.php:92
-msgctxt "convoca-courses"
-msgid "Convoca Courses necesita el plugin Convoca Core activo para funcionar."
+#: templates/metabox-examen.php:26
+msgid "El examen se abre desde el curso al que pertenece."
+msgstr ""
+
+#: templates/metabox-examen.php:39
+msgid "Si el examen es del módulo, el acceso se mide sobre las lecciones de ese módulo."
+msgstr ""
+
+#: templates/metabox-examen.php:43
+msgid "Preguntas por intento"
+msgstr ""
+
+#: templates/metabox-examen.php:46
+msgid "0 = todas las preguntas del examen y del banco del curso."
+msgstr ""
+
+#: templates/metabox-examen.php:50
+msgid "Aleatorio"
+msgstr ""
+
+#: templates/metabox-examen.php:54
+msgid "Barajar y elegir preguntas al azar en cada intento"
+msgstr ""
+
+#: templates/metabox-examen.php:59
+msgid "Intentos"
+msgstr ""
+
+#: templates/metabox-examen.php:62
+msgid "0 = intentos ilimitados."
+msgstr ""
+
+#: templates/metabox-examen.php:69
+msgid "0 = la que tenga el curso."
+msgstr ""
+
+#: templates/metabox-examen.php:73
+msgid "Tiempo máximo (minutos)"
+msgstr ""
+
+#: templates/metabox-examen.php:76
+msgid "0 = sin límite. El tiempo se comprueba en el servidor al enviar."
+msgstr ""
+
+#: templates/metabox-examen.php:80
+msgid "Corrección visible"
+msgstr ""
+
+#: templates/metabox-examen.php:88
+msgid "Al enviar: nota y detalle"
+msgstr ""
+
+#: templates/metabox-examen.php:91
+msgid "Al cerrar el examen: solo la nota"
+msgstr ""
+
+#: templates/metabox-examen.php:94
+msgid "Nunca: solo la nota, sin detalle"
+msgstr ""
+
+#: templates/metabox-examen.php:104
+msgid "Peso en la nota final"
+msgstr ""
+
+#: templates/metabox-examen.php:107
+msgid "Los pesos de los exámenes de un curso deben sumar 100."
+msgstr ""
+
+#: templates/metabox-leccion.php:19
+msgid "— Selecciona un módulo —"
+msgstr ""
+
+#: templates/metabox-leccion.php:36
+msgid "Tipo de lección"
+msgstr ""
+
+#: templates/metabox-leccion.php:46
+msgid "El tipo «video» necesita licencia PRO: sin ella la lección se muestra sin vídeo."
+msgstr ""
+
+#: templates/metabox-leccion.php:51
+#: templates/metabox-modulo.php:31
+#: templates/metabox-preguntas.php:118
+msgid "Orden"
+msgstr ""
+
+#: templates/metabox-leccion.php:58
+msgid "Duración (min)"
+msgstr ""
+
+#: templates/metabox-leccion.php:65
+msgid "Adjunto o PDF"
+msgstr ""
+
+#: templates/metabox-leccion.php:69
+msgid "Identificador del fichero en la biblioteca de medios."
+msgstr ""
+
+#: templates/metabox-leccion.php:73
+msgid "URL externa de vídeo"
+msgstr ""
+
+#: templates/metabox-leccion.php:77
+msgid "Alternativa al almacenamiento propio: URL directa de vídeo."
+msgstr ""
+
+#: templates/metabox-leccion.php:81
+msgid "Objeto en el almacenamiento"
+msgstr ""
+
+#: templates/metabox-leccion.php:85
+msgid "Ruta del objeto dentro del bucket. Se sirve con URL firmada de corta duración."
+msgstr ""
+
+#: templates/metabox-modulo.php:35
+msgid "Número dentro del curso. Los módulos se muestran de menor a mayor."
+msgstr ""
+
+#: templates/metabox-preguntas.php:24
+msgid "Este examen todavía no tiene preguntas."
+msgstr ""
+
+#: templates/metabox-preguntas.php:30
+msgid "puntos"
+msgstr ""
+
+#: templates/metabox-preguntas.php:41
+msgid "Editar"
+msgstr ""
+
+#: templates/metabox-preguntas.php:60
+msgid "¿Borrar esta pregunta?"
+msgstr ""
+
+#: templates/metabox-preguntas.php:61
+msgid "Borrar"
+msgstr ""
+
+#: templates/metabox-preguntas.php:71
+msgid "Editar pregunta"
+msgstr ""
+
+#: templates/metabox-preguntas.php:71
+#: templates/metabox-preguntas.php:129
+msgid "Añadir pregunta"
+msgstr ""
+
+#: templates/metabox-preguntas.php:91
+msgid "Enunciado"
+msgstr ""
+
+#: templates/metabox-preguntas.php:95
+msgid "Opciones"
+msgstr ""
+
+#. translators: %d: option number.
+#: templates/metabox-preguntas.php:108
+#, php-format
+msgid "Opción %d"
+msgstr ""
+
+#: templates/metabox-preguntas.php:112
+msgid "Marca la casilla de la respuesta correcta. En las de respuesta múltiple, marca todas: una de más anula la pregunta. En verdadero/falso, las opciones son siempre Verdadero y Falso."
+msgstr ""
+
+#: templates/metabox-preguntas.php:116
+msgid "Puntos"
+msgstr ""
+
+#: templates/metabox-preguntas.php:123
+msgid "Explicación (se enseña al corregir)"
+msgstr ""
+
+#: templates/metabox-preguntas.php:129
+msgid "Guardar pregunta"
+msgstr ""
+
+#: templates/metabox-preguntas.php:136
+msgid "Banco compartido (PRO)"
+msgstr ""
+
+#: templates/metabox-preguntas.php:139
+msgid "Exportar preguntas en CSV"
+msgstr ""
+
+#: templates/metabox-preguntas.php:148
+msgid "Importar preguntas (CSV con cabecera)"
+msgstr ""
+
+#: templates/metabox-preguntas.php:152
+msgid "Columnas: tipo;enunciado;opcion1;opcion2;opcion3;opcion4;correctas;puntos;explicacion. En «correctas», los números de opción empezando en 1."
+msgstr ""
+
+#: templates/metabox-preguntas.php:155
+msgid "Importar"
+msgstr ""
+
+#: templates/notas.php:21
+msgid "Inicia sesión para ver tus notas."
+msgstr ""
+
+#: templates/notas.php:25
+msgid "Necesitas estar matriculado en el curso para ver tus notas."
+msgstr ""
+
+#: templates/notas.php:28
+msgid "Este curso no tiene exámenes ni tareas: no hay nota que calcular."
+msgstr ""
+
+#: templates/notas.php:33
+msgid "Pieza"
+msgstr ""
+
+#: templates/notas.php:34
+msgid "Peso"
+msgstr ""
+
+#: templates/notas.php:43
+msgid "examen"
+msgstr ""
+
+#: templates/notas.php:43
+msgid "tarea"
+msgstr ""
+
+#: templates/notas.php:48
+msgid "pendiente"
+msgstr ""
+
+#: templates/notas.php:62
+msgid "sin nota todavía"
+msgstr ""
+
+#. translators: %s: minimum score.
+#: templates/notas.php:75
+#, php-format
+msgid "Mínimo para aprobar: %s sobre 100."
+msgstr ""
+
+#: templates/notas.php:80
+msgid "Aprobado."
+msgstr ""
+
+#: templates/notas.php:82
+msgid "Todavía no aprobado."
+msgstr ""
+
+#: templates/notas.php:85
+msgid "La nota es provisional: faltan piezas sin corregir."
+msgstr ""
+
+#: templates/tareas.php:20
+msgid "Este curso no tiene tareas."
+msgstr ""
+
+#: templates/tareas.php:23
+msgid "Inicia sesión para ver y entregar las tareas."
+msgstr ""
+
+#: templates/tareas.php:27
+msgid "Necesitas estar matriculado en el curso para entregar tareas."
+msgstr ""
+
+#. translators: %s: deadline date.
+#: templates/tareas.php:44
+#, php-format
+msgid "Plazo: %s"
+msgstr ""
+
+#: templates/tareas.php:49
+msgid "Sin plazo de entrega."
+msgstr ""
+
+#. translators: %s: weight, 0-100.
+#: templates/tareas.php:57
+#, php-format
+msgid "Peso en la nota: %s"
+msgstr ""
+
+#. translators: %s: submission date and time.
+#: templates/tareas.php:74
+#, php-format
+msgid "Entregada el %s."
+msgstr ""
+
+#: templates/tareas.php:79
+msgid "(fuera de plazo)"
+msgstr ""
+
+#: templates/tareas.php:90
+msgid "Fichero entregado"
+msgstr ""
+
+#: templates/tareas.php:109
+msgid "Pendiente de corrección."
+msgstr ""
+
+#: templates/tareas.php:116
+msgid "Tu acceso al curso no permite entregar tareas ahora mismo."
+msgstr ""
+
+#: templates/tareas.php:127
+msgid "Volver a entregar (sustituye la entrega anterior)"
+msgstr ""
+
+#: templates/tareas.php:127
+msgid "Tu entrega"
+msgstr ""
+
+#: templates/tareas.php:139
+msgid "Fichero (opcional)"
+msgstr ""
+
+#: templates/tareas.php:147
+msgid "Entregar"
+msgstr ""
+
+#. translators: %s: site name.
+#: templates/verificar.php:26
+#, php-format
+msgid "Verificación de certificado — %s"
+msgstr ""
+
+#: templates/verificar.php:36
+msgid "Verificación de certificado"
+msgstr ""
+
+#: templates/verificar.php:39
+msgid "Código del certificado"
+msgstr ""
+
+#: templates/verificar.php:41
+msgid "Verificar"
+msgstr ""
+
+#: templates/verificar.php:45
+msgid "Introduce el código que aparece en el certificado para comprobar que es auténtico."
+msgstr ""
+
+#: templates/verificar.php:48
+msgid "Certificado válido."
+msgstr ""
+
+#: templates/verificar.php:50
+msgid "Código"
+msgstr ""
+
+#: templates/verificar.php:54
+msgid "Entidad"
+msgstr ""
+
+#: templates/verificar.php:70
+msgid "Ver el certificado en PDF"
+msgstr ""
+
+#: templates/verificar.php:76
+msgid "No existe ningún certificado con ese código."
 msgstr ""

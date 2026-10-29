@@ -218,7 +218,93 @@ class Notifications {
 	}
 
 	/**
-	 * Apunta un aviso que no se ha podido mandar.
+	 * Envía un aviso a un correo, sin usuario de WordPress.
+	 *
+	 * El alumnado sin cuenta no tiene `user_id`, así que `send()` no sirve: el resto del camino es el mismo
+	 * —Mailer del núcleo, y si no está o falla, apuntado para reenviar y en el registro—.
+	 *
+	 * @param string              $email    Correo de destino.
+	 * @param string              $subject  Asunto.
+	 * @param string              $body     Cuerpo.
+	 * @param string              $template Plantilla.
+	 * @param array<string,mixed> $extra    Datos extra.
+	 * @return bool
+	 */
+	public static function send_to_email( string $email, string $subject, string $body, string $template, array $extra = array() ): bool {
+		$email = sanitize_email( $email );
+
+		if ( '' === $email || ! is_email( $email ) ) {
+			self::record_pending_email( $email, $subject, $body, $template, $extra, 'sin correo' );
+			return false;
+		}
+
+		if ( ! class_exists( '\Convoca\Core\Mailer' ) ) {
+			self::record_pending_email( $email, $subject, $body, $template, $extra, 'sin Mailer del nucleo' );
+			return false;
+		}
+
+		$sent = (bool) \Convoca\Core\Mailer::send(
+			$email,
+			$subject,
+			$body,
+			array(
+				'plugin'   => 'convoca-courses',
+				'template' => $template,
+			)
+		);
+
+		if ( ! $sent ) {
+			self::record_pending_email( $email, $subject, $body, $template, $extra, 'envio fallido' );
+		}
+
+		return $sent;
+	}
+
+	/**
+	 * Apunta un aviso que no se ha podido enviar, con correo en vez de usuario.
+	 *
+	 * @param string              $email    Correo.
+	 * @param string              $subject  Asunto.
+	 * @param string              $body     Cuerpo.
+	 * @param string              $template Plantilla.
+	 * @param array<string,mixed> $extra    Datos extra.
+	 * @param string              $motivo   Motivo.
+	 * @return void
+	 */
+	public static function record_pending_email( string $email, string $subject, string $body, string $template, array $extra, string $motivo ): void {
+		$pending = get_option( self::PENDING_OPTION, array() );
+
+		if ( ! is_array( $pending ) ) {
+			$pending = array();
+		}
+
+		$pending[] = array(
+			'email'    => $email,
+			'subject'  => $subject,
+			'body'     => $body,
+			'template' => $template,
+			'extra'    => $extra,
+			'motivo'   => $motivo,
+			'creado'   => (string) current_time( 'mysql' ),
+		);
+
+		if ( count( $pending ) > 200 ) {
+			$pending = array_slice( $pending, -200 );
+		}
+
+		update_option( self::PENDING_OPTION, $pending, false );
+
+		if ( class_exists( '\Convoca\Core\Logger' ) ) {
+			\Convoca\Core\Logger::warning(
+				sprintf( 'Aviso "%s" apuntado como pendiente (%s).', $subject, $motivo ),
+				'Convoca Courses',
+				0
+			);
+		}
+	}
+
+	/**
+	 * Apunta un aviso que no se ha podido enviar.
 	 *
 	 * @param int                  $user_id  Destinatario.
 	 * @param string               $subject  Asunto.

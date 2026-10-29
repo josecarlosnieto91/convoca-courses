@@ -171,6 +171,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="description">
 			<?php esc_html_e( 'Texto de la casilla de renuncia. Debe decir con claridad que se pierde el derecho al empezar a consumir el contenido, que la casilla es opcional y que el alcance es solo el contenido digital. Si se deja vacío, se usa la redacción de fábrica.', 'convoca-courses' ); ?>
 		</p>
+		<?php if ( '' !== (string) $renuncia_texto ) : ?>
+			<div class="notice notice-warning inline" style="margin:8px 0;">
+				<p>
+					<?php
+					printf(
+						/* translators: 1: versión de fábrica, 2: fecha del cambio. */
+						esc_html__( 'Estás usando un texto propio, no el de fábrica (versión %1$s). Desde el cambio, la responsabilidad del redactado es de la entidad. Fecha del último cambio: %2$s.', 'convoca-courses' ),
+						esc_html( (string) $renuncia_version ),
+						esc_html( '' !== (string) $renuncia_fecha_cambio ? (string) $renuncia_fecha_cambio : __( 'sin registrar', 'convoca-courses' ) )
+					);
+					?>
+				</p>
+			</div>
+		<?php else : ?>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: versión del texto de fábrica. */
+					esc_html__( 'El texto de fábrica está revisado contra el TRLGDCU (versión %s). Si lo cambias, la revisión deja de aplicar y el redactado pasa a ser responsabilidad de la entidad.', 'convoca-courses' ),
+					esc_html( (string) $renuncia_version )
+				);
+				?>
+			</p>
+		<?php endif; ?>
 
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">
