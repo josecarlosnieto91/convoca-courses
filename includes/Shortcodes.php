@@ -348,7 +348,7 @@ class Shortcodes {
 				'type'           => $type,
 				'content'        => (string) apply_filters( 'the_content', (string) get_post_field( 'post_content', $lesson_id ) ),
 				'attachment_id'  => $attachment,
-				'attachment'     => $attachment > 0 ? (string) wp_get_attachment_url( $attachment ) : '',
+				'attachment'     => $attachment > 0 ? Material::url( (int) $attachment, $lesson_id ) : '',
 				'video'          => $video,
 				'video_allowed'  => $video_allowed,
 				'completed'      => Progress::is_completed( $user_id, $lesson_id ),

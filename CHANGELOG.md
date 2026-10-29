@@ -1,3 +1,19 @@
+## [0.5.0] — 2026-10-29
+
+### Añadido
+
+- **el material del curso deja de servirse por URL directa**. Los adjuntos se enlazan por un endpoint
+  (`/convoca-material/<adjunto>/<lección>/`) que comprueba el acceso en cada petición, y el fichero se mueve
+  a `uploads/convoca-privado/`, que el servidor web no sirve.
+- **material público o privado por curso**: por defecto es privado si el curso se vende y público si es
+  gratuito; el curso puede forzarlo con `_convoca_material_publico`.
+
+### Seguridad
+
+- Sin sesión, el endpoint responde **403**; sin matrícula también. Con matrícula activa, el fichero se
+  descarga con `Content-Disposition: attachment` y `nosniff`.
+- El fichero movido deja de estar en su ruta antigua: la URL que circulaba antes responde **404**.
+
 ## [0.4.2] — 2026-10-29
 
 ### Corregido
