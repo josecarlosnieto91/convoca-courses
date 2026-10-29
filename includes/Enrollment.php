@@ -196,6 +196,9 @@ class Enrollment {
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'motivo_precio', isset( $args['motivo_precio'] ) ? (string) $args['motivo_precio'] : 'general' );
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'convocatoria_id', $cohort_id );
 
+		// Si el correo coincide con una ficha de socio, la matrícula queda vinculada a ella.
+		Socio::vincular_matricula( (int) $enrollment_id, $user_id );
+
 		if ( $locked ) {
 			\Convoca\Core\Utils::release_lock( $lock_key );
 		}

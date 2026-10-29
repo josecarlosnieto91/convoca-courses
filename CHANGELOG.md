@@ -1,3 +1,14 @@
+## [0.6.0] — 2026-10-29
+
+### Añadido
+
+- **la matrícula se vincula a la ficha de socio por correo**. Si el correo de la persona coincide con el de
+  una ficha de Members, la matrícula guarda `_convoca_member_id`. No crea fichas ni modifica datos de
+  Members: solo deja el vínculo para que el área del socio pueda listar sus cursos
+  (`Socio::cursos_de_socio()`).
+- **borrador de condiciones de venta y desistimiento** en `docs/condiciones-venta-cursos.md`, **sin
+  publicar**: recoge los 14 días, la excepción por consumo inmediato y los datos que faltan por decidir.
+
 ## [0.5.1] — 2026-10-29
 
 ### Añadido

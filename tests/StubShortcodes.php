@@ -1076,3 +1076,15 @@ if ( ! function_exists( 'wp_unique_filename' ) ) {
 		return (string) $name;
 	}
 }
+
+if ( ! function_exists( 'sanitize_email' ) ) {
+	/**
+	 * Correo saneado (doble: minúsculas y sin espacios).
+	 *
+	 * @param string $email Correo.
+	 * @return string
+	 */
+	function sanitize_email( $email ) {
+		return strtolower( trim( (string) $email ) );
+	}
+}
