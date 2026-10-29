@@ -80,4 +80,22 @@ final class ExamenIdentidadTest extends TestCase {
 		$this->assertSame( array(), Attempts::best_by_exam( 0, 10 ) );
 		$this->assertSame( 0, Attempts::count_for( 0, 99 ) );
 	}
+
+	/**
+	 * Con identidad se consultan los intentos de esa identidad.
+	 */
+	public function test_intentos_por_identidad(): void {
+		$this->assertSame( 0, Attempts::count_for( 0, 99, 4 ) );
+		$this->assertSame( array(), Attempts::best_by_exam( 0, 10, 4 ) );
+	}
+
+	/**
+	 * Guardar un intento ajeno devuelve error también con identidad.
+	 */
+	public function test_intento_ajeno_con_identidad(): void {
+		$resultado = Attempts::submit( 1, 0, array(), 4 );
+
+		$this->assertInstanceOf( \WP_Error::class, $resultado );
+		$this->assertSame( 'convoca_courses_no_attempt', $resultado->get_error_code() );
+	}
 }

@@ -218,4 +218,54 @@ class WpdbDoble {
 
 		return $salida;
 	}
+
+	/**
+	 * Devuelve un valor: entiende el COUNT de intentos.
+	 *
+	 * @param string $query Consulta.
+	 * @return mixed
+	 */
+	public function get_var( $query ) {
+		$query = (string) $query;
+
+		if ( ! preg_match( '/FROM\s+(\S+)/i', $query, $m ) ) {
+			return 0;
+		}
+
+		$filas = $this->filas[ $m[1] ] ?? array();
+
+		if ( preg_match( '/COUNT\(\*\)/i', $query ) ) {
+			return count( $filas );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Devuelve filas: entiende el MAX por examen.
+	 *
+	 * @param string $query Consulta.
+	 * @return array<int, array<string, mixed>>
+	 */
+	public function get_results( $query ) {
+		$query = (string) $query;
+
+		if ( ! preg_match( '/FROM\s+(\S+)/i', $query, $m ) ) {
+			return array();
+		}
+
+		$filas  = $this->filas[ $m[1] ] ?? array();
+		$salida = array();
+
+		foreach ( $filas as $fila ) {
+			if ( preg_match( '/puntuacion|MAX\(/i', $query ) ) {
+				$salida[] = array(
+					'exam_id' => $fila['exam_id'] ?? 0,
+					'nota'    => $fila['puntuacion'] ?? 0,
+				);
+			}
+		}
+
+		return $salida;
+	}
 }
