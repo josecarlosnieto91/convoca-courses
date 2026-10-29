@@ -254,6 +254,7 @@ class Course_Payment {
 		$status = CPT_Matricula::status( $enrollment_id );
 		if ( in_array( $status, array( 'pendiente', 'cancelada' ), true ) ) {
 			Enrollment::set_status( $enrollment_id, 'activa' );
+			Embudo::registrar( CPT_Matricula::course_id( $enrollment_id ), 'pago' );
 		}
 
 		// Pagar confirma el correo: la identidad queda verificada (no hay que pedir nada más).

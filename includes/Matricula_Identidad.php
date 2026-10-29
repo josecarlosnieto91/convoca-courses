@@ -185,6 +185,10 @@ class Matricula_Identidad {
 
 		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );
 
+		if ( ! is_wp_error( $resultado ) && $resultado > 0 ) {
+			Embudo::registrar( (int) $course, 'matricula' );
+		}
+
 		if ( is_wp_error( $resultado ) ) {
 			$estado = 'error';
 		} else {

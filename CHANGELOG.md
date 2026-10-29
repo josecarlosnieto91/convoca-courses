@@ -1,3 +1,9 @@
+## [0.19.0] — 2026-10-29
+
+### Cambiado
+
+- **embudo de matricula a pago**
+
 ## [0.18.3] — 2026-10-29
 
 ### Cambiado
