@@ -68,6 +68,45 @@ final class MaterialTest extends TestCase {
 	}
 
 	/**
+	 * Mover el adjunto a la carpeta privada es idempotente.
+	 */
+	public function test_mover_a_privado_mueve_el_fichero(): void {
+		// phpcs:disable WordPress.WP.AlternativeFunctions -- la prueba necesita un directorio y un fichero de verdad.
+		$base = sys_get_temp_dir() . '/convoca-mat-test-' . random_int( 1000, 9999 );
+		$mes  = $base . '/2026/10';
+		mkdir( $mes, 0777, true );
+		file_put_contents( $mes . '/tema.pdf', 'PDF' );
+
+		$GLOBALS['convoca_test_uploads']     = array(
+			'basedir' => $base,
+			'baseurl' => 'http://ejemplo.test/uploads',
+		);
+		$GLOBALS['convoca_test_attached'][7] = $mes . '/tema.pdf';
+
+		$this->assertTrue( Material::mover_a_privado( 7 ), 'el fichero se mueve' );
+		$this->assertSame( $base . '/convoca-privado/tema.pdf', $GLOBALS['convoca_test_attached'][7] );
+		$this->assertFileDoesNotExist( $mes . '/tema.pdf' );
+
+		$this->assertTrue( Material::mover_a_privado( 7 ), 'volver a llamarlo no falla' );
+
+		unlink( $base . '/convoca-privado/tema.pdf' );
+		rmdir( $base . '/convoca-privado' );
+		rmdir( $mes );
+		rmdir( $base . '/2026' );
+		rmdir( $base );
+		// phpcs:enable WordPress.WP.AlternativeFunctions
+	}
+
+	/**
+	 * Sin fichero no hay nada que mover.
+	 */
+	public function test_mover_sin_fichero_devuelve_falso(): void {
+		$GLOBALS['convoca_test_attached'][8] = '/no/existe.pdf';
+
+		$this->assertFalse( Material::mover_a_privado( 8 ) );
+	}
+
+	/**
 	 * La plantilla no puede volver a enlazar el fichero directamente.
 	 */
 	public function test_la_leccion_no_usa_la_url_del_fichero(): void {

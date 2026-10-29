@@ -1007,3 +1007,72 @@ if ( ! function_exists( 'wp_kses_post' ) ) {
 		return (string) $texto;
 	}
 }
+
+if ( ! function_exists( 'get_attached_file' ) ) {
+	/**
+	 * Ruta de un adjunto (doble que lee convoca_test_attached).
+	 *
+	 * @param int $adjunto Adjunto.
+	 * @return string
+	 */
+	function get_attached_file( $adjunto ) {
+		return (string) ( $GLOBALS['convoca_test_attached'][ (int) $adjunto ] ?? '' );
+	}
+}
+
+if ( ! function_exists( 'update_attached_file' ) ) {
+	/**
+	 * Guarda la ruta de un adjunto (doble).
+	 *
+	 * @param int    $adjunto Adjunto.
+	 * @param string $ruta    Ruta.
+	 * @return bool
+	 */
+	function update_attached_file( $adjunto, $ruta ) {
+		$GLOBALS['convoca_test_attached'][ (int) $adjunto ] = (string) $ruta;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_get_upload_dir' ) ) {
+	/**
+	 * Directorios de subidas (doble configurable).
+	 *
+	 * @return array<string, string>
+	 */
+	function wp_get_upload_dir() {
+		return $GLOBALS['convoca_test_uploads'] ?? array(
+			'basedir' => sys_get_temp_dir() . '/convoca-uploads',
+			'baseurl' => 'http://ejemplo.test/uploads',
+			'path'    => sys_get_temp_dir() . '/convoca-uploads',
+			'url'     => 'http://ejemplo.test/uploads',
+		);
+	}
+}
+
+if ( ! function_exists( 'wp_mkdir_p' ) ) {
+	/**
+	 * Crea un directorio (doble).
+	 *
+	 * @param string $dir Directorio.
+	 * @return bool
+	 */
+	function wp_mkdir_p( $dir ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir -- doble del arnés.
+		return is_dir( $dir ) || mkdir( $dir, 0777, true );
+	}
+}
+
+if ( ! function_exists( 'wp_unique_filename' ) ) {
+	/**
+	 * Nombre libre (doble: el mismo).
+	 *
+	 * @param string $dir  Directorio.
+	 * @param string $name Nombre.
+	 * @return string
+	 */
+	function wp_unique_filename( $dir, $name ) {
+		unset( $dir );
+		return (string) $name;
+	}
+}
