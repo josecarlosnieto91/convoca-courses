@@ -53,14 +53,14 @@ class ShortcodesRegistroTest extends TestCase {
 	}
 
 	/**
-	 * Los siete shortcodes quedan registrados con su nombre y su devolución de llamada.
+	 * Los ocho shortcodes quedan registrados con su nombre y su devolución de llamada.
 	 */
-	public function test_los_siete_shortcodes_se_registran(): void {
+	public function test_los_ocho_shortcodes_se_registran(): void {
 		Shortcodes::register();
 
 		$registrados = $GLOBALS['convoca_courses_shortcodes'];
 
-		$this->assertCount( 7, $registrados );
+		$this->assertCount( 8, $registrados );
 		$this->assertArrayHasKey( 'convoca_curso', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_lecciones', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_leccion', $registrados );
@@ -68,6 +68,7 @@ class ShortcodesRegistroTest extends TestCase {
 		$this->assertArrayHasKey( 'convoca_curso_tareas', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_notas', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_acta', $registrados );
+		$this->assertArrayHasKey( 'convoca_condiciones', $registrados );
 		$this->assertSame( array( Shortcodes::class, 'course' ), $registrados['convoca_curso'], 'cada nombre va a su método' );
 	}
 

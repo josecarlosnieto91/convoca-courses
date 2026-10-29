@@ -1,3 +1,15 @@
+## [0.7.0] — 2026-10-29
+
+### Añadido
+
+- **datos de la entidad en Ajustes**: nombre o razón social, NIF/CIF, correo de desistimiento, dirección y
+  teléfono. Los rellena **cada organización que instale el plugin**; no hay ni un dato escrito en el código.
+- **`[convoca_condiciones]`**: publica las condiciones de venta con esos datos ya puestos. Mientras falte el
+  nombre, el NIF o el correo de desistimiento, no se publica nada a los visitantes y el administrador ve el
+  aviso con lo que falta.
+- Plantilla en `templates/condiciones.md` con los marcadores `{{nombre}}`, `{{nif}}`,
+  `{{email_desistimiento}}`, `{{direccion}}` y `{{telefono}}`.
+
 ## [0.6.2] — 2026-10-29
 
 ### Añadido

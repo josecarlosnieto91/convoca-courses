@@ -46,6 +46,7 @@ class Shortcodes {
 		add_shortcode( 'convoca_curso_tareas', array( __CLASS__, 'tasks' ) );
 		add_shortcode( 'convoca_curso_notas', array( __CLASS__, 'grades' ) );
 		add_shortcode( 'convoca_curso_acta', array( __CLASS__, 'gradebook' ) );
+		add_shortcode( Condiciones::SHORTCODE, array( Condiciones::class, 'render' ) );
 	}
 
 	/**

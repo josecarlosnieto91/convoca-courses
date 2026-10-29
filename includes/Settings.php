@@ -70,6 +70,16 @@ class Settings {
 
 		register_setting(
 			self::GROUP,
+			Entidad::OPTION,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => array( Entidad::class, 'sanitize' ),
+				'default'           => array(),
+			)
+		);
+
+		register_setting(
+			self::GROUP,
 			Installer::KEEP_DATA_OPTION,
 			array(
 				'type'              => 'boolean',
@@ -124,13 +134,22 @@ class Settings {
 		Certificate::render_template(
 			'ajustes.php',
 			array(
-				'group'        => self::GROUP,
-				'page'         => self::PAGE,
-				'config'       => $config,
-				'pro'          => $pro,
-				'keep_data'    => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
-				'video_option' => Video::OPTION,
-				'keep_option'  => Installer::KEEP_DATA_OPTION,
+				'group'          => self::GROUP,
+				'page'           => self::PAGE,
+				'config'         => $config,
+				'pro'            => $pro,
+				'keep_data'      => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
+				'video_option'   => Video::OPTION,
+				'keep_option'    => Installer::KEEP_DATA_OPTION,
+				'entidad'        => Entidad::datos(),
+				'entidad_option' => Entidad::OPTION,
+				'entidad_campos' => Entidad::campos(),
+				'entidad_faltan' => array_map(
+					static function ( $campo ) {
+						return Entidad::campos()[ $campo ] ?? $campo;
+					},
+					Entidad::faltan()
+				),
 			)
 		);
 	}

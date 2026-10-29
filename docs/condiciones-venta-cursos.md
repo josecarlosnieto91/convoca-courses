@@ -1,7 +1,13 @@
 # Condiciones de venta y desistimiento — BORRADOR
 
+> **El texto publicable NO es este fichero.** Está en `templates/condiciones.md`, con marcadores que el plugin
+> rellena con los datos que cada organización informa en **Cursos → Ajustes → Datos de la entidad**
+> (`{{nombre}}`, `{{nif}}`, `{{email_desistimiento}}`, `{{direccion}}`, `{{telefono}}`). Se publica con el
+> shortcode `[convoca_condiciones]`. Mientras falten nombre, NIF o correo de desistimiento, el shortcode no
+> publica el texto a los visitantes: solo avisa al administrador.
+>
 > **Estado: borrador para revisión jurídica. NO PUBLICAR sin el visto bueno de quien lleve lo legal de la
-> asociación.** Los plazos y excepciones están redactados según el texto refundido de la Ley General para la
+> organización.** Los plazos y excepciones están redactados según el texto refundido de la Ley General para la
 > Defensa de los Consumidores y Usuarios (TRLGDCU), arts. 102 y siguientes, pero la redacción final y la
 > adecuación a la actividad concreta corresponden a la entidad.
 

@@ -89,6 +89,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</tr>
 		</table>
 
+		<h2><?php esc_html_e( 'Datos de la entidad', 'convoca-courses' ); ?></h2>
+		<p class="description">
+			<?php esc_html_e( 'Los usan las condiciones de venta y el recibo. Cada organización rellena los suyos; no vienen escritos en el código.', 'convoca-courses' ); ?>
+		</p>
+		<?php if ( ! empty( $entidad_faltan ) ) : ?>
+			<div class="notice notice-warning inline" style="margin:8px 0 16px;">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: lista de campos que faltan. */
+						esc_html__( 'Faltan datos para publicar las condiciones de venta: %s.', 'convoca-courses' ),
+						esc_html( implode( ', ', $entidad_faltan ) )
+					);
+					?>
+				</p>
+			</div>
+		<?php endif; ?>
+		<table class="form-table" role="presentation">
+			<?php foreach ( $entidad_campos as $convoca_campo => $convoca_etiqueta ) : ?>
+				<tr>
+					<th scope="row">
+						<label for="convoca-entidad-<?php echo esc_attr( $convoca_campo ); ?>"><?php echo esc_html( $convoca_etiqueta ); ?></label>
+					</th>
+					<td>
+						<input
+							type="<?php echo 'email_desistimiento' === $convoca_campo ? 'email' : 'text'; ?>"
+							class="regular-text"
+							id="convoca-entidad-<?php echo esc_attr( $convoca_campo ); ?>"
+							name="<?php echo esc_attr( (string) $entidad_option ); ?>[<?php echo esc_attr( $convoca_campo ); ?>]"
+							value="<?php echo esc_attr( (string) ( $entidad[ $convoca_campo ] ?? '' ) ); ?>"
+						/>
+					</td>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<tr>
