@@ -1,3 +1,12 @@
+## [0.6.1] — 2026-10-29
+
+### Añadido
+
+- **enlace firmado para el profesorado, sin cuenta de WordPress**: `Profesorado::token()` / `verificar()`
+  con HMAC-SHA256, caducidad de 48 horas y comparación en tiempo constante. La corrección sigue siendo
+  automática —el examen es tipo test y la nota se calcula sola—; esta pieza deja preparado el acceso por
+  correo para cuando haga falta que una persona corrija, sin abrir cuentas.
+
 ## [0.6.0] — 2026-10-29
 
 ### Añadido

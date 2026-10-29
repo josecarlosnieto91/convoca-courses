@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Courses
  * Plugin URI:        https://getconvoca.app
  * Description:       Cursos online con módulos, lecciones, matrícula, progreso y certificado. Funciona solo con Convoca Core.
- * Version:           0.6.0
+ * Version:           0.6.1
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Tested up to:      7.1.3

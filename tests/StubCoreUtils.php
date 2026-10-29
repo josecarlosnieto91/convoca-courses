@@ -31,6 +31,15 @@ if ( ! class_exists( 'Convoca\\Core\\Utils' ) ) {
 		public static $soltados = array();
 
 		/**
+		 * Sal persistente (doble).
+		 *
+		 * @return string
+		 */
+		public static function get_persistent_salt() {
+			return 'sal-de-pruebas';
+		}
+
+		/**
 		 * Toma un cerrojo.
 		 *
 		 * @param string $clave    Clave.
