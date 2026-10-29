@@ -23,7 +23,24 @@ La API pública del módulo son **shortcodes**, no plantillas del tema:
 [convoca_curso id="123"]            Portada del curso: datos, progreso y matrícula.
 [convoca_curso_lecciones id="123"]  Índice de lecciones con progreso y bloqueos.
 [convoca_curso_leccion id="456"]    Render de una lección concreta.
+[convoca_curso_examen id="789"]     Examen del curso.
+[convoca_curso_tareas id="123"]     Tareas y entregas.
+[convoca_curso_notas id="123"]      Notas de quien está mirando.
+[convoca_curso_acta id="123"]       Acta del alumnado (solo profesorado).
+[convoca_matricula course="123"]    Matrícula sin cuenta: correo y nombre.
+[convoca_acceso]                    Entrada con enlace al correo o código de 6 cifras.
+[convoca_condiciones]              Condiciones de venta con los datos de la entidad.
 ```
+
+### Alumnado sin cuenta de WordPress
+
+Desde la 0.11.0 el alumnado **no necesita usuario de WordPress**. El correo es la identidad, se entra con un
+enlace de un solo uso o con un código de 6 cifras, y todo (matrícula, progreso, examen y certificado) cuelga de
+esa identidad. No se crea ningún `WP_User`.
+
+Las matrículas anteriores siguen con su usuario de WordPress: **no se migran**.
+
+Ver `docs/alumnado-sin-cuenta.md` para el recorrido completo y qué hay que rellenar en Ajustes.
 
 ## Desarrollo
 

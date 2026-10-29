@@ -30,6 +30,62 @@ class Condiciones {
 	public const OPTION = 'convoca_courses_condiciones_texto';
 
 	/**
+	 * Opción con el texto de la casilla de consentimiento.
+	 */
+	public const OPTION_CONSENTIMIENTO = 'convoca_courses_consentimiento_texto';
+
+	/**
+	 * Opción que habilita ofrecer la renuncia al desistimiento.
+	 */
+	public const OPTION_RENUNCIA = 'convoca_courses_renuncia_activa';
+
+	/**
+	 * Meta de la matrícula: cuándo se aceptó.
+	 */
+	public const META_CONSENTIMIENTO = '_convoca_consentimiento';
+
+	/**
+	 * Meta de la matrícula: renuncia expresa al desistimiento.
+	 */
+	public const META_RENUNCIA = '_convoca_renuncia_desistimiento';
+
+	/**
+	 * Texto por defecto de la casilla obligatoria.
+	 *
+	 * @return string
+	 */
+	public static function texto_consentimiento(): string {
+		$propio = (string) get_option( self::OPTION_CONSENTIMIENTO, '' );
+
+		if ( '' !== trim( $propio ) ) {
+			return $propio;
+		}
+
+		return __( 'He leído las condiciones de venta y sé que tengo 14 días naturales para desistir sin justificar el motivo.', 'convoca-courses' );
+	}
+
+	/**
+	 * ¿Se ofrece la renuncia expresa al desistimiento?
+	 *
+	 * Solo tiene efecto si la instalación lo activa: la excepción del art. 103.m exige consentimiento previo
+	 * expreso y separado, y no se puede dar por supuesto.
+	 *
+	 * @return bool
+	 */
+	public static function renuncia_activa(): bool {
+		return (bool) get_option( self::OPTION_RENUNCIA, false );
+	}
+
+	/**
+	 * Texto de la casilla de renuncia.
+	 *
+	 * @return string
+	 */
+	public static function texto_renuncia(): string {
+		return __( 'Quiero empezar el curso ahora y entiendo que, una vez que consuma el contenido, pierdo el derecho de desistimiento.', 'convoca-courses' );
+	}
+
+	/**
 	 * Texto con los datos de la entidad ya puestos.
 	 *
 	 * @return string

@@ -137,6 +137,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 			placeholder="<?php echo esc_attr( (string) $condiciones_plantilla ); ?>"
 		><?php echo esc_textarea( (string) $condiciones_texto ); ?></textarea>
 
+		<h3><?php esc_html_e( 'Casilla de consentimiento', 'convoca-courses' ); ?></h3>
+		<p class="description">
+			<?php esc_html_e( 'Es la casilla que hay que marcar para matricularse. Sin ella no se puede invocar la excepción del artículo 103.m: los 14 días de desistimiento se respetan completos.', 'convoca-courses' ); ?>
+		</p>
+		<textarea
+			name="<?php echo esc_attr( (string) $consentimiento_option ); ?>"
+			id="convoca-consentimiento-texto"
+			rows="3"
+			class="large-text"
+			placeholder="<?php echo esc_attr( (string) $consentimiento_defecto ); ?>"
+		><?php echo esc_textarea( (string) $consentimiento_texto ); ?></textarea>
+
+		<p>
+			<label>
+				<input type="checkbox" name="<?php echo esc_attr( (string) $renuncia_option ); ?>" value="1" <?php checked( (bool) $renuncia_activa ); ?> />
+				<?php esc_html_e( 'Ofrecer también la renuncia expresa al desistimiento (solo si la entidad lo tiene autorizado).', 'convoca-courses' ); ?>
+			</label>
+		</p>
+
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<tr>

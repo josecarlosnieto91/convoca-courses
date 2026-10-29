@@ -69,6 +69,49 @@ final class MatriculaShortcodeTest extends TestCase {
 	}
 
 	/**
+	 * El formulario exige aceptar las condiciones.
+	 */
+	public function test_exige_aceptar_las_condiciones(): void {
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		$this->assertStringContainsString( 'name="consentimiento"', $html );
+		$this->assertStringContainsString( 'required', $html );
+		$this->assertStringContainsString( '14 días naturales', $html );
+	}
+
+	/**
+	 * La renuncia al desistimiento no se ofrece si la instalación no la activa.
+	 */
+	public function test_sin_renuncia_activa_no_se_ofrece(): void {
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		$this->assertStringNotContainsString( 'name="renuncia"', $html );
+	}
+
+	/**
+	 * Si la instalación la activa, se ofrece como casilla aparte.
+	 */
+	public function test_con_renuncia_activa_se_ofrece(): void {
+		$GLOBALS['convoca_courses_opciones'][ \Convoca\Courses\Condiciones::OPTION_RENUNCIA ] = true;
+
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		$this->assertStringContainsString( 'name="renuncia"', $html );
+		$this->assertStringContainsString( 'pierdo el derecho de desistimiento', $html );
+	}
+
+	/**
+	 * El texto de la casilla se puede cambiar por instalación.
+	 */
+	public function test_texto_de_la_casilla_configurable(): void {
+		$GLOBALS['convoca_courses_opciones'][ \Convoca\Courses\Condiciones::OPTION_CONSENTIMIENTO ] = 'Acepto las condiciones de Mi Asociación.';
+
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		$this->assertStringContainsString( 'Acepto las condiciones de Mi Asociación.', $html );
+	}
+
+	/**
 	 * El aviso de matrícula hecha se pinta.
 	 */
 	public function test_aviso_de_matricula_hecha(): void {

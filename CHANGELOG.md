@@ -1,3 +1,14 @@
+## [0.14.0] — 2026-10-29
+
+### Añadido
+
+- **casilla de consentimiento en la matrícula**: obligatoria, con texto editable por instalación. Sin marcarla
+  no hay matrícula, y se guarda la fecha en `_convoca_consentimiento`.
+- **renuncia expresa al desistimiento**, apagada por defecto: si la entidad la activa, aparece como casilla
+  **separada** y se guarda `_convoca_renuncia_desistimiento`. Es el consentimiento previo y expreso que exige
+  el art. 103.m; sin él, los 14 días se respetan completos.
+- Documentación del recorrido sin cuenta en `docs/alumnado-sin-cuenta.md` y los shortcodes nuevos en el README.
+
 ## [0.13.1] — 2026-10-29
 
 ### Corregido

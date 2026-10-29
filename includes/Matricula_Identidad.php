@@ -113,6 +113,16 @@ class Matricula_Identidad {
 		$html .= '<input type="email" name="email" required autocomplete="email" /></p>';
 		$html .= '<p><label>' . esc_html__( 'Tu nombre', 'convoca-courses' ) . '</label>';
 		$html .= '<input type="text" name="nombre" required autocomplete="name" /></p>';
+
+		// Consentimiento informado: sin marcarlo no hay matrícula, y sin él no se puede invocar el 103.m.
+		$html .= '<p><label><input type="checkbox" name="consentimiento" value="1" required /> ';
+		$html .= esc_html( Condiciones::texto_consentimiento() ) . '</label></p>';
+
+		if ( Condiciones::renuncia_activa() ) {
+			$html .= '<p><label><input type="checkbox" name="renuncia" value="1" /> ';
+			$html .= esc_html( Condiciones::texto_renuncia() ) . '</label></p>';
+		}
+
 		$html .= '<p><button type="submit" class="convoca-boton">' . esc_html__( 'Matricularme', 'convoca-courses' ) . '</button></p>';
 		$html .= '</form>';
 
@@ -126,22 +136,39 @@ class Matricula_Identidad {
 	 */
 	public static function procesar(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- se comprueba justo debajo.
-		$nonce  = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
-		$email  = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( (string) $_POST['email'] ) ) : '';
-		$nombre = isset( $_POST['nombre'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['nombre'] ) ) : '';
-		$course = isset( $_POST['course'] ) ? (int) $_POST['course'] : 0;
+		$nonce          = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
+		$email          = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( (string) $_POST['email'] ) ) : '';
+		$nombre         = isset( $_POST['nombre'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['nombre'] ) ) : '';
+		$course         = isset( $_POST['course'] ) ? (int) $_POST['course'] : 0;
+		$consentimiento = ! empty( $_POST['consentimiento'] );
+		$renuncia       = ! empty( $_POST['renuncia'] );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( ! wp_verify_nonce( $nonce, self::ACCION ) ) {
 			wp_die( esc_html__( 'La petición ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
 		}
 
-		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );
-		$estado    = is_wp_error( $resultado ) ? 'error' : 'ok';
+		// Sin aceptar las condiciones no hay matrícula: es la prueba de que se informó.
+		if ( ! $consentimiento ) {
+			wp_die( esc_html__( 'Hay que aceptar las condiciones de venta para matricularte.', 'convoca-courses' ) );
+		}
 
-		// Matriculado, se le manda el acceso: sin esto tendría que descubrir por su cuenta que existe
-		// un formulario para pedirlo.
-		if ( 'ok' === $estado ) {
+		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );
+
+		if ( is_wp_error( $resultado ) ) {
+			$estado = 'error';
+		} else {
+			$estado       = 'ok';
+			$matricula_id = (int) $resultado;
+
+			update_post_meta( $matricula_id, Condiciones::META_CONSENTIMIENTO, current_time( 'mysql' ) );
+
+			if ( $renuncia && Condiciones::renuncia_activa() ) {
+				update_post_meta( $matricula_id, Condiciones::META_RENUNCIA, '1' );
+			}
+
+			// Matriculado, se le manda el acceso: sin esto tendría que descubrir por su cuenta que
+			// existe un formulario para pedirlo.
 			$identidad = Identidad::por_email( $email );
 
 			if ( null !== $identidad ) {

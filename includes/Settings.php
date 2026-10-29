@@ -92,6 +92,30 @@ class Settings {
 
 		register_setting(
 			self::GROUP,
+			Condiciones::OPTION_CONSENTIMIENTO,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => static function ( $value ) {
+					return sanitize_text_field( (string) $value );
+				},
+				'default'           => '',
+			)
+		);
+
+		register_setting(
+			self::GROUP,
+			Condiciones::OPTION_RENUNCIA,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => static function ( $value ) {
+					return (bool) $value;
+				},
+				'default'           => false,
+			)
+		);
+
+		register_setting(
+			self::GROUP,
 			Course_Template::OPTION,
 			array(
 				'type'              => 'boolean',
@@ -158,22 +182,27 @@ class Settings {
 		Certificate::render_template(
 			'ajustes.php',
 			array(
-				'group'                 => self::GROUP,
-				'page'                  => self::PAGE,
-				'config'                => $config,
-				'pro'                   => $pro,
-				'keep_data'             => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
-				'video_option'          => Video::OPTION,
-				'keep_option'           => Installer::KEEP_DATA_OPTION,
-				'entidad'               => Entidad::datos(),
-				'entidad_option'        => Entidad::OPTION,
-				'entidad_campos'        => Entidad::campos(),
-				'condiciones_texto'     => (string) get_option( Condiciones::OPTION, '' ),
-				'condiciones_option'    => Condiciones::OPTION,
-				'condiciones_plantilla' => Condiciones::plantilla(),
-				'plantilla_propia'      => Course_Template::activa(),
-				'plantilla_option'      => Course_Template::OPTION,
-				'entidad_faltan'        => array_map(
+				'group'                  => self::GROUP,
+				'page'                   => self::PAGE,
+				'config'                 => $config,
+				'pro'                    => $pro,
+				'keep_data'              => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
+				'video_option'           => Video::OPTION,
+				'keep_option'            => Installer::KEEP_DATA_OPTION,
+				'entidad'                => Entidad::datos(),
+				'entidad_option'         => Entidad::OPTION,
+				'entidad_campos'         => Entidad::campos(),
+				'condiciones_texto'      => (string) get_option( Condiciones::OPTION, '' ),
+				'condiciones_option'     => Condiciones::OPTION,
+				'condiciones_plantilla'  => Condiciones::plantilla(),
+				'consentimiento_texto'   => (string) get_option( Condiciones::OPTION_CONSENTIMIENTO, '' ),
+				'consentimiento_option'  => Condiciones::OPTION_CONSENTIMIENTO,
+				'consentimiento_defecto' => Condiciones::texto_consentimiento(),
+				'renuncia_activa'        => Condiciones::renuncia_activa(),
+				'renuncia_option'        => Condiciones::OPTION_RENUNCIA,
+				'plantilla_propia'       => Course_Template::activa(),
+				'plantilla_option'       => Course_Template::OPTION,
+				'entidad_faltan'         => array_map(
 					static function ( $campo ) {
 						return Entidad::campos()[ $campo ] ?? $campo;
 					},
