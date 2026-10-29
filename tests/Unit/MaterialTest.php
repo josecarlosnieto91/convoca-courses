@@ -68,6 +68,35 @@ final class MaterialTest extends TestCase {
 	}
 
 	/**
+	 * La URL del endpoint declara sus variables.
+	 */
+	public function test_query_vars_del_endpoint(): void {
+		$vars = Material::query_vars( array( 'p' ) );
+
+		$this->assertContains( 'convoca_material_adjunto', $vars );
+		$this->assertContains( 'convoca_material_leccion', $vars );
+	}
+
+	/**
+	 * La regla del endpoint se registra y las reglas se regeneran una vez por versión.
+	 */
+	public function test_regla_y_regeneracion(): void {
+		$GLOBALS['convoca_test_rewrites']    = array();
+		$GLOBALS['convoca_test_flush']       = 0;
+		$GLOBALS['convoca_courses_opciones'] = array();
+
+		Material::register_rewrite();
+		$this->assertNotEmpty( $GLOBALS['convoca_test_rewrites'] );
+		$this->assertStringContainsString( 'convoca-material', $GLOBALS['convoca_test_rewrites'][0][0] );
+
+		Material::maybe_flush();
+		$this->assertSame( 1, (int) $GLOBALS['convoca_test_flush'] );
+
+		Material::maybe_flush();
+		$this->assertSame( 1, (int) $GLOBALS['convoca_test_flush'], 'con la misma versión no se repite' );
+	}
+
+	/**
 	 * Mover el adjunto a la carpeta privada es idempotente.
 	 */
 	public function test_mover_a_privado_mueve_el_fichero(): void {
