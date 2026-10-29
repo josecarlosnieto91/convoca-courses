@@ -41,7 +41,13 @@ class Exam_View {
 			foreach ( Attempts::question_ids( $abierto ) as $question_id ) {
 				$pregunta = Questions::get( $question_id );
 				if ( null !== $pregunta ) {
-					$preguntas[] = $pregunta;
+					// Orden de opciones distinto en cada intento; el valor enviado sigue siendo el índice real.
+					$pregunta['opciones_orden'] = Quiz::option_order(
+						(int) $abierto['id'],
+						(int) $question_id,
+						count( (array) ( $pregunta['opciones'] ?? array() ) )
+					);
+					$preguntas[]                = $pregunta;
 				}
 			}
 		}

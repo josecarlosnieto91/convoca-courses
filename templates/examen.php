@@ -121,7 +121,13 @@ if ( ! $logged_in ) {
 						<?php endif; ?>
 					</legend>
 
-					<?php foreach ( $convoca_pregunta['opciones'] as $convoca_indice => $convoca_opcion ) : ?>
+					<?php
+					$convoca_orden = isset( $convoca_pregunta['opciones_orden'] )
+						? (array) $convoca_pregunta['opciones_orden']
+						: array_keys( (array) $convoca_pregunta['opciones'] );
+					?>
+					<?php foreach ( $convoca_orden as $convoca_indice ) : ?>
+						<?php $convoca_opcion = $convoca_pregunta['opciones'][ $convoca_indice ] ?? ''; ?>
 						<label class="convoca-courses-exam__option">
 							<input
 								type="<?php echo esc_attr( $convoca_multiple ? 'checkbox' : 'radio' ); ?>"

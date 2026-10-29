@@ -128,6 +128,38 @@ class Quiz {
 	}
 
 	/**
+	 * Orden en que se presentan las opciones de una pregunta en un intento.
+	 *
+	 * Determinista por intento y pregunta: el alumnado ve el mismo orden mientras contesta y otro
+	 * distinto en el intento siguiente. Solo cambia la presentación; el valor enviado sigue siendo el
+	 * índice real de la opción, así que la corrección no se toca.
+	 *
+	 * @param int $attempt_id  Intento.
+	 * @param int $question_id Pregunta.
+	 * @param int $total       Número de opciones.
+	 * @return array<int, int>
+	 */
+	public static function option_order( int $attempt_id, int $question_id, int $total ): array {
+		if ( $total <= 1 ) {
+			return $total > 0 ? array( 0 ) : array();
+		}
+
+		$orden   = range( 0, $total - 1 );
+		$semilla = (int) ( crc32( $attempt_id . ':' . $question_id ) & 0x7fffffff );
+
+		for ( $i = $total - 1; $i > 0; $i-- ) {
+			$semilla = ( ( 1103515245 * $semilla ) + 12345 ) & 0x7fffffff;
+			$j       = $semilla % ( $i + 1 );
+
+			$temporal    = $orden[ $i ];
+			$orden[ $i ] = $orden[ $j ];
+			$orden[ $j ] = $temporal;
+		}
+
+		return $orden;
+	}
+
+	/**
 	 * Corrige un examen entero.
 	 *
 	 * @param array<int, array<string, mixed>> $preguntas Preguntas del intento.

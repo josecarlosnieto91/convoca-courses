@@ -1,3 +1,18 @@
+## [0.5.1] — 2026-10-29
+
+### Añadido
+
+- **el orden de las opciones cambia en cada intento**. Antes era fijo: con dos capturas de pantalla el
+  examen quedaba resuelto. El orden es determinista por intento y pregunta, así que recargar no mueve las
+  opciones, pero el intento siguiente las presenta de otra forma. El valor enviado sigue siendo el índice
+  real de la opción: la corrección no cambia.
+
+### Nota
+
+- La aleatorización de **preguntas**, el **banco ampliado** (`Quiz::pick` sobre las candidatas), el
+  **límite de tiempo** con su aviso y la **nota y fecha en el certificado** ya existían en el código. Lo que
+  faltaba era el orden de las opciones.
+
 ## [0.5.0] — 2026-10-29
 
 ### Añadido
