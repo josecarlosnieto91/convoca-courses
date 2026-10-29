@@ -143,4 +143,79 @@ class WpdbDoble {
 
 		return null;
 	}
+
+	/**
+	 * Ejecuta una consulta: entiende el INSERT IGNORE del progreso.
+	 *
+	 * @param string $query Consulta ya preparada.
+	 * @return int|false
+	 */
+	public function query( $query ) {
+		$query = (string) $query;
+
+		if ( preg_match( '/INSERT IGNORE INTO\s+(\S+)\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)/i', $query, $m ) ) {
+			$tabla    = $m[1];
+			$columnas = array_map( 'trim', explode( ',', $m[2] ) );
+			$valores  = array_map( 'trim', explode( ',', $m[3] ) );
+
+			$this->filas[ $tabla ] = $this->filas[ $tabla ] ?? array();
+			$id                    = count( $this->filas[ $tabla ] ) + 1;
+
+			$fila = array( 'id' => $id );
+			foreach ( $columnas as $i => $columna ) {
+				$valor            = $valores[ $i ] ?? '';
+				$fila[ $columna ] = is_numeric( $valor ) ? (int) $valor : trim( $valor, "\'" );
+			}
+
+			// Respeta el índice único (user_id, identidad_id, lesson_id).
+			foreach ( $this->filas[ $tabla ] as $existente ) {
+				if ( ( $existente['user_id'] ?? 0 ) === $fila['user_id']
+					&& ( $existente['identidad_id'] ?? 0 ) === $fila['identidad_id']
+					&& ( $existente['lesson_id'] ?? 0 ) === $fila['lesson_id'] ) {
+					return 1;
+				}
+			}
+
+			$this->filas[ $tabla ][ $id ] = $fila;
+
+			return 1;
+		}
+
+		return 1;
+	}
+
+	/**
+	 * Devuelve una columna: entiende el SELECT del progreso.
+	 *
+	 * @param string $query Consulta ya preparada.
+	 * @return array<int, mixed>
+	 */
+	public function get_col( $query ) {
+		$query = (string) $query;
+
+		if ( ! preg_match( '/FROM\s+(\S+)/i', $query, $m ) ) {
+			return array();
+		}
+
+		$tabla  = $m[1];
+		$filas  = $this->filas[ $tabla ] ?? array();
+		$salida = array();
+
+		$identidad = preg_match( '/identidad_id\s*=\s*(\d+)/i', $query, $i ) ? (int) $i[1] : null;
+		$curso     = preg_match( '/course_id\s*=\s*(\d+)/i', $query, $c ) ? (int) $c[1] : null;
+
+		foreach ( $filas as $fila ) {
+			if ( null !== $identidad && (int) ( $fila['identidad_id'] ?? 0 ) !== $identidad ) {
+				continue;
+			}
+
+			if ( null !== $curso && (int) ( $fila['course_id'] ?? 0 ) !== $curso ) {
+				continue;
+			}
+
+			$salida[] = $fila['lesson_id'] ?? 0;
+		}
+
+		return $salida;
+	}
 }
