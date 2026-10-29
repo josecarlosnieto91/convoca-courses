@@ -125,6 +125,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php endforeach; ?>
 		</table>
 
+		<h3><?php esc_html_e( 'Texto de las condiciones', 'convoca-courses' ); ?></h3>
+		<p class="description">
+			<?php esc_html_e( 'Déjalo vacío para usar el texto de fábrica. Si escribes el tuyo, sustituye al de fábrica: cada instalación pone el que le corresponda. Puedes usar los marcadores {{nombre}}, {{nif}}, {{email_desistimiento}}, {{direccion}} y {{telefono}}.', 'convoca-courses' ); ?>
+		</p>
+		<textarea
+			name="<?php echo esc_attr( (string) $condiciones_option ); ?>"
+			id="convoca-condiciones-texto"
+			rows="14"
+			class="large-text code"
+			placeholder="<?php echo esc_attr( (string) $condiciones_plantilla ); ?>"
+		><?php echo esc_textarea( (string) $condiciones_texto ); ?></textarea>
+
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<tr>

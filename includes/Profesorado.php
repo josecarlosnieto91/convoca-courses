@@ -50,6 +50,15 @@ class Profesorado {
 	}
 
 	/**
+	 * Secreto del sitio para firmar cookies y tokens de otras piezas.
+	 *
+	 * @return string
+	 */
+	public static function secreto_publico(): string {
+		return self::secreto();
+	}
+
+	/**
 	 * Firma un acceso para un curso y una caducidad.
 	 *
 	 * @param int $course_id Curso.

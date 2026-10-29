@@ -25,17 +25,35 @@ class Condiciones {
 	public const SHORTCODE = 'convoca_condiciones';
 
 	/**
+	 * Opción con el texto propio de la instalación.
+	 */
+	public const OPTION = 'convoca_courses_condiciones_texto';
+
+	/**
 	 * Texto con los datos de la entidad ya puestos.
 	 *
 	 * @return string
 	 */
 	public static function texto(): string {
+		$propio = (string) get_option( self::OPTION, '' );
+
+		if ( '' !== trim( $propio ) ) {
+			return Entidad::sustituir( $propio );
+		}
+
+		return Entidad::sustituir( self::plantilla() );
+	}
+
+	/**
+	 * Texto de fábrica, sin sustituir.
+	 *
+	 * @return string
+	 */
+	public static function plantilla(): string {
 		$ruta = dirname( __DIR__ ) . '/templates/condiciones.md';
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plantilla del propio plugin.
-		$plantilla = is_readable( $ruta ) ? (string) file_get_contents( $ruta ) : '';
-
-		return Entidad::sustituir( $plantilla );
+		return is_readable( $ruta ) ? (string) file_get_contents( $ruta ) : '';
 	}
 
 	/**

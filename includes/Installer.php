@@ -42,6 +42,11 @@ class Installer {
 	public const PROGRESS_TABLE = 'convoca_course_progress';
 
 	/**
+	 * Tabla de identidades del alumnado.
+	 */
+	public const IDENTIDADES_TABLE = 'convoca_identidades';
+
+	/**
 	 * Banco de preguntas (sin prefijo).
 	 */
 	public const QUESTIONS_TABLE = 'convoca_course_questions';
@@ -115,6 +120,21 @@ class Installer {
 			PRIMARY KEY  (id),
 			UNIQUE KEY user_lesson (user_id,lesson_id),
 			KEY course_user (course_id,user_id)
+		) {$collate};";
+
+		$sql[ self::IDENTIDADES_TABLE ] = "CREATE TABLE {$prefix}" . self::IDENTIDADES_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			email varchar(190) NOT NULL,
+			nombre varchar(190) NOT NULL DEFAULT '',
+			creado datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			verificado datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			token_hash char(64) NOT NULL DEFAULT '',
+			token_expira datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			codigo_hash char(64) NOT NULL DEFAULT '',
+			codigo_expira datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			wp_user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id),
+			UNIQUE KEY email (email)
 		) {$collate};";
 
 		$sql[ self::QUESTIONS_TABLE ] = "CREATE TABLE {$prefix}" . self::QUESTIONS_TABLE . " (

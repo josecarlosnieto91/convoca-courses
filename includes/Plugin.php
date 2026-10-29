@@ -68,6 +68,9 @@ final class Plugin {
 
 		// Plantilla propia de la ficha: apagada por defecto, manda el tema.
 		Course_Template::register();
+
+		// Acceso del alumnado con identidad propia (sin usuario de WordPress).
+		Identidad_Acceso::register();
 		Assets::register();
 
 		$fields = new Admin_Fields();

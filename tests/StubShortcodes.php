@@ -1088,3 +1088,27 @@ if ( ! function_exists( 'sanitize_email' ) ) {
 		return strtolower( trim( (string) $email ) );
 	}
 }
+
+if ( ! function_exists( 'is_email' ) ) {
+	/**
+	 * Correo válido (doble simple).
+	 *
+	 * @param string $email Correo.
+	 * @return bool
+	 */
+	function is_email( $email ) {
+		return (bool) filter_var( (string) $email, FILTER_VALIDATE_EMAIL );
+	}
+}
+
+if ( ! function_exists( 'esc_textarea' ) ) {
+	/**
+	 * Texto escapado para textarea (doble).
+	 *
+	 * @param string $text Texto.
+	 * @return string
+	 */
+	function esc_textarea( $text ) {
+		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+	}
+}

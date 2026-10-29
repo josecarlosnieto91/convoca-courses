@@ -1,3 +1,19 @@
+## [0.10.0] — 2026-10-29
+
+### Añadido
+
+- **identidad propia del alumnado, sin usuario de WordPress**: tabla `convoca_identidades` con el correo como
+  clave, alta al confirmar el pago, enlace de un solo uso y **código de 6 cifras** como respaldo. El acceso se
+  pide con `[convoca_acceso]`. No se crea ningún `WP_User` ni se toca `wp_users`.
+- **texto de las condiciones editable por instalación**: en Ajustes se puede escribir el texto propio, que
+  sustituye al de fábrica; los marcadores `{{nombre}}`, `{{nif}}`, `{{email_desistimiento}}`, `{{direccion}}` y
+  `{{telefono}}` se siguen rellenando solos.
+
+### Nota
+
+- Las matrículas anteriores siguen con su usuario de WordPress: **no se migran** (decisión de JC del 29/10).
+  La identidad propia atiende solo a las nuevas.
+
 ## [0.9.0] — 2026-10-29
 
 ### Añadido

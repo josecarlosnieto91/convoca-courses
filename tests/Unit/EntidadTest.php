@@ -121,6 +121,30 @@ final class EntidadTest extends TestCase {
 	}
 
 	/**
+	 * Un texto propio sustituye al de fábrica.
+	 */
+	public function test_el_texto_propio_sustituye_al_de_fabrica(): void {
+		$GLOBALS['convoca_courses_opciones'][ Entidad::OPTION ]     = array(
+			'nombre'              => 'Entidad A',
+			'nif'                 => 'A00000000',
+			'email_desistimiento' => 'bajas@a.test',
+		);
+		$GLOBALS['convoca_courses_opciones'][ Condiciones::OPTION ] = 'Condiciones propias de {{nombre}}, NIF {{nif}}.';
+
+		$texto = Condiciones::texto();
+
+		$this->assertSame( 'Condiciones propias de Entidad A, NIF A00000000.', $texto );
+		$this->assertStringNotContainsString( '14 días naturales', $texto );
+	}
+
+	/**
+	 * Sin texto propio se usa el de fábrica.
+	 */
+	public function test_sin_texto_propio_usa_el_de_fabrica(): void {
+		$this->assertStringContainsString( '14 días naturales', Condiciones::texto() );
+	}
+
+	/**
 	 * Sin datos, el shortcode calla al visitante y avisa al administrador.
 	 */
 	public function test_sin_datos_no_se_publica(): void {
