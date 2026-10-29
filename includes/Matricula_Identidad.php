@@ -109,10 +109,10 @@ class Matricula_Identidad {
 		$html .= '<input type="hidden" name="action" value="' . esc_attr( self::ACCION ) . '" />';
 		$html .= '<input type="hidden" name="course" value="' . esc_attr( (string) $course_id ) . '" />';
 		$html .= wp_nonce_field( self::ACCION, '_convoca_nonce', true, false );
-		$html .= '<p><label>' . esc_html__( 'Tu correo', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="email" name="email" required autocomplete="email" /></p>';
-		$html .= '<p><label>' . esc_html__( 'Tu nombre', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="text" name="nombre" required autocomplete="name" /></p>';
+		$html .= '<p><label for="convoca-email-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Tu correo', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="email" id="convoca-email-' . esc_attr( (string) $course_id ) . '" name="email" required autocomplete="email" /></p>';
+		$html .= '<p><label for="convoca-nombre-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Tu nombre', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" id="convoca-nombre-' . esc_attr( (string) $course_id ) . '" name="nombre" required autocomplete="name" /></p>';
 
 		// Consentimiento informado: sin marcarlo no hay matrícula, y sin él no se puede invocar el 103.m.
 		$html .= '<p><label><input type="checkbox" name="consentimiento" value="1" required /> ';
@@ -132,12 +132,12 @@ class Matricula_Identidad {
 		// Factura: opcional. Los datos solo se piden si se marca, y el servidor los exige entonces.
 		$html .= '<p><label><input type="checkbox" name="factura" value="1" /> ';
 		$html .= esc_html__( 'Necesito factura', 'convoca-courses' ) . '</label></p>';
-		$html .= '<p><label>' . esc_html__( 'NIF / CIF', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="text" name="factura_nif" autocomplete="off" /></p>';
-		$html .= '<p><label>' . esc_html__( 'Razón social', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="text" name="factura_razon" autocomplete="organization" /></p>';
-		$html .= '<p><label>' . esc_html__( 'Dirección fiscal', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="text" name="factura_direccion" autocomplete="street-address" /></p>';
+		$html .= '<p><label for="convoca-nif-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'NIF / CIF', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" id="convoca-nif-' . esc_attr( (string) $course_id ) . '" name="factura_nif" autocomplete="off" /></p>';
+		$html .= '<p><label for="convoca-razon-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Razón social', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" id="convoca-razon-' . esc_attr( (string) $course_id ) . '" name="factura_razon" autocomplete="organization" /></p>';
+		$html .= '<p><label for="convoca-direccion-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Dirección fiscal', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" id="convoca-direccion-' . esc_attr( (string) $course_id ) . '" name="factura_direccion" autocomplete="street-address" /></p>';
 
 		$html .= '<p><button type="submit" class="convoca-boton">' . esc_html__( 'Matricularme', 'convoca-courses' ) . '</button></p>';
 		$html .= '</form>';

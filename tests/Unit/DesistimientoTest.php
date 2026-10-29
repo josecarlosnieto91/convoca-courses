@@ -9,6 +9,7 @@ namespace Convoca\Courses\Tests;
 
 use Convoca\Courses\Condiciones;
 use Convoca\Courses\CPT_Base;
+use Convoca\Courses\CPT_Matricula;
 use Convoca\Courses\Desistimiento;
 use PHPUnit\Framework\TestCase;
 
@@ -125,6 +126,43 @@ final class DesistimientoTest extends TestCase {
 		Desistimiento::solicitar( 42, 'basura' );
 
 		$this->assertSame( 'activa', $GLOBALS['convoca_test_meta'][42][ CPT_Base::META_PREFIX . 'estado' ] );
+	}
+
+	/**
+	 * Una devolución completa cierra la matrícula del pago.
+	 */
+	public function test_la_devolucion_completa_marca_la_matricula(): void {
+		$GLOBALS['convoca_test_post_types'][900]                                = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][900][ CPT_Base::META_PREFIX . 'pago_id' ] = '555';
+		$GLOBALS['convoca_test_meta'][900][ CPT_Base::META_PREFIX . 'estado' ]  = 'activa';
+
+		Desistimiento::al_devolver( 555, 100, false );
+
+		$this->assertSame( 'devuelto', $GLOBALS['convoca_test_meta'][900][ Desistimiento::META_ESTADO ] );
+		$this->assertSame( 'cancelada', $GLOBALS['convoca_test_meta'][900][ CPT_Base::META_PREFIX . 'estado' ] );
+	}
+
+	/**
+	 * Una devolución parcial deja constancia pero no cancela el acceso.
+	 */
+	public function test_la_devolucion_parcial_no_cancela(): void {
+		$GLOBALS['convoca_test_post_types'][901]                                = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][901][ CPT_Base::META_PREFIX . 'pago_id' ] = '556';
+		$GLOBALS['convoca_test_meta'][901][ CPT_Base::META_PREFIX . 'estado' ]  = 'activa';
+
+		Desistimiento::al_devolver( 556, 50, true );
+
+		$this->assertSame( 'devuelto_parcial', $GLOBALS['convoca_test_meta'][901][ Desistimiento::META_ESTADO ] );
+		$this->assertSame( 'activa', $GLOBALS['convoca_test_meta'][901][ CPT_Base::META_PREFIX . 'estado' ] );
+	}
+
+	/**
+	 * Un pago que no es de ninguna matrícula no toca nada.
+	 */
+	public function test_un_pago_ajeno_no_rompe(): void {
+		Desistimiento::al_devolver( 999999, 100, false );
+
+		$this->assertArrayNotHasKey( 999999, $GLOBALS['convoca_test_meta'] );
 	}
 
 	/**

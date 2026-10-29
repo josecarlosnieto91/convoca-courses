@@ -1,3 +1,9 @@
+## [0.18.3] — 2026-10-29
+
+### Cambiado
+
+- **etiquetas asociadas en el formulario**
+
 ## [0.18.2] — 2026-10-29
 
 ### Cambiado

@@ -125,6 +125,21 @@ final class MatriculaShortcodeTest extends TestCase {
 	}
 
 	/**
+	 * Cada etiqueta apunta a su campo: sin `for`/`id` el lector de pantalla no los asocia.
+	 */
+	public function test_cada_etiqueta_tiene_su_campo(): void {
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		preg_match_all( '/for="([^"]+)"/', $html, $coincidencias );
+
+		$this->assertCount( 5, $coincidencias[1], 'correo, nombre, NIF, razón social y dirección' );
+
+		foreach ( $coincidencias[1] as $id ) {
+			$this->assertStringContainsString( 'id="' . $id . '"', $html, 'falta el campo de ' . $id );
+		}
+	}
+
+	/**
 	 * Los datos de factura no son obligatorios de entrada.
 	 */
 	public function test_la_factura_es_opcional(): void {
