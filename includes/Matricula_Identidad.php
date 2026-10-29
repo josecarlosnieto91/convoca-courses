@@ -118,7 +118,9 @@ class Matricula_Identidad {
 		$html .= '<p><label><input type="checkbox" name="consentimiento" value="1" required /> ';
 		$html .= esc_html( Condiciones::texto_consentimiento() ) . '</label></p>';
 
-		if ( Condiciones::renuncia_activa() ) {
+		// La casilla va aparte de la de condiciones, sin marcar y solo en cursos cien por cien digitales: la
+		// excepción del 103.m no cubre directos, tutorías ni material físico.
+		if ( Condiciones::renuncia_disponible( $course_id ) ) {
 			$html .= '<p><label><input type="checkbox" name="renuncia" value="1" /> ';
 			$html .= esc_html( Condiciones::texto_renuncia() ) . '</label></p>';
 		}
@@ -163,7 +165,7 @@ class Matricula_Identidad {
 
 			// Se guarda lo que se aceptó y, si se marcó, la renuncia con su prueba: texto exacto, fecha, IP y
 			// navegador. Sin eso, la excepción del 103.m no se puede sostener si alguien la discute.
-			Condiciones::registrar_aceptacion( $matricula_id, $renuncia );
+			Condiciones::registrar_aceptacion( $matricula_id, $renuncia && Condiciones::renuncia_disponible( $course ) );
 
 			// Matriculado, se le manda el acceso: sin esto tendría que descubrir por su cuenta que
 			// existe un formulario para pedirlo.

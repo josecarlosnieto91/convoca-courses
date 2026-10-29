@@ -66,6 +66,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</td>
 	</tr>
 	<tr>
+		<th scope="row"><?php esc_html_e( 'Contenido digital', 'convoca-courses' ); ?></th>
+		<td>
+			<label>
+				<input type="checkbox" name="convoca_cien_digital" value="1" <?php checked( (bool) $cien_digital ); ?> />
+				<?php esc_html_e( 'Curso 100 % digital: todo el contenido es digital, sin sesiones en directo, tutorías ni material físico', 'convoca-courses' ); ?>
+			</label>
+			<p class="description"><?php esc_html_e( 'Solo en estos cursos se ofrece la renuncia al desistimiento (art. 103.m). Si hay directos, tutorías o material físico, esa parte sigue siendo reembolsable y la casilla no debe ofrecerse: déjalo sin marcar.', 'convoca-courses' ); ?></p>
+		</td>
+	</tr>
+	<tr>
 		<th scope="row"><?php esc_html_e( 'Desbloqueo', 'convoca-courses' ); ?></th>
 		<td>
 			<label>

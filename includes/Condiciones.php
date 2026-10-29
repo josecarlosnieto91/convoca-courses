@@ -92,6 +92,21 @@ class Condiciones {
 	}
 
 	/**
+	 * ¿Se puede ofrecer la renuncia al desistimiento en este curso?
+	 *
+	 * Hacen falta dos cosas: que la instalación la tenga activada **y** que el curso sea cien por cien
+	 * digital. La excepción del artículo 103.m solo alcanza al contenido digital sin soporte tangible; si el
+	 * curso lleva sesiones en directo, tutorías o material físico, esa parte sigue siendo reembolsable y la
+	 * casilla no debe aparecer.
+	 *
+	 * @param int $course_id Curso.
+	 * @return bool
+	 */
+	public static function renuncia_disponible( int $course_id ): bool {
+		return self::renuncia_activa() && CPT_Curso::is_fully_digital( $course_id );
+	}
+
+	/**
 	 * Texto de la casilla de renuncia.
 	 *
 	 * Lo que exige el artículo 103.m del TRLGDCU, en una sola casilla y **opcional**:

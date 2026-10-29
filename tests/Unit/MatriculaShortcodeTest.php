@@ -89,10 +89,11 @@ final class MatriculaShortcodeTest extends TestCase {
 	}
 
 	/**
-	 * Si la instalación la activa, se ofrece como casilla aparte.
+	 * Si la instalación la activa **y el curso es 100 % digital**, se ofrece como casilla aparte.
 	 */
 	public function test_con_renuncia_activa_se_ofrece(): void {
 		$GLOBALS['convoca_courses_opciones'][ \Convoca\Courses\Condiciones::OPTION_RENUNCIA ] = true;
+		$GLOBALS['convoca_test_meta'][123]['_convoca_cien_digital']                           = '1';
 
 		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
 

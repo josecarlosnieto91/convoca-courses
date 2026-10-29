@@ -158,6 +158,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="description">
 			<?php esc_html_e( 'La casilla es opcional y solo alcanza al contenido digital: quien no la marque conserva los 14 días completos. Al guardar la matrícula se archiva el texto exacto que se mostró, con la fecha, la IP y el navegador, para poder demostrar el consentimiento.', 'convoca-courses' ); ?>
 		</p>
+		<p class="description">
+			<?php esc_html_e( 'Solo se ofrece en los cursos marcados como «100 % digital»: si el curso tiene sesiones en directo, tutorías o material físico, esa parte queda fuera de la excepción y la casilla no aparece.', 'convoca-courses' ); ?>
+		</p>
 		<textarea
 			name="<?php echo esc_attr( (string) $renuncia_texto_option ); ?>"
 			id="convoca-renuncia-texto"

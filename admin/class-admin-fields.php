@@ -128,6 +128,7 @@ class Admin_Fields {
 				'moneda'        => CPT_Curso::currency( (int) $post->ID ),
 				'plazas'        => CPT_Curso::seats( (int) $post->ID ),
 				'certificado'   => CPT_Curso::issues_certificate( (int) $post->ID ),
+				'cien_digital'  => CPT_Curso::is_fully_digital( (int) $post->ID ),
 				'secuencial'    => CPT_Curso::is_sequential( (int) $post->ID ),
 				'apertura'      => CPT_Curso::enrollment_open_date( (int) $post->ID ),
 				'cierre'        => CPT_Curso::enrollment_close_date( (int) $post->ID ),
@@ -303,6 +304,7 @@ class Admin_Fields {
 		$currency   = isset( $_POST['convoca_moneda'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_moneda'] ) ) : 'EUR';
 		$seats      = self::entero_no_negativo( 'convoca_plazas' );
 		$cert       = ! empty( $_POST['convoca_certificado'] );
+		$digital    = ! empty( $_POST['convoca_cien_digital'] );
 		$sequential = ! empty( $_POST['convoca_secuencial'] );
 
 		$apertura   = isset( $_POST['convoca_apertura_matricula'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['convoca_apertura_matricula'] ) ) : '';
@@ -321,6 +323,7 @@ class Admin_Fields {
 		update_post_meta( $post_id, $prefix . 'moneda', '' !== $currency ? strtoupper( substr( $currency, 0, 3 ) ) : 'EUR' );
 		update_post_meta( $post_id, $prefix . 'plazas', max( 0, $seats ) );
 		update_post_meta( $post_id, $prefix . 'certificado', $cert ? 1 : 0 );
+		update_post_meta( $post_id, $prefix . 'cien_digital', $digital ? 1 : 0 );
 		update_post_meta( $post_id, $prefix . 'desbloqueo_secuencial', $sequential ? 1 : 0 );
 		update_post_meta( $post_id, $prefix . 'fecha_apertura_matricula', CPT_Curso::normalize_date( $apertura ) );
 		update_post_meta( $post_id, $prefix . 'fecha_cierre_matricula', CPT_Curso::normalize_date( $cierre ) );

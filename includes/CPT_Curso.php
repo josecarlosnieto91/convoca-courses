@@ -40,6 +40,7 @@ class CPT_Curso extends CPT_Base {
 		'precio_socio',
 		'descuento_socio',
 		'gratis_socios',
+		'cien_digital',
 	);
 
 	/**
@@ -98,6 +99,15 @@ class CPT_Curso extends CPT_Base {
 				},
 			),
 			'certificado'              => array(
+				'type'     => 'boolean',
+				'sanitize' => static function ( $value ) {
+					return (bool) $value;
+				},
+			),
+			'cien_digital'             => array(
+				// Ámbito de la renuncia al desistimiento (art. 103.m TRLGDCU): la excepción solo cubre
+				// contenido digital, así que el curso tiene que declararse cien por cien digital para
+				// siquiera ofrecer la casilla. Por defecto, no: un curso mixto no entra.
 				'type'     => 'boolean',
 				'sanitize' => static function ( $value ) {
 					return (bool) $value;
@@ -219,6 +229,20 @@ class CPT_Curso extends CPT_Base {
 	 */
 	public static function issues_certificate( int $course_id ): bool {
 		return self::get_bool( $course_id, 'certificado', false );
+	}
+
+	/**
+	 * Si el curso es **cien por cien digital**.
+	 *
+	 * Es el ámbito de la renuncia al desistimiento del artículo 103.m del TRLGDCU: la excepción solo alcanza
+	 * al contenido digital sin soporte tangible, así que un curso con sesiones en directo, tutorías o material
+	 * físico **no** puede ofrecer la casilla. Por defecto, falso: ante la duda, no se ofrece.
+	 *
+	 * @param int $course_id Identificador del curso.
+	 * @return bool
+	 */
+	public static function is_fully_digital( int $course_id ): bool {
+		return self::get_bool( $course_id, 'cien_digital', false );
 	}
 
 	/**
