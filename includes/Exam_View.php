@@ -54,6 +54,7 @@ class Exam_View {
 			'title'         => (string) get_the_title( $exam_id ),
 			'intro'         => (string) apply_filters( 'the_content', (string) get_post_field( 'post_content', $exam_id ) ),
 			'enrolled'      => $course_id > 0 && Access::is_enrolled( $user_id, $course_id ),
+			'manage'        => Access::can_manage(),
 			'logged_in'     => $user_id > 0,
 			'can_take'      => $puede,
 			'expired'       => $course_id > 0 && $user_id > 0 && Access::is_expired( $user_id, $course_id ),

@@ -88,6 +88,66 @@ final class PlantillaCursoTest extends TestCase {
 	}
 
 	/**
+	 * Claves del array que entrega un proveedor, a partir de un ancla.
+	 *
+	 * @param string $fichero Fichero relativo al plugin.
+	 * @param string $ancla   Texto donde empieza el array.
+	 * @return array<int, string>
+	 */
+	private function claves_en( string $fichero, string $ancla ): array {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- código del propio plugin.
+		$fuente = (string) file_get_contents( $this->raiz() . '/' . $fichero );
+
+		$inicio = strpos( $fuente, $ancla );
+		if ( false === $inicio ) {
+			return array();
+		}
+
+		$fin = strpos( $fuente, ');', $inicio );
+		if ( false === $fin ) {
+			return array();
+		}
+
+		preg_match_all( "/'([a-z_]+)'\s*=>/", substr( $fuente, $inicio, $fin - $inicio ), $coincidencias );
+
+		return array_values( array_unique( $coincidencias[1] ) );
+	}
+
+	/**
+	 * Todas las plantillas de alumno reciben lo que documentan.
+	 *
+	 * La guarda del issue #13 solo miraba la portada; el #14 apareció en el examen. Esta recorre todas.
+	 */
+	public function test_las_plantillas_de_alumno_reciben_lo_que_documentan(): void {
+		$mapa = array(
+			'curso.php'     => array( 'includes/Shortcodes.php', "'curso.php'" ),
+			'lecciones.php' => array( 'includes/Shortcodes.php', "'lecciones.php'" ),
+			'leccion.php'   => array( 'includes/Shortcodes.php', "'leccion.php'" ),
+			'notas.php'     => array( 'includes/Shortcodes.php', "'notas.php'" ),
+			'examen.php'    => array( 'includes/Exam_View.php', 'return array(' ),
+			'tareas.php'    => array( 'includes/Task_View.php', 'return array(' ),
+		);
+
+		$fallos = array();
+
+		foreach ( $mapa as $plantilla => $sitio ) {
+			$documentadas = $this->documentadas( $plantilla );
+			if ( array() === $documentadas ) {
+				continue;
+			}
+
+			$entregadas = $this->claves_en( $sitio[0], $sitio[1] );
+			$faltan     = array_diff( $documentadas, $entregadas );
+
+			if ( array() !== $faltan ) {
+				$fallos[] = $plantilla . ': ' . implode( ', ', $faltan );
+			}
+		}
+
+		$this->assertSame( array(), $fallos, 'plantillas que usan variables que no reciben' );
+	}
+
+	/**
 	 * Con recibo, la portada pinta el enlace.
 	 */
 	public function test_la_portada_pinta_el_recibo_cuando_hay(): void {

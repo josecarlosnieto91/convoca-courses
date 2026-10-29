@@ -5,6 +5,8 @@
  * Variables: ver \Convoca\Courses\Exam_View::data().
  *
  * @package Convoca\Courses
+ *
+ * @var array<string, mixed> $exam_id, $course_id, $title, $intro, $enrolled, $manage, $logged_in, $can_take, $expired, $min_score, $time_limit, $feedback, $attempts_used, $attempts_left, $attempts_max, $open, $questions, $attempts, $best, $passed, $open_url, $open_nonce, $course_url, $notice, $result.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

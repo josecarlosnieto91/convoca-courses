@@ -1,3 +1,18 @@
+## [0.4.2] — 2026-10-29
+
+### Corregido
+
+- **la página del examen escribía un aviso de PHP para cualquiera con sesión y sin matrícula**:
+  `templates/examen.php` usa `$manage` y `Exam_View::data()` no la entregaba. Mismo descuido que #13, en otra
+  plantilla.
+- **el profesorado sin matrícula veía «necesitas matricularte»** en vez de poder previsualizar el examen,
+  porque `$manage` siempre llegaba nulo.
+
+### Añadido
+
+- El test de contrato de plantillas deja de mirar solo la portada: recorre `curso`, `lecciones`, `leccion`,
+  `notas`, `examen` y `tareas`, comparando lo que cada una documenta con lo que recibe su proveedor.
+
 ## [0.4.1] — 2026-10-28
 
 ### Corregido
