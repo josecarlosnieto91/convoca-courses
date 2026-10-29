@@ -182,6 +182,38 @@ final class IdentidadTest extends TestCase {
 	}
 
 	/**
+	 * Consultas con datos vacíos no revientan.
+	 */
+	public function test_consultas_vacias(): void {
+		$this->assertNull( Identidad::por_id( 0 ) );
+		$this->assertNull( Identidad::por_email( '' ) );
+		$this->assertNull( Identidad::por_id( 9999 ) );
+	}
+
+	/**
+	 * Sin acceso emitido, ni token ni código valen.
+	 */
+	public function test_sin_emitir_no_vale_nada(): void {
+		$id = Identidad::alta( 'eva@ejemplo.test' );
+
+		$this->assertFalse( Identidad::token_valido( $id, 'lo-que-sea' ) );
+		$this->assertFalse( Identidad::codigo_valido( $id, '123456' ) );
+	}
+
+	/**
+	 * Tras enviar el correo se avisa en la pantalla.
+	 */
+	public function test_aviso_de_enviado(): void {
+		$_GET['convoca_enviado'] = '1';
+
+		$html = \Convoca\Courses\Identidad_Acceso::render();
+
+		unset( $_GET['convoca_enviado'] );
+
+		$this->assertStringContainsString( 'Revisa el correo', $html );
+	}
+
+	/**
 	 * La firma cambia con la identidad y con la caducidad.
 	 */
 	public function test_la_firma_depende_de_identidad_y_caducidad(): void {

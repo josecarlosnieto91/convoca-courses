@@ -195,11 +195,11 @@ class Identidad {
 	public static function token_valido( int $id, string $token ): bool {
 		$fila = self::por_id( $id );
 
-		if ( null === $fila || '' === (string) $fila['token_hash'] ) {
+		if ( null === $fila || '' === (string) ( $fila['token_hash'] ?? '' ) ) {
 			return false;
 		}
 
-		if ( strtotime( (string) $fila['token_expira'] . ' UTC' ) < time() ) {
+		if ( strtotime( (string) ( $fila['token_expira'] ?? '' ) . ' UTC' ) < time() ) {
 			return false;
 		}
 
@@ -216,11 +216,11 @@ class Identidad {
 	public static function codigo_valido( int $id, string $codigo ): bool {
 		$fila = self::por_id( $id );
 
-		if ( null === $fila || '' === (string) $fila['codigo_hash'] ) {
+		if ( null === $fila || '' === (string) ( $fila['codigo_hash'] ?? '' ) ) {
 			return false;
 		}
 
-		if ( strtotime( (string) $fila['codigo_expira'] . ' UTC' ) < time() ) {
+		if ( strtotime( (string) ( $fila['codigo_expira'] ?? '' ) . ' UTC' ) < time() ) {
 			return false;
 		}
 
