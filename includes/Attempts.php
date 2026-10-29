@@ -629,6 +629,7 @@ class Attempts {
 			'exam_id'       => isset( $row['exam_id'] ) ? (int) $row['exam_id'] : 0,
 			'course_id'     => isset( $row['course_id'] ) ? (int) $row['course_id'] : 0,
 			'user_id'       => isset( $row['user_id'] ) ? (int) $row['user_id'] : 0,
+			'identidad_id'  => isset( $row['identidad_id'] ) ? (int) $row['identidad_id'] : 0,
 			'enrollment_id' => isset( $row['enrollment_id'] ) ? (int) $row['enrollment_id'] : 0,
 			'intento'       => isset( $row['intento'] ) ? (int) $row['intento'] : 1,
 			'preguntas'     => is_array( $preguntas ) ? array_values( array_map( 'intval', $preguntas ) ) : array(),

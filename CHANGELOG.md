@@ -1,3 +1,10 @@
+## [0.13.1] — 2026-10-29
+
+### Corregido
+
+- **`Attempts::decode()` no devolvía `identidad_id`**, así que al enviar un examen sin cuenta el intento
+  parecía ajeno («Este intento no es tuyo»). Lo destapó la prueba de extremo a extremo.
+
 ## [0.13.0] — 2026-10-29
 
 ### Añadido
