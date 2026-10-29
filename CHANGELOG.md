@@ -1,3 +1,14 @@
+## [0.12.1] — 2026-10-29
+
+### Corregido
+
+- **la migración de índices no borraba el índice viejo**. `dbDelta` crea el índice nuevo antes de que corra la
+  migración, y la comprobación daba por buena la migración con los dos índices en pie. Con
+  `user_lesson (user_id, lesson_id)` todavía activo, la segunda identidad que completara la misma lección habría
+  chocado contra `user_id = 0`: justo el problema que la migración venía a resolver.
+- Ahora el índice viejo se borra siempre que exista y el nuevo se añade solo si falta. Se fuerza la
+  re-ejecución subiendo la versión de esquema a 2.2.1.
+
 ## [0.12.0] — 2026-10-29
 
 ### Añadido

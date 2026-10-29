@@ -246,13 +246,17 @@ class Installer {
 				$nombres[ (string) $indice['Key_name'] ] = true;
 			}
 
-			if ( isset( $nombres[ $cambio['nuevo'] ] ) || ! isset( $nombres[ $cambio['viejo'] ] ) ) {
-				continue;
+			// El índice viejo se borra SIEMPRE que exista, aunque el nuevo ya esté: `dbDelta` crea el nuevo
+			// antes de llegar aquí, y dejar los dos deja en pie el índice que choca con `user_id = 0`.
+			if ( isset( $nombres[ $cambio['viejo'] ] ) ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- migración propia de la tabla del plugin.
+				$wpdb->query( 'ALTER TABLE ' . $tabla . ' DROP INDEX ' . $cambio['viejo'] );
 			}
 
-			// Migración de esquema deliberada: cambia el índice único para que dos identidades no choquen.
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- migración propia de la tabla del plugin.
-			$wpdb->query( 'ALTER TABLE ' . $tabla . ' DROP INDEX ' . $cambio['viejo'] . ', ADD UNIQUE KEY ' . $cambio['nuevo'] . ' ' . $cambio['columnas'] );
+			if ( ! isset( $nombres[ $cambio['nuevo'] ] ) ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- migración propia de la tabla del plugin.
+				$wpdb->query( 'ALTER TABLE ' . $tabla . ' ADD UNIQUE KEY ' . $cambio['nuevo'] . ' ' . $cambio['columnas'] );
+			}
 		}
 	}
 
