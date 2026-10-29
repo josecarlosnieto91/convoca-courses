@@ -218,6 +218,27 @@ class Notifications {
 	}
 
 	/**
+	 * Envía un aviso a una identidad del alumnado (sin usuario de WordPress).
+	 *
+	 * @param int                 $identidad_id Identidad.
+	 * @param string              $subject      Asunto.
+	 * @param string              $body         Cuerpo.
+	 * @param string              $template     Plantilla.
+	 * @param array<string,mixed> $extra        Datos extra.
+	 * @return bool
+	 */
+	public static function send_to_identidad( int $identidad_id, string $subject, string $body, string $template, array $extra = array() ): bool {
+		$fila = Identidad::por_id( $identidad_id );
+
+		if ( null === $fila ) {
+			self::record_pending_email( '', $subject, $body, $template, $extra, 'sin identidad' );
+			return false;
+		}
+
+		return self::send_to_email( (string) $fila['email'], $subject, $body, $template, $extra );
+	}
+
+	/**
 	 * Envía un aviso a un correo, sin usuario de WordPress.
 	 *
 	 * El alumnado sin cuenta no tiene `user_id`, así que `send()` no sirve: el resto del camino es el mismo

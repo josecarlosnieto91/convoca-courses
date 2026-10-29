@@ -305,6 +305,13 @@ class Condiciones {
 			Prueba_Consentimiento::RETENCION_ANIOS
 		);
 		$lineas[] = '';
+		$recibo   = Course_Payment::receipt_url( $matricula_id );
+
+		if ( '' !== $recibo ) {
+			$lineas[] = '';
+			$lineas[] = __( 'Tu recibo:', 'convoca-courses' ) . ' ' . $recibo;
+		}
+
 		$lineas[] = __( 'Conserva este correo: es la confirmación de tu contratación.', 'convoca-courses' );
 
 		$enviado = Notifications::send_to_email(

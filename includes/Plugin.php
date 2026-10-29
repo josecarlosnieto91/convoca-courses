@@ -69,6 +69,9 @@ final class Plugin {
 		// Plantilla propia de la ficha: apagada por defecto, manda el tema.
 		Course_Template::register();
 
+		// Datos estructurados: el curso como `Course`, para que el buscador lo entienda.
+		Course_SEO::register();
+
 		// Acceso del alumnado con identidad propia (sin usuario de WordPress).
 		Identidad_Acceso::register();
 		Matricula_Identidad::register();

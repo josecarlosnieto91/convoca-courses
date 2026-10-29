@@ -106,7 +106,22 @@ class Course_Payment {
 			return new \WP_Error( 'convoca_courses_no_amount', __( 'El curso no tiene importe que cobrar.', 'convoca-courses' ) );
 		}
 
-		$user = get_userdata( CPT_Matricula::user_id( $enrollment_id ) );
+		$user         = get_userdata( CPT_Matricula::user_id( $enrollment_id ) );
+		$identidad_id = (int) get_post_meta( $enrollment_id, Identidad::META_MATRICULA, true );
+		$identidad    = $identidad_id > 0 ? Identidad::por_id( $identidad_id ) : null;
+
+		// El pagador sale de la identidad cuando no hay usuario de WordPress: sin esto el recibo
+		// se emitiría sin destinatario en el recorrido sin cuenta.
+		$payer_email = '';
+		$payer_name  = '';
+
+		if ( $user ) {
+			$payer_email = property_exists( $user, 'user_email' ) ? (string) $user->user_email : '';
+			$payer_name  = property_exists( $user, 'display_name' ) ? (string) $user->display_name : '';
+		} elseif ( null !== $identidad ) {
+			$payer_email = (string) $identidad['email'];
+			$payer_name  = (string) $identidad['nombre'];
+		}
 
 		$args = array(
 			'amount_cents' => $cents,
@@ -122,8 +137,18 @@ class Course_Payment {
 				0,
 				125
 			),
-			'payer_email'  => $user ? (string) $user->user_email : '',
+			'payer_email'  => $payer_email,
+			'payer_name'   => $payer_name,
 		);
+
+		// Datos de facturación, si se pidieron al matricularse.
+		$nif = CPT_Matricula::get_string( $enrollment_id, 'factura_nif', '' );
+		if ( '' !== $nif ) {
+			$args['payer_nif']      = $nif;
+			$args['payer_business'] = CPT_Matricula::get_string( $enrollment_id, 'factura_razon', '' );
+			$args['payer_address']  = CPT_Matricula::get_string( $enrollment_id, 'factura_direccion', '' );
+			$args['needs_invoice']  = true;
+		}
 
 		if ( '' !== $method ) {
 			$args['method'] = $method;

@@ -125,6 +125,20 @@ class Matricula_Identidad {
 			$html .= esc_html( Condiciones::texto_renuncia() ) . '</label></p>';
 		}
 
+		// Mayores de 14: es la edad mínima con la que se puede contratar el curso.
+		$html .= '<p><label><input type="checkbox" name="mayor_14" value="1" required /> ';
+		$html .= esc_html__( 'Tengo 14 años o más.', 'convoca-courses' ) . '</label></p>';
+
+		// Factura: opcional. Los datos solo se piden si se marca, y el servidor los exige entonces.
+		$html .= '<p><label><input type="checkbox" name="factura" value="1" /> ';
+		$html .= esc_html__( 'Necesito factura', 'convoca-courses' ) . '</label></p>';
+		$html .= '<p><label>' . esc_html__( 'NIF / CIF', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" name="factura_nif" autocomplete="off" /></p>';
+		$html .= '<p><label>' . esc_html__( 'Razón social', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" name="factura_razon" autocomplete="organization" /></p>';
+		$html .= '<p><label>' . esc_html__( 'Dirección fiscal', 'convoca-courses' ) . '</label>';
+		$html .= '<input type="text" name="factura_direccion" autocomplete="street-address" /></p>';
+
 		$html .= '<p><button type="submit" class="convoca-boton">' . esc_html__( 'Matricularme', 'convoca-courses' ) . '</button></p>';
 		$html .= '</form>';
 
@@ -144,6 +158,11 @@ class Matricula_Identidad {
 		$course         = isset( $_POST['course'] ) ? (int) $_POST['course'] : 0;
 		$consentimiento = ! empty( $_POST['consentimiento'] );
 		$renuncia       = ! empty( $_POST['renuncia'] );
+		$mayor_14       = ! empty( $_POST['mayor_14'] );
+		$factura        = ! empty( $_POST['factura'] );
+		$factura_nif    = isset( $_POST['factura_nif'] ) ? strtoupper( sanitize_text_field( wp_unslash( (string) $_POST['factura_nif'] ) ) ) : '';
+		$factura_razon  = isset( $_POST['factura_razon'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['factura_razon'] ) ) : '';
+		$factura_dir    = isset( $_POST['factura_direccion'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['factura_direccion'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( ! wp_verify_nonce( $nonce, self::ACCION ) ) {
@@ -153,6 +172,15 @@ class Matricula_Identidad {
 		// Sin aceptar las condiciones no hay matrícula: es la prueba de que se informó.
 		if ( ! $consentimiento ) {
 			wp_die( esc_html__( 'Hay que aceptar las condiciones de venta para matricularte.', 'convoca-courses' ) );
+		}
+
+		if ( ! $mayor_14 ) {
+			wp_die( esc_html__( 'Para matricularte tienes que tener 14 años o más.', 'convoca-courses' ) );
+		}
+
+		// Si pide factura, el NIF y la razón social son obligatorios: un recibo sin ellos no vale.
+		if ( $factura && ( '' === $factura_nif || '' === $factura_razon ) ) {
+			wp_die( esc_html__( 'Para la factura hacen falta el NIF y la razón social.', 'convoca-courses' ) );
 		}
 
 		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );
@@ -167,6 +195,14 @@ class Matricula_Identidad {
 			// navegador. Sin eso, la excepción del 103.m no se puede sostener si alguien la discute.
 			$renuncia_efectiva = $renuncia && Condiciones::renuncia_disponible( $course );
 			$prueba_id         = Condiciones::registrar_aceptacion( $matricula_id, $renuncia_efectiva, $course, $email );
+
+			update_post_meta( $matricula_id, '_convoca_mayor_14', '1' );
+
+			if ( $factura ) {
+				update_post_meta( $matricula_id, '_convoca_factura_nif', $factura_nif );
+				update_post_meta( $matricula_id, '_convoca_factura_razon', $factura_razon );
+				update_post_meta( $matricula_id, '_convoca_factura_direccion', $factura_dir );
+			}
 
 			// Y se manda la confirmación en soporte duradero (art. 98.7): es la tercera condición del
 			// 103.m. Sin correo de confirmación, la renuncia no opera aunque la casilla esté marcada.

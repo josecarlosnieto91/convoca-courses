@@ -1,3 +1,17 @@
+## [0.17.0] — 2026-10-29
+
+### Añadido
+
+- **factura en la matrícula**: casilla opcional «Necesito factura» con NIF, razón social y dirección fiscal. Si
+  se marca, el servidor exige NIF y razón social, y el pago los lleva (`payer_nif`, `payer_business`,
+  `payer_address`) para que el recibo los imprima.
+- **el pagador sale de la identidad** cuando no hay usuario de WordPress: sin esto el recibo se emitía sin
+  destinatario en el recorrido sin cuenta.
+- **el recibo va en el correo de confirmación**, así se descarga sin entrar en WordPress.
+- **mayores de 14 años**: casilla obligatoria en la matrícula, con constancia en `_convoca_mayor_14`.
+- **datos estructurados `Course`** (JSON-LD): nombre, descripción, entidad con su NIF, precio y moneda.
+- **`Notifications::send_to_identidad()`**: los avisos al alumnado sin cuenta ya no necesitan `user_id`.
+
 ## [0.16.2] — 2026-10-29
 
 ### Corregido

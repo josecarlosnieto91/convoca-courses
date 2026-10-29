@@ -1184,3 +1184,42 @@ if ( ! function_exists( 'is_ssl' ) ) {
 		return false;
 	}
 }
+
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	/**
+	 * Sin etiquetas (doble).
+	 *
+	 * @param string $texto Texto.
+	 * @return string
+	 */
+	function wp_strip_all_tags( $texto ) {
+		return trim( strip_tags( (string) $texto ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- doble de pruebas.
+	}
+}
+
+if ( ! function_exists( 'get_the_excerpt' ) ) {
+	/**
+	 * Extracto (doble).
+	 *
+	 * @param int|object $post Entrada.
+	 * @return string
+	 */
+	function get_the_excerpt( $post = 0 ) {
+		$objeto = is_object( $post ) ? $post : get_post( $post );
+		return is_object( $objeto ) ? (string) ( $objeto->post_excerpt ?? '' ) : '';
+	}
+}
+
+if ( ! function_exists( 'get_the_post_thumbnail_url' ) ) {
+	/**
+	 * Imagen destacada (doble: sin imagen).
+	 *
+	 * @param int|object $post Entrada.
+	 * @param string     $size Tamaño.
+	 * @return string|false
+	 */
+	function get_the_post_thumbnail_url( $post = 0, $size = 'full' ) {
+		unset( $post, $size );
+		return false;
+	}
+}

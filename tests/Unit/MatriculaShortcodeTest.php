@@ -113,6 +113,28 @@ final class MatriculaShortcodeTest extends TestCase {
 	}
 
 	/**
+	 * El formulario ofrece factura con sus tres campos.
+	 */
+	public function test_ofrece_factura(): void {
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		$this->assertStringContainsString( 'name="factura"', $html );
+		$this->assertStringContainsString( 'name="factura_nif"', $html );
+		$this->assertStringContainsString( 'name="factura_razon"', $html );
+		$this->assertStringContainsString( 'name="factura_direccion"', $html );
+	}
+
+	/**
+	 * Los datos de factura no son obligatorios de entrada.
+	 */
+	public function test_la_factura_es_opcional(): void {
+		$html = Matricula_Identidad::render( array( 'course' => '123' ) );
+
+		// Obligatorios: correo, nombre, consentimiento y mayoría de 14 años. La factura, no.
+		$this->assertSame( 4, substr_count( $html, ' required' ) );
+	}
+
+	/**
 	 * El aviso de matrícula hecha se pinta.
 	 */
 	public function test_aviso_de_matricula_hecha(): void {
