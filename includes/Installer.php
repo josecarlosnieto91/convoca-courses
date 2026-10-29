@@ -114,12 +114,14 @@ class Installer {
 		$sql[ self::PROGRESS_TABLE ] = "CREATE TABLE {$prefix}" . self::PROGRESS_TABLE . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			course_id bigint(20) unsigned NOT NULL,
-			user_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			identidad_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			lesson_id bigint(20) unsigned NOT NULL,
 			completed_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY  (id),
-			UNIQUE KEY user_lesson (user_id,lesson_id),
-			KEY course_user (course_id,user_id)
+			UNIQUE KEY quien_lesson (user_id,identidad_id,lesson_id),
+			KEY course_user (course_id,user_id),
+			KEY course_identidad (course_id,identidad_id)
 		) {$collate};";
 
 		$sql[ self::IDENTIDADES_TABLE ] = "CREATE TABLE {$prefix}" . self::IDENTIDADES_TABLE . " (
@@ -158,7 +160,8 @@ class Installer {
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			exam_id bigint(20) unsigned NOT NULL,
 			course_id bigint(20) unsigned NOT NULL,
-			user_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			identidad_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			enrollment_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			intento int(11) unsigned NOT NULL DEFAULT 1,
 			preguntas longtext NOT NULL,
@@ -168,8 +171,9 @@ class Installer {
 			aprobado tinyint(1) NOT NULL DEFAULT 0,
 			estado varchar(20) NOT NULL DEFAULT 'abierto',
 			PRIMARY KEY  (id),
-			UNIQUE KEY intento (exam_id,user_id,intento),
-			KEY course_user (course_id,user_id)
+			UNIQUE KEY intento_identidad (exam_id,user_id,identidad_id,intento),
+			KEY course_user (course_id,user_id),
+			KEY course_identidad (course_id,identidad_id)
 		) {$collate};";
 
 		$sql[ self::ANSWERS_TABLE ] = "CREATE TABLE {$prefix}" . self::ANSWERS_TABLE . " (
@@ -204,6 +208,52 @@ class Installer {
 		) {$collate};";
 
 		return $sql;
+	}
+
+	/**
+	 * Sustituye los índices únicos que impedían tener varias identidades.
+	 *
+	 * `dbDelta` añade columnas pero no cambia índices existentes. Sin este paso, todas las identidades
+	 * comparten `user_id = 0` y la segunda no puede completar la misma lección ni repetir un examen.
+	 *
+	 * @return void
+	 */
+	public static function migrar_indices_identidad(): void {
+		global $wpdb;
+
+		$cambios = array(
+			$wpdb->prefix . self::PROGRESS_TABLE => array(
+				'viejo'    => 'user_lesson',
+				'nuevo'    => 'quien_lesson',
+				'columnas' => '(user_id,identidad_id,lesson_id)',
+			),
+			$wpdb->prefix . self::ATTEMPTS_TABLE => array(
+				'viejo'    => 'intento',
+				'nuevo'    => 'intento_identidad',
+				'columnas' => '(exam_id,user_id,identidad_id,intento)',
+			),
+		);
+
+		foreach ( $cambios as $tabla => $cambio ) {
+			$indices = $wpdb->get_results( 'SHOW INDEX FROM ' . $tabla, 'ARRAY_A' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- esquema propio.
+
+			if ( ! is_array( $indices ) ) {
+				continue;
+			}
+
+			$nombres = array();
+			foreach ( $indices as $indice ) {
+				$nombres[ (string) $indice['Key_name'] ] = true;
+			}
+
+			if ( isset( $nombres[ $cambio['nuevo'] ] ) || ! isset( $nombres[ $cambio['viejo'] ] ) ) {
+				continue;
+			}
+
+			// Migración de esquema deliberada: cambia el índice único para que dos identidades no choquen.
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- migración propia de la tabla del plugin.
+			$wpdb->query( 'ALTER TABLE ' . $tabla . ' DROP INDEX ' . $cambio['viejo'] . ', ADD UNIQUE KEY ' . $cambio['nuevo'] . ' ' . $cambio['columnas'] );
+		}
 	}
 
 	/**
@@ -248,6 +298,7 @@ class Installer {
 		}
 
 		self::create_tables();
+		self::migrar_indices_identidad();
 		self::migrate_sequential_default();
 
 		// Las capabilities también se refrescan al actualizar: una instalación que viene de la 0.2.3

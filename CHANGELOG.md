@@ -1,3 +1,19 @@
+## [0.12.0] — 2026-10-29
+
+### Añadido
+
+- **progreso por identidad**: `Progress::complete_identidad()`, `is_completed_identidad()` y
+  `completed_lesson_ids_identidad()`. El alumnado sin cuenta de WordPress ya no depende de `user_id`.
+
+### Cambiado (esquema)
+
+- `convoca_course_progress` y `convoca_course_attempts` ganan `identidad_id`.
+- Los índices únicos pasan a `quien_lesson (user_id, identidad_id, lesson_id)` e
+  `intento_identidad (exam_id, user_id, identidad_id, intento)`. Sin eso, todas las identidades comparten
+  `user_id = 0` y la segunda no puede completar la misma lección ni repetir un examen.
+- La migración es explícita (`Installer::migrar_indices_identidad()`): `dbDelta` añade columnas pero no cambia
+  índices. Se ejecuta sola al actualizar y deja `identidad_id = 0` en todo lo existente.
+
 ## [0.11.0] — 2026-10-29
 
 ### Añadido

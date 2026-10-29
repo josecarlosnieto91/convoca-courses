@@ -93,7 +93,7 @@ class InstallerSchemaTest extends TestCase {
 	public function test_intentos_con_indice_unico_por_numero(): void {
 		$sql = $this->esquema()[ Installer::ATTEMPTS_TABLE ];
 
-		$this->assertStringContainsString( 'UNIQUE KEY intento (exam_id,user_id,intento)', $sql );
+		$this->assertStringContainsString( 'UNIQUE KEY intento_identidad (exam_id,user_id,identidad_id,intento)', $sql );
 		$this->assertStringContainsString( 'KEY course_user (course_id,user_id)', $sql );
 
 		foreach ( array( 'preguntas', 'iniciado_en', 'terminado_en', 'puntuacion', 'aprobado', 'estado' ) as $columna ) {
@@ -133,7 +133,7 @@ class InstallerSchemaTest extends TestCase {
 	public function test_la_tabla_de_progreso_se_conserva(): void {
 		$sql = $this->esquema()[ Installer::PROGRESS_TABLE ];
 
-		$this->assertStringContainsString( 'UNIQUE KEY user_lesson (user_id,lesson_id)', $sql );
+		$this->assertStringContainsString( 'UNIQUE KEY quien_lesson (user_id,identidad_id,lesson_id)', $sql );
 		$this->assertStringContainsString( 'completed_at', $sql );
 	}
 
