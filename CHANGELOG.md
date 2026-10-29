@@ -1,3 +1,17 @@
+## [0.18.0] — 2026-10-29
+
+### Añadido
+
+- **desistimiento sin cuenta**: enlace firmado en el correo de confirmación, con caducidad y de un solo uso
+  efectivo (al cancelar la matrícula deja de estar disponible). Página `[convoca_desistir]`, creada al instalar.
+- **el acceso se corta al pedir el desistimiento**, no al ejecutar la devolución: la matrícula pasa a
+  `cancelada` en el mismo acto, que es lo que consulta la puerta de acceso.
+- **prueba archivada**: fecha, IP, navegador y el texto declarado, en `_convoca_desistimiento_prueba`.
+- **avisos**: a la entidad (para que devuelva) y al alumno (justificante de la solicitud).
+- **no se ofrece a quien renunció al 103.m**: si consta la renuncia, la matrícula no admite desistimiento.
+
+La devolución del dinero **no** se hace aquí: se ejecuta en el gateway (`convoca-gateway#13`).
+
 ## [0.17.0] — 2026-10-29
 
 ### Añadido

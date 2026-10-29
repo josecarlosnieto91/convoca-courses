@@ -1223,3 +1223,32 @@ if ( ! function_exists( 'get_the_post_thumbnail_url' ) ) {
 		return false;
 	}
 }
+
+if ( ! function_exists( 'get_page_by_path' ) ) {
+	/**
+	 * Busca una página por ruta (doble: no hay).
+	 *
+	 * @param string $ruta      Ruta.
+	 * @param string $salida    Salida.
+	 * @param string $post_type Tipo.
+	 * @return object|null
+	 */
+	function get_page_by_path( $ruta, $salida = 'OBJECT', $post_type = 'page' ) {
+		unset( $ruta, $salida, $post_type );
+		return null;
+	}
+}
+
+if ( ! function_exists( 'wp_insert_post' ) ) {
+	/**
+	 * Inserta una entrada (doble: no inserta).
+	 *
+	 * @param array<string,mixed> $datos Datos.
+	 * @param bool                $wp_error Devolver error.
+	 * @return int
+	 */
+	function wp_insert_post( $datos = array(), $wp_error = false ) {
+		unset( $datos, $wp_error );
+		return 0;
+	}
+}

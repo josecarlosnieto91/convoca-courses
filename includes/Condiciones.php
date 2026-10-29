@@ -312,6 +312,13 @@ class Condiciones {
 			$lineas[] = __( 'Tu recibo:', 'convoca-courses' ) . ' ' . $recibo;
 		}
 
+		$desistir = Desistimiento::url( $matricula_id );
+
+		if ( '' !== $desistir ) {
+			$lineas[] = '';
+			$lineas[] = __( 'Si quieres desistir del contrato, puedes hacerlo desde aquí:', 'convoca-courses' ) . ' ' . $desistir;
+		}
+
 		$lineas[] = __( 'Conserva este correo: es la confirmación de tu contratación.', 'convoca-courses' );
 
 		$enviado = Notifications::send_to_email(

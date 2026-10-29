@@ -72,6 +72,9 @@ final class Plugin {
 		// Datos estructurados: el curso como `Course`, para que el buscador lo entienda.
 		Course_SEO::register();
 
+		// Desistimiento sin cuenta, por enlace firmado.
+		Desistimiento::register();
+
 		// Acceso del alumnado con identidad propia (sin usuario de WordPress).
 		Identidad_Acceso::register();
 		Matricula_Identidad::register();
