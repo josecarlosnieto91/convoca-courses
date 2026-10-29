@@ -2,9 +2,9 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.16.0\n"
+"Project-Id-Version: Convoca Courses 0.16.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 21:11+0100\n"
+"POT-Creation-Date: 2026-10-29 21:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1051,12 +1051,17 @@ msgctxt "convoca-courses"
 msgid "Comprar plaza — %s"
 msgstr ""
 
-#: templates/curso.php:113
+#: templates/curso.php:121
+msgctxt "convoca-courses"
+msgid "Si ya tienes cuenta en la web, entra por aquí."
+msgstr ""
+
+#: templates/curso.php:127
 msgctxt "convoca-courses"
 msgid "Inicia sesión para matricularte"
 msgstr ""
 
-#: templates/curso.php:119
+#: templates/curso.php:134
 msgctxt "convoca-courses"
 msgid "Contenido del curso"
 msgstr ""

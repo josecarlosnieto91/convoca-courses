@@ -108,11 +108,26 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 			</button>
 		</form>
 	<?php else : ?>
-		<p class="convoca-courses__login">
-			<a class="convoca-courses__button" href="<?php echo esc_url( wp_login_url( (string) get_permalink( (int) $course_id ) ) ); ?>">
-				<?php esc_html_e( 'Inicia sesión para matricularte', 'convoca-courses' ); ?>
-			</a>
-		</p>
+		<?php
+		// Sin cuenta también se puede uno matricular: el alumnado no tiene por qué tener usuario de
+		// WordPress. El formulario pide correo y nombre y, si el curso es de pago, lleva al pago. El
+		// enlace de siempre se queda como salida para quien ya tenga cuenta.
+		$convoca_courses_matricula = \Convoca\Courses\Matricula_Identidad::render( array( 'course' => (int) $course_id ) );
+		?>
+		<?php if ( '' !== $convoca_courses_matricula ) : ?>
+			<?php echo $convoca_courses_matricula; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML propio, ya escapado en su plantilla. ?>
+			<p class="convoca-courses__login">
+				<a href="<?php echo esc_url( wp_login_url( (string) get_permalink( (int) $course_id ) ) ); ?>">
+					<?php esc_html_e( 'Si ya tienes cuenta en la web, entra por aquí.', 'convoca-courses' ); ?>
+				</a>
+			</p>
+		<?php else : ?>
+			<p class="convoca-courses__login">
+				<a class="convoca-courses__button" href="<?php echo esc_url( wp_login_url( (string) get_permalink( (int) $course_id ) ) ); ?>">
+					<?php esc_html_e( 'Inicia sesión para matricularte', 'convoca-courses' ); ?>
+				</a>
+			</p>
+		<?php endif; ?>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $modules ) ) : ?>

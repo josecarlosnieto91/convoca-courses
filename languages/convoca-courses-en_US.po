@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Convoca Courses 0.2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 21:11+0100\n"
+"POT-Creation-Date: 2026-10-29 21:13+0100\n"
 "PO-Revision-Date: 2026-10-20T00:00:00+00:00\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English (United States)\n"
@@ -1131,13 +1131,18 @@ msgctxt "convoca-courses"
 msgid "Comprar plaza — %s"
 msgstr ""
 
-#: templates/curso.php:113
+#: templates/curso.php:121
+msgctxt "convoca-courses"
+msgid "Si ya tienes cuenta en la web, entra por aquí."
+msgstr ""
+
+#: templates/curso.php:127
 #, fuzzy
 msgctxt "convoca-courses"
 msgid "Inicia sesión para matricularte"
 msgstr "Log in to enrol"
 
-#: templates/curso.php:119
+#: templates/curso.php:134
 #, fuzzy
 msgctxt "convoca-courses"
 msgid "Contenido del curso"

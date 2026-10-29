@@ -1,3 +1,11 @@
+## [0.16.1] — 2026-10-29
+
+### Cambiado
+
+- La ficha del curso ofrece **matrícula sin cuenta**: en lugar de «Inicia sesión para matricularte», pinta el
+  formulario de matrícula (correo y nombre, y el pago si es de pago) y deja el enlace de sesión como salida
+  para quien ya tenga cuenta. Sin esto, la casilla de renuncia no llegaba a verse nunca en producción.
+
 ## [0.16.0] — 2026-10-29
 
 ### Añadido
