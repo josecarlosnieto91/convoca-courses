@@ -64,6 +64,49 @@ class Admin_Fields {
 			'normal',
 			'high'
 		);
+
+		add_meta_box(
+			'convoca_courses_task',
+			__( 'Evaluación de la tarea', 'convoca-courses' ),
+			array( $this, 'render_task_box' ),
+			CPT_Tarea::TYPE,
+			'side',
+			'default'
+		);
+	}
+
+	/**
+	 * Caja de la tarea: si se corrige con un examen, la nota es automática.
+	 *
+	 * @param \WP_Post $post Entrada actual.
+	 * @return void
+	 */
+	public function render_task_box( \WP_Post $post ): void {
+		wp_nonce_field( self::NONCE, self::NONCE );
+
+		$course_id = CPT_Tarea::course_id( (int) $post->ID );
+		$examen_id = CPT_Tarea::exam_id( (int) $post->ID );
+		$examenes  = $course_id > 0 ? CPT_Examen::of_course( $course_id ) : array();
+
+		echo '<p><label for="convoca-task-exam"><strong>' . esc_html__( 'Examen que la corrige', 'convoca-courses' ) . '</strong></label></p>';
+		echo '<select name="convoca_task_exam" id="convoca-task-exam" style="width:100%">';
+		echo '<option value="0">' . esc_html__( '— Corrección manual —', 'convoca-courses' ) . '</option>';
+
+		foreach ( $examenes as $examen ) {
+			printf(
+				'<option value="%1$d" %2$s>%3$s</option>',
+				(int) $examen->ID,
+				selected( $examen_id, (int) $examen->ID, false ),
+				esc_html( (string) $examen->post_title )
+			);
+		}
+
+		echo '</select>';
+		echo '<p class="description">' . esc_html__( 'Si eliges un examen, la tarea es tipo test y la nota sale del examen: nadie tiene que corregirla a mano.', 'convoca-courses' ) . '</p>';
+
+		if ( $course_id <= 0 ) {
+			echo '<p class="description">' . esc_html__( 'Guarda primero la tarea con su curso para poder elegir examen.', 'convoca-courses' ) . '</p>';
+		}
 	}
 
 	/**
@@ -189,6 +232,9 @@ class Admin_Fields {
 			case CPT_Leccion::TYPE:
 				$this->save_lesson( $post_id );
 				break;
+			case CPT_Tarea::TYPE:
+				$this->save_task( $post_id );
+				break;
 		}
 	}
 
@@ -198,6 +244,29 @@ class Admin_Fields {
 	 * @param int $post_id Curso.
 	 * @return void
 	 */
+	/**
+	 * Guarda el examen que corrige una tarea.
+	 *
+	 * @param int $post_id Tarea.
+	 * @return void
+	 */
+	private function save_task( int $post_id ): void {
+		// El nonce y los permisos se comprueban en save(), antes de llegar aquí.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verificado en save().
+		if ( ! isset( $_POST['convoca_task_exam'] ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verificado en save().
+		$examen_id = (int) sanitize_text_field( wp_unslash( (string) $_POST['convoca_task_exam'] ) );
+
+		if ( $examen_id > 0 && CPT_Examen::TYPE !== get_post_type( $examen_id ) ) {
+			$examen_id = 0;
+		}
+
+		update_post_meta( $post_id, CPT_Base::META_PREFIX . 'examen_id', $examen_id );
+	}
+
 	/**
 	 * Entero del formulario que **no admite negativos**.
 	 *

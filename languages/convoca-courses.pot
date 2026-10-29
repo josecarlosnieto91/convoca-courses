@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.7.0\n"
+"Project-Id-Version: Convoca Courses 0.8.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T15:03:19+00:00\n"
+"POT-Creation-Date: 2026-10-29T15:11:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
@@ -142,7 +142,7 @@ msgid "No se ha podido guardar la pregunta."
 msgstr ""
 
 #: admin/class-admin-examen.php:346
-#: admin/class-admin-fields.php:397
+#: admin/class-admin-fields.php:466
 #: templates/entregas.php:26
 msgid "— Selecciona un curso —"
 msgstr ""
@@ -163,15 +163,35 @@ msgstr ""
 msgid "Datos de la lección"
 msgstr ""
 
-#: admin/class-admin-fields.php:340
+#: admin/class-admin-fields.php:70
+msgid "Evaluación de la tarea"
+msgstr ""
+
+#: admin/class-admin-fields.php:91
+msgid "Examen que la corrige"
+msgstr ""
+
+#: admin/class-admin-fields.php:93
+msgid "— Corrección manual —"
+msgstr ""
+
+#: admin/class-admin-fields.php:105
+msgid "Si eliges un examen, la tarea es tipo test y la nota sale del examen: nadie tiene que corregirla a mano."
+msgstr ""
+
+#: admin/class-admin-fields.php:108
+msgid "Guarda primero la tarea con su curso para poder elegir examen."
+msgstr ""
+
+#: admin/class-admin-fields.php:409
 msgid "Falta la relación de jerarquía: un módulo tiene que colgar de un curso y una lección de un módulo. La entrada se ha guardado sin relación."
 msgstr ""
 
-#: admin/class-admin-fields.php:385
+#: admin/class-admin-fields.php:454
 msgid "El módulo no cuelga de ningún curso."
 msgstr ""
 
-#: admin/class-admin-fields.php:458
+#: admin/class-admin-fields.php:527
 msgid "Módulos sin curso"
 msgstr ""
 
@@ -342,12 +362,12 @@ msgstr ""
 msgid "Módulos"
 msgstr ""
 
-#: includes/CPT_Tarea.php:45
+#: includes/CPT_Tarea.php:46
 #: templates/entregas.php:45
 msgid "Tarea"
 msgstr ""
 
-#: includes/CPT_Tarea.php:45
+#: includes/CPT_Tarea.php:46
 msgid "Tareas"
 msgstr ""
 

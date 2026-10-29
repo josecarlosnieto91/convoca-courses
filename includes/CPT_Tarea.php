@@ -33,6 +33,7 @@ class CPT_Tarea extends CPT_Base {
 		'plazo',
 		'peso',
 		'adjunto',
+		'examen_id',
 	);
 
 	/**
@@ -164,6 +165,18 @@ class CPT_Tarea extends CPT_Base {
 	 */
 	public static function allows_file( int $task_id ): bool {
 		return self::get_bool( $task_id, 'adjunto', true );
+	}
+
+	/**
+	 * Examen que corrige la tarea, o 0.
+	 *
+	 * Una tarea con examen vinculado es un test: la nota sale del examen, sin que nadie corrija a mano.
+	 *
+	 * @param int $task_id Tarea.
+	 * @return int
+	 */
+	public static function exam_id( int $task_id ): int {
+		return self::get_int( $task_id, 'examen_id', 0 );
 	}
 
 	/**

@@ -142,13 +142,13 @@ class Gradebook {
 			$id   = (int) $pieza['id'];
 			$nota = null;
 
-			if ( 'examen' === $pieza['tipo'] && isset( $notas_examen[ $id ] ) ) {
-				$nota = (float) $notas_examen[ $id ];
-			}
-
-			if ( 'tarea' === $pieza['tipo'] && isset( $notas_tarea[ $id ] ) ) {
-				$nota = (float) $notas_tarea[ $id ];
-			}
+			$nota = self::resolve_nota(
+				(string) $pieza['tipo'],
+				$id,
+				'tarea' === $pieza['tipo'] ? CPT_Tarea::exam_id( $id ) : 0,
+				$notas_examen,
+				$notas_tarea
+			);
 
 			$piezas[] = array(
 				'tipo'   => (string) $pieza['tipo'],
@@ -170,6 +170,35 @@ class Gradebook {
 			'aprobado' => self::passed( $final['nota'], $minimo ),
 			'piezas'   => $piezas,
 		);
+	}
+
+	/**
+	 * Nota de una pieza del acta.
+	 *
+	 * Una tarea con examen vinculado es un test: manda la nota del examen. Si no lo tiene, o no se ha hecho,
+	 * se mira la corrección manual, para no romper las tareas antiguas.
+	 *
+	 * @param string            $tipo         'examen' o 'tarea'.
+	 * @param int               $id           Identificador de la pieza.
+	 * @param int               $examen_id    Examen que corrige la tarea (0 si ninguno).
+	 * @param array<int, float> $notas_examen Notas por examen.
+	 * @param array<int, float> $notas_tarea  Notas por tarea.
+	 * @return float|null
+	 */
+	public static function resolve_nota( string $tipo, int $id, int $examen_id, array $notas_examen, array $notas_tarea ): ?float {
+		if ( 'examen' === $tipo ) {
+			return isset( $notas_examen[ $id ] ) ? (float) $notas_examen[ $id ] : null;
+		}
+
+		if ( 'tarea' === $tipo ) {
+			if ( $examen_id > 0 && isset( $notas_examen[ $examen_id ] ) ) {
+				return (float) $notas_examen[ $examen_id ];
+			}
+
+			return isset( $notas_tarea[ $id ] ) ? (float) $notas_tarea[ $id ] : null;
+		}
+
+		return null;
 	}
 
 	/**

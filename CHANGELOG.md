@@ -1,3 +1,12 @@
+## [0.8.0] — 2026-10-29
+
+### Añadido
+
+- **tareas tipo test con nota automática**. En el editor de la tarea hay un selector «Examen que la corrige»:
+  si se elige uno, la nota de la tarea sale del examen —nadie corrige a mano— y entra en el acta y en la nota
+  final con el peso que ya tuviera la tarea. Sin examen sigue funcionando la corrección manual, así que las
+  tareas antiguas no cambian.
+
 ## [0.7.0] — 2026-10-29
 
 ### Añadido
