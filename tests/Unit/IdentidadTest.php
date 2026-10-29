@@ -214,6 +214,52 @@ final class IdentidadTest extends TestCase {
 	}
 
 	/**
+	 * Sin enlace en la URL no pasa nada.
+	 */
+	public function test_sin_enlace_no_hace_nada(): void {
+		unset( $_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ] );
+
+		$this->assertFalse( \Convoca\Courses\Identidad_Acceso::intentar_enlace() );
+	}
+
+	/**
+	 * Un enlace con token falso no abre sesión.
+	 */
+	public function test_enlace_con_token_falso(): void {
+		$id = Identidad::alta( 'fina@ejemplo.test' );
+
+		$_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ] = 'falso';
+		$_GET['id'] = $id;
+
+		$this->assertFalse( \Convoca\Courses\Identidad_Acceso::intentar_enlace() );
+
+		unset( $_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ], $_GET['id'] );
+	}
+
+	/**
+	 * Un enlace bueno abre sesión y gasta el token.
+	 */
+	public function test_enlace_bueno_abre_sesion(): void {
+		$id  = Identidad::alta( 'gema@ejemplo.test' );
+		$par = Identidad::emitir( $id );
+
+		$_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ] = $par['token'];
+		$_GET['id'] = $id;
+
+		// El arnés simula `wp_safe_redirect` con una excepción: llegar a redirigir es que ha ido bien.
+		try {
+			\Convoca\Courses\Identidad_Acceso::intentar_enlace();
+			$this->fail( 'debería haber redirigido' );
+		} catch ( \Convoca_Courses_Redirect $e ) {
+			$this->assertStringContainsString( 'id', $e->getMessage() );
+		}
+
+		$this->assertFalse( Identidad::token_valido( $id, $par['token'] ) );
+
+		unset( $_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ], $_GET['id'] );
+	}
+
+	/**
 	 * La firma cambia con la identidad y con la caducidad.
 	 */
 	public function test_la_firma_depende_de_identidad_y_caducidad(): void {

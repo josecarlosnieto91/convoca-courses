@@ -135,34 +135,36 @@ class Identidad_Acceso {
 	 * @return void
 	 */
 	public static function atender_enlace(): void {
+		if ( self::intentar_enlace() ) {
+			exit;
+		}
+	}
+
+	/**
+	 * Comprueba el enlace del correo y, si vale, abre la sesión.
+	 *
+	 * Separado del hook para poder probarlo sin `exit`.
+	 *
+	 * @return bool `true` si ha abierto sesión y hay que salir.
+	 */
+	public static function intentar_enlace(): bool {
 		if ( ! isset( $_GET[ self::PARAM_TOKEN ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- es el enlace del correo, va firmado.
-			return;
+			return false;
 		}
 
 		$token = sanitize_text_field( wp_unslash( (string) $_GET[ self::PARAM_TOKEN ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$id    = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( ! Identidad::token_valido( $id, $token ) ) {
-			return;
+			return false;
 		}
 
 		Identidad::consumir( $id );
-
-		$expira = time() + Identidad::SESION;
-		setcookie(
-			Identidad::COOKIE,
-			$id . '|' . $expira . '|' . Identidad::firma_cookie( $id, $expira ),
-			array(
-				'expires'  => $expira,
-				'path'     => '/',
-				'secure'   => is_ssl(),
-				'httponly' => true,
-				'samesite' => 'Lax',
-			)
-		);
+		self::iniciar( $id );
 
 		wp_safe_redirect( remove_query_arg( self::PARAM_TOKEN, add_query_arg( 'id', $id ) ) );
-		exit;
+
+		return true;
 	}
 
 	/**

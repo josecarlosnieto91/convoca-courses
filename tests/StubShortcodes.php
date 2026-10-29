@@ -1125,3 +1125,28 @@ if ( ! function_exists( 'wpautop' ) ) {
 		return '' === $texto ? '' : '<p>' . str_replace( "\n\n", "</p>\n<p>", $texto ) . '</p>';
 	}
 }
+
+if ( ! function_exists( 'remove_query_arg' ) ) {
+	/**
+	 * Quita un parámetro de la URL (doble).
+	 *
+	 * @param string $clave Clave.
+	 * @param string $url   URL.
+	 * @return string
+	 */
+	function remove_query_arg( $clave, $url = '' ) {
+		unset( $clave );
+		return (string) $url;
+	}
+}
+
+if ( ! function_exists( 'is_ssl' ) ) {
+	/**
+	 * ¿HTTPS? (doble).
+	 *
+	 * @return bool
+	 */
+	function is_ssl() {
+		return false;
+	}
+}
