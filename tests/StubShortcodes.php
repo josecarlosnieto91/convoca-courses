@@ -22,6 +22,40 @@ if ( ! function_exists( 'add_shortcode' ) ) {
 	}
 }
 
+if ( ! defined( 'ARRAY_A' ) ) {
+	/**
+	 * Constante de WordPress para pedir filas asociativas.
+	 */
+	define( 'ARRAY_A', 'ARRAY_A' );
+}
+
+if ( ! defined( 'ARRAY_N' ) ) {
+	/**
+	 * Constante de WordPress para pedir filas numéricas.
+	 */
+	define( 'ARRAY_N', 'ARRAY_N' );
+}
+
+if ( ! function_exists( 'wp_mail' ) ) {
+	/**
+	 * Doble de `wp_mail`: apunta los correos en vez de mandarlos.
+	 *
+	 * @param string $para    Destinatario.
+	 * @param string $asunto  Asunto.
+	 * @param string $mensaje Cuerpo.
+	 * @return bool
+	 */
+	function wp_mail( $para, $asunto, $mensaje ) {
+		$GLOBALS['convoca_courses_correos'][] = array(
+			'para'    => (string) $para,
+			'asunto'  => (string) $asunto,
+			'mensaje' => (string) $mensaje,
+		);
+
+		return true;
+	}
+}
+
 if ( ! function_exists( 'shortcode_atts' ) ) {
 	/**
 	 * Une atributos con sus valores por defecto (doble fiel).

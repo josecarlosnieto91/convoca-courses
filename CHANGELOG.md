@@ -1,3 +1,25 @@
+## [0.16.0] — 2026-10-29
+
+### Añadido
+
+- **la prueba del consentimiento se guarda aparte**, en su propia tabla (`convoca_consent_pruebas`): sobrevive
+  al borrado de la matrícula y se conserva **cinco años** desde la aceptación (art. 1964.2 del Código Civil;
+  art. 6.1.f y 17.3.e del RGPD). Una tarea diaria purga lo que vence.
+- **confirmación en soporte duradero** (art. 98.7 TRLGDCU): al matricularse sale un correo con el curso, el
+  importe, el texto literal aceptado y cómo desistir. Es la tercera condición del art. 103.m: sin esa
+  confirmación, la renuncia no opera aunque la casilla esté marcada.
+- **registro propio de certificados** (`convoca_certificados`): la validación por código ya no depende de la
+  matrícula, así que un certificado sigue siendo válido aunque la persona se dé de baja. Los certificados no
+  se revocan.
+- texto de la casilla revisado: cita el art. 103.m, acota la pérdida al contenido digital, declara la casilla
+  opcional, nombra la confirmación por correo y el registro de la aceptación.
+
+### Cambiado
+
+- `Condiciones::registrar_aceptacion()` recibe curso y correo y devuelve el identificador de la prueba archivada.
+- `Certificate::data()` lee primero del registro propio y usa la matrícula solo como respaldo para los
+  certificados emitidos antes de esta versión.
+
 ## [0.15.0] — 2026-10-29
 
 ### Añadido

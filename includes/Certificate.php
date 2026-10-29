@@ -120,6 +120,10 @@ class Certificate {
 			update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'estado', 'completada' );
 		}
 
+		// El registro propio se escribe al emitir: la validación no puede depender de que la matrícula
+		// siga existiendo. Un certificado no se revoca, ni al desistir ni al borrar la matrícula.
+		self::registrar( $enrollment_id, $code );
+
 		/**
 		 * Certificado emitido.
 		 *
@@ -133,6 +137,72 @@ class Certificate {
 		}
 
 		return $code;
+	}
+
+	/**
+	 * Guarda el certificado en el registro propio, independiente de la matrícula.
+	 *
+	 * @param int    $enrollment_id Matrícula.
+	 * @param string $code          Código público.
+	 * @return void
+	 */
+	public static function registrar( int $enrollment_id, string $code ): void {
+		global $wpdb;
+
+		$code = self::normalize( $code );
+		if ( '' === $code || null !== self::registro( $code ) ) {
+			return;
+		}
+
+		$course_id = CPT_Matricula::course_id( $enrollment_id );
+		$user_id   = CPT_Matricula::user_id( $enrollment_id );
+		$user      = $user_id > 0 ? get_userdata( $user_id ) : null;
+
+		if ( null === $user ) {
+			$identidad_id = (int) get_post_meta( $enrollment_id, Identidad::META_MATRICULA, true );
+			$fila         = Identidad::por_id( $identidad_id );
+
+			if ( null !== $fila ) {
+				$user = (object) array(
+					'display_name' => (string) $fila['nombre'],
+					'user_email'   => (string) $fila['email'],
+				);
+			}
+		}
+
+		$nota = CPT_Matricula::get_string( $enrollment_id, 'cert_nota', '' );
+		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- tabla propia.
+			$wpdb->prefix . Installer::CERTIFICADOS_TABLE,
+			array(
+				'codigo'       => $code,
+				'curso_id'     => $course_id,
+				'curso_titulo' => (string) get_the_title( $course_id ),
+				'persona'      => $user ? (string) $user->display_name : '',
+				'email'        => $user ? (string) $user->user_email : '',
+				'nota'         => '' === $nota ? 0.0 : (float) $nota,
+				'fecha'        => gmdate( 'Y-m-d', (int) strtotime( (string) current_time( 'mysql' ) ) ),
+				'emitido_utc'  => gmdate( 'Y-m-d H:i:s' ),
+			),
+			array( '%s', '%d', '%s', '%s', '%s', '%f', '%s', '%s' )
+		);
+	}
+
+	/**
+	 * Fila del registro de certificados.
+	 *
+	 * @param string $code Código normalizado.
+	 * @return array<string, mixed>|null
+	 */
+	public static function registro( string $code ): ?array {
+		global $wpdb;
+
+		$tabla = $wpdb->prefix . Installer::CERTIFICADOS_TABLE;
+		$fila  = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- tabla propia.
+			$wpdb->prepare( 'SELECT * FROM ' . $tabla . ' WHERE codigo = %s', self::normalize( $code ) ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- el nombre de la tabla no es una entrada.
+			'ARRAY_A'
+		);
+
+		return is_array( $fila ) ? $fila : null;
 	}
 
 	/**
@@ -222,6 +292,26 @@ class Certificate {
 	 * @return array<string, string>|null
 	 */
 	public static function data( string $code ): ?array {
+		$code = self::normalize( $code );
+		$reg  = self::registro( $code );
+
+		// El registro propio es la fuente: quien borra la matrícula (baja, desistimiento, supresión de
+		// datos) no invalida el certificado, porque los certificados no se revocan.
+		if ( null !== $reg ) {
+			$nota = (float) $reg['nota'];
+
+			return array(
+				'code'   => $code,
+				'course' => (string) $reg['curso_titulo'],
+				'person' => (string) $reg['persona'],
+				'date'   => (string) $reg['fecha'],
+				'center' => (string) get_bloginfo( 'name' ),
+				'nota'   => $nota > 0 ? number_format_i18n( $nota, 2 ) : '',
+				'verify' => self::verify_url( $code ),
+				'qr'     => Certificate_QR::enabled() ? Certificate_QR::image( self::verify_url( $code ) ) : '',
+			);
+		}
+
 		$enrollment_id = self::find_by_code( $code );
 		if ( 0 === $enrollment_id ) {
 			return null;

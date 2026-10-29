@@ -39,6 +39,11 @@ final class CondicionesPruebaTest extends TestCase {
 
 		$GLOBALS['convoca_courses_opciones'] = array();
 		$GLOBALS['convoca_test_meta']        = array();
+		$GLOBALS['convoca_courses_correos']  = array();
+
+		$this->wpdb_previo = $GLOBALS['wpdb'] ?? null;
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- doble de pruebas.
+		$GLOBALS['wpdb'] = new WpdbDoble();
 	}
 
 	/**
@@ -49,7 +54,21 @@ final class CondicionesPruebaTest extends TestCase {
 		$GLOBALS['convoca_test_meta']        = $this->previo['meta'];
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- se restaura el entorno de la prueba.
 		$_SERVER = $this->previo['server'];
+
+		if ( null === $this->wpdb_previo ) {
+			unset( $GLOBALS['wpdb'] );
+		} else {
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- se restaura.
+			$GLOBALS['wpdb'] = $this->wpdb_previo;
+		}
 	}
+
+	/**
+	 * Base de datos previa.
+	 *
+	 * @var mixed
+	 */
+	private $wpdb_previo = null;
 
 	/**
 	 * El texto de fábrica dice las tres cosas que exige la ley.
@@ -166,6 +185,68 @@ final class CondicionesPruebaTest extends TestCase {
 
 		$this->assertArrayHasKey( Condiciones::META_CONSENTIMIENTO, $GLOBALS['convoca_test_meta'][502] );
 		$this->assertArrayNotHasKey( Condiciones::META_RENUNCIA, $GLOBALS['convoca_test_meta'][502] );
+	}
+
+	/**
+	 * La aceptación se archiva aparte, en su tabla, con el correo y su plazo.
+	 */
+	public function test_la_aceptacion_se_archiva_aparte(): void {
+		$GLOBALS['convoca_courses_opciones'][ Condiciones::OPTION_RENUNCIA ] = true;
+
+		$id = Condiciones::registrar_aceptacion( 903, true, 55, 'quien@example.org' );
+
+		$this->assertGreaterThan( 0, $id );
+
+		$filas = \Convoca\Courses\Prueba_Consentimiento::de_matricula( 903 );
+
+		$this->assertCount( 1, $filas );
+		$this->assertSame( 'quien@example.org', $filas[0]['email'] );
+		$this->assertSame( 55, (int) $filas[0]['curso_id'] );
+		$this->assertNotSame( '0000-00-00', $filas[0]['conservar_hasta'] );
+	}
+
+	/**
+	 * La confirmación del 98.7 lleva el texto literal que se aceptó y el nombre del curso.
+	 */
+	public function test_la_confirmacion_lleva_el_texto_literal(): void {
+		$GLOBALS['convoca_test_meta'][600]['_convoca_precio'] = '5';
+		$GLOBALS['convoca_courses_correos']                   = array();
+
+		$ok = Condiciones::confirmar( 904, 600, 'quien@example.org', 'Ana', true, 1 );
+
+		$this->assertTrue( $ok );
+		$this->assertCount( 1, $GLOBALS['convoca_courses_correos'] );
+
+		$correo = $GLOBALS['convoca_courses_correos'][0];
+
+		$this->assertSame( 'quien@example.org', $correo['para'] );
+		$this->assertStringContainsString( Condiciones::texto_renuncia(), $correo['mensaje'], 'el texto literal' );
+		$this->assertStringContainsString( 'Ana', $correo['mensaje'] );
+		$this->assertStringContainsString( 'art. 103.m', $correo['mensaje'] );
+	}
+
+	/**
+	 * Sin renuncia, la confirmación dice que conserva los 14 días y no reproduce renuncia ninguna.
+	 */
+	public function test_sin_renuncia_la_confirmacion_deja_los_14_dias(): void {
+		$GLOBALS['convoca_courses_correos'] = array();
+
+		Condiciones::confirmar( 905, 600, 'quien@example.org', 'Ana', false, 0 );
+
+		$mensaje = $GLOBALS['convoca_courses_correos'][0]['mensaje'];
+
+		$this->assertStringContainsString( '14 días naturales', $mensaje );
+		$this->assertStringNotContainsString( Condiciones::texto_renuncia(), $mensaje );
+	}
+
+	/**
+	 * Sin correo no se manda nada y se dice que no.
+	 */
+	public function test_sin_correo_no_manda_nada(): void {
+		$GLOBALS['convoca_courses_correos'] = array();
+
+		$this->assertFalse( Condiciones::confirmar( 906, 600, '', 'Ana', true, 0 ) );
+		$this->assertSame( array(), $GLOBALS['convoca_courses_correos'] );
 	}
 
 	/**

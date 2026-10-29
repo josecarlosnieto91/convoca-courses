@@ -72,6 +72,8 @@ final class Plugin {
 		// Acceso del alumnado con identidad propia (sin usuario de WordPress).
 		Identidad_Acceso::register();
 		Matricula_Identidad::register();
+		// La prueba del consentimiento se conserva cinco años en su propia tabla y se purga sola.
+		Prueba_Consentimiento::register();
 		Assets::register();
 
 		$fields = new Admin_Fields();

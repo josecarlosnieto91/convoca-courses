@@ -141,6 +141,14 @@ class WpdbDoble {
 			}
 		}
 
+		if ( preg_match( "/WHERE\\s+codigo\\s*=\\s*'([^']*)'/i", $query, $codigo ) ) {
+			foreach ( $filas as $fila ) {
+				if ( isset( $fila['codigo'] ) && $fila['codigo'] === $codigo[1] ) {
+					return $fila;
+				}
+			}
+		}
+
 		return null;
 	}
 
@@ -152,6 +160,23 @@ class WpdbDoble {
 	 */
 	public function query( $query ) {
 		$query = (string) $query;
+
+		// Purga de pruebas vencidas.
+		if ( preg_match( "/DELETE FROM\\s+(\\S+)\\s+WHERE\\s+conservar_hasta\\s*<\\s*'([^']*)'/i", $query, $m ) ) {
+			$tabla    = $m[1];
+			$limite   = $m[2];
+			$filas    = $this->filas[ $tabla ] ?? array();
+			$borradas = 0;
+
+			foreach ( $filas as $id => $fila ) {
+				if ( isset( $fila['conservar_hasta'] ) && (string) $fila['conservar_hasta'] < $limite ) {
+					unset( $this->filas[ $tabla ][ $id ] );
+					++$borradas;
+				}
+			}
+
+			return $borradas;
+		}
 
 		if ( preg_match( '/INSERT IGNORE INTO\s+(\S+)\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)/i', $query, $m ) ) {
 			$tabla    = $m[1];
@@ -256,6 +281,17 @@ class WpdbDoble {
 
 		$filas  = $this->filas[ $m[1] ] ?? array();
 		$salida = array();
+
+		// SELECT * de la tabla de pruebas: filtra por matrícula.
+		if ( preg_match( '/SELECT\s+\*/i', $query ) && preg_match( '/matricula_id\s*=\s*(\d+)/i', $query, $mat ) ) {
+			foreach ( $filas as $fila ) {
+				if ( (int) ( $fila['matricula_id'] ?? 0 ) === (int) $mat[1] ) {
+					$salida[] = $fila;
+				}
+			}
+
+			return $salida;
+		}
 
 		foreach ( $filas as $fila ) {
 			if ( preg_match( '/puntuacion|MAX\(/i', $query ) ) {

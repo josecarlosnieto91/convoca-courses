@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Convoca Courses 0.2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 20:49+0100\n"
+"POT-Creation-Date: 2026-10-29 21:11+0100\n"
 "PO-Revision-Date: 2026-10-20T00:00:00+00:00\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English (United States)\n"
@@ -830,17 +830,98 @@ msgstr ""
 #: includes/Condiciones.php:134
 msgctxt "convoca-courses"
 msgid ""
-"Quiero empezar el curso ahora y no esperar a que pasen los 14 días naturales "
-"de desistimiento. Entiendo que, en cuanto abra el contenido digital del "
-"curso —las lecciones y sus materiales—, pierdo el derecho de desistimiento "
-"sobre esa parte, y que no podré pedir la devolución de lo ya consumido. "
-"Puedo marcar o no esta casilla: si no la marco, hago el curso igualmente y "
-"conservo los 14 días completos. Lo que no sea contenido digital (sesiones en "
-"directo, tutorías o material impreso) sigue sujeto al derecho de "
-"desistimiento aunque marque esta casilla."
+"Quiero empezar el curso ahora, sin esperar a que terminen los 14 días "
+"naturales de desistimiento. Sé que, al abrir el contenido digital del curso —"
+"las lecciones y sus materiales—, empieza su ejecución y pierdo el derecho de "
+"desistimiento sobre ese contenido digital, de modo que no podré pedir la "
+"devolución de lo que ya haya consumido (art. 103.m del TRLGDCU). Sé también "
+"que la parte del curso que no sea contenido digital —sesiones en directo, "
+"tutorías o material impreso, si las hubiera— sigue sujeta al derecho de "
+"desistimiento, aunque marque esta casilla. Entiendo que esta casilla es "
+"opcional: si no la marco, hago el curso igual y conservo los 14 días "
+"naturales completos. Y sé que la asociación me enviará por correo la "
+"confirmación de esta contratación y de este consentimiento, y que la "
+"aceptación quedará registrada con su fecha y los datos técnicos de la "
+"conexión, según la política de privacidad."
 msgstr ""
 
-#: includes/Condiciones.php:238
+#: includes/Condiciones.php:233
+#, php-format
+msgctxt "convoca-courses"
+msgid "Hola %1$s: queda confirmada tu matrícula en «%2$s»."
+msgstr ""
+
+#: includes/Condiciones.php:234
+msgctxt "convoca-courses"
+msgid "alumna"
+msgstr ""
+
+#: includes/Condiciones.php:240
+#, php-format
+msgctxt "convoca-courses"
+msgid "Fecha: %1$s. Importe: %2$s."
+msgstr ""
+
+#: includes/Condiciones.php:247
+msgctxt "convoca-courses"
+msgid ""
+"Has pedido empezar el curso sin esperar los 14 días naturales de "
+"desistimiento. Este es el texto exacto que aceptaste:"
+msgstr ""
+
+#: includes/Condiciones.php:251
+msgctxt "convoca-courses"
+msgid ""
+"En consecuencia, el contenido digital que ya has consumido queda fuera del "
+"derecho de desistimiento. Lo que no sea contenido digital (sesiones en "
+"directo, tutorías o material impreso) sigue sujeto a ese derecho."
+msgstr ""
+
+#: includes/Condiciones.php:253
+msgctxt "convoca-courses"
+msgid ""
+"No has renunciado al desistimiento: dispones de 14 días naturales desde hoy "
+"para desistir sin justificar el motivo y sin coste, salvo los gastos de "
+"devolución si los hubiera. No necesitas marcar ninguna casilla para hacer el "
+"curso."
+msgstr ""
+
+#: includes/Condiciones.php:257
+msgctxt "convoca-courses"
+msgid ""
+"Cómo desistir: escribe un correo a la dirección que figura abajo indicando "
+"tu nombre, el curso y la fecha de la compra. Puedes usar el formulario "
+"oficial de desistimiento de la web. Te confirmaremos la recepción en soporte "
+"duradero."
+msgstr ""
+
+#: includes/Condiciones.php:267
+msgctxt "convoca-courses"
+msgid "Desistimientos y consultas:"
+msgstr ""
+
+#: includes/Condiciones.php:273
+#, php-format
+msgctxt "convoca-courses"
+msgid ""
+"Guardamos esta confirmación y el registro de tu consentimiento de forma "
+"separada durante %d años, para poder atender cualquier reclamación. La "
+"información completa sobre el tratamiento está en la política de privacidad "
+"de la web."
+msgstr ""
+
+#: includes/Condiciones.php:277
+msgctxt "convoca-courses"
+msgid "Conserva este correo: es la confirmación de tu contratación."
+msgstr ""
+
+#: includes/Condiciones.php:283
+#, php-format
+msgctxt "convoca-courses"
+msgid "Confirmación de tu matrícula en «%s»"
+msgstr ""
+
+#: includes/Condiciones.php:347
 msgctxt "convoca-courses"
 msgid ""
 "Faltan el nombre, el NIF o el correo de desistimiento de la entidad. "

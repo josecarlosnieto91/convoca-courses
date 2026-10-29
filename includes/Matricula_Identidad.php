@@ -165,7 +165,12 @@ class Matricula_Identidad {
 
 			// Se guarda lo que se aceptó y, si se marcó, la renuncia con su prueba: texto exacto, fecha, IP y
 			// navegador. Sin eso, la excepción del 103.m no se puede sostener si alguien la discute.
-			Condiciones::registrar_aceptacion( $matricula_id, $renuncia && Condiciones::renuncia_disponible( $course ) );
+			$renuncia_efectiva = $renuncia && Condiciones::renuncia_disponible( $course );
+			$prueba_id         = Condiciones::registrar_aceptacion( $matricula_id, $renuncia_efectiva, $course, $email );
+
+			// Y se manda la confirmación en soporte duradero (art. 98.7): es la tercera condición del
+			// 103.m. Sin correo de confirmación, la renuncia no opera aunque la casilla esté marcada.
+			Condiciones::confirmar( $matricula_id, $course, $email, $nombre, $renuncia_efectiva, $prueba_id );
 
 			// Matriculado, se le manda el acceso: sin esto tendría que descubrir por su cuenta que
 			// existe un formulario para pedirlo.

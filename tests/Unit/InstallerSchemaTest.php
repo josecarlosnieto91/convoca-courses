@@ -39,9 +39,9 @@ class InstallerSchemaTest extends TestCase {
 	}
 
 	/**
-	 * Están las seis tablas, con su nombre completo y con el prefijo aplicado.
+	 * Están las ocho tablas, con su nombre completo y con el prefijo aplicado.
 	 */
-	public function test_estan_las_seis_tablas(): void {
+	public function test_estan_las_ocho_tablas(): void {
 		$esperadas = array(
 			Installer::PROGRESS_TABLE,
 			Installer::IDENTIDADES_TABLE,
@@ -49,6 +49,8 @@ class InstallerSchemaTest extends TestCase {
 			Installer::ATTEMPTS_TABLE,
 			Installer::ANSWERS_TABLE,
 			Installer::SUBMISSIONS_TABLE,
+			Installer::PRUEBAS_TABLE,
+			Installer::CERTIFICADOS_TABLE,
 		);
 
 		$sql = $this->esquema();

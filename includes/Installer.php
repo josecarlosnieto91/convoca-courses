@@ -67,6 +67,16 @@ class Installer {
 	public const SUBMISSIONS_TABLE = 'convoca_course_submissions';
 
 	/**
+	 * Prueba del consentimiento del artículo 103.m, aparte de la matrícula y con su propio plazo.
+	 */
+	public const PRUEBAS_TABLE = 'convoca_consent_pruebas';
+
+	/**
+	 * Registro de certificados emitidos: la validación no puede depender de que la matrícula siga viva.
+	 */
+	public const CERTIFICADOS_TABLE = 'convoca_certificados';
+
+	/**
 	 * Activación: crea tablas, capabilities y reescribe reglas.
 	 *
 	 * @return void
@@ -205,6 +215,41 @@ class Installer {
 			PRIMARY KEY  (id),
 			UNIQUE KEY tarea_alumno (task_id,user_id),
 			KEY course_user (course_id,user_id)
+		) {$collate};";
+
+		$sql[ self::PRUEBAS_TABLE ] = "CREATE TABLE {$prefix}" . self::PRUEBAS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			matricula_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			curso_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			email varchar(190) NOT NULL DEFAULT '',
+			consentimiento_texto longtext NOT NULL,
+			renuncia_texto longtext NOT NULL,
+			huella char(64) NOT NULL DEFAULT '',
+			fecha_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			ip varchar(45) NOT NULL DEFAULT '',
+			agente varchar(255) NOT NULL DEFAULT '',
+			ambito varchar(40) NOT NULL DEFAULT '',
+			version varchar(20) NOT NULL DEFAULT '',
+			confirmacion_enviada datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			conservar_hasta date NOT NULL DEFAULT '0000-00-00',
+			PRIMARY KEY  (id),
+			KEY matricula (matricula_id),
+			KEY email (email),
+			KEY conservar_hasta (conservar_hasta)
+		) {$collate};";
+
+		$sql[ self::CERTIFICADOS_TABLE ] = "CREATE TABLE {$prefix}" . self::CERTIFICADOS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			codigo varchar(64) NOT NULL,
+			curso_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			curso_titulo varchar(255) NOT NULL DEFAULT '',
+			persona varchar(190) NOT NULL DEFAULT '',
+			email varchar(190) NOT NULL DEFAULT '',
+			nota decimal(5,2) NOT NULL DEFAULT 0.00,
+			fecha date NOT NULL DEFAULT '0000-00-00',
+			emitido_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY codigo (codigo)
 		) {$collate};";
 
 		return $sql;
