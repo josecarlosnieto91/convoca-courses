@@ -1,3 +1,9 @@
+## [0.18.2] — 2026-10-29
+
+### Cambiado
+
+- **oyente de la devolucion del gateway**
+
 ## [0.18.1] — 2026-10-29
 
 ### Corregido

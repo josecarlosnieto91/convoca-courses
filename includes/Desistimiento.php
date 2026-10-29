@@ -54,6 +54,35 @@ class Desistimiento {
 	 */
 	public static function register(): void {
 		add_shortcode( 'convoca_desistir', array( __CLASS__, 'render' ) );
+
+		// La devolución la ejecuta el gateway; aquí solo se cierra el círculo.
+		add_action( 'convoca_gateway_payment_refunded', array( __CLASS__, 'al_devolver' ), 10, 3 );
+	}
+
+	/**
+	 * Marca la matrícula cuando la devolución se ha ejecutado de verdad.
+	 *
+	 * El acceso ya se cortó al pedir el desistimiento; esto deja constancia de que el dinero volvió.
+	 *
+	 * @param int  $pago_id Pago devuelto.
+	 * @param int  $cents   Céntimos devueltos.
+	 * @param bool $parcial Si queda algo por devolver.
+	 * @return void
+	 */
+	public static function al_devolver( $pago_id, $cents = 0, $parcial = false ): void {
+		$matricula = Socio::matricula_de_pago( (int) $pago_id );
+
+		if ( $matricula <= 0 ) {
+			return;
+		}
+
+		if ( $parcial ) {
+			update_post_meta( $matricula, self::META_ESTADO, 'devuelto_parcial' );
+			return;
+		}
+
+		update_post_meta( $matricula, self::META_ESTADO, 'devuelto' );
+		Enrollment::set_status( $matricula, 'cancelada' );
 	}
 
 	/**
