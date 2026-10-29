@@ -1,3 +1,20 @@
+## [0.15.0] — 2026-10-29
+
+### Añadido
+
+- **prueba del consentimiento** (art. 103.m TRLGDCU): al matricularse se archiva el texto exacto del
+  consentimiento (`_convoca_consentimiento_texto`) y, si se marcó la renuncia, el texto literal de la casilla
+  con su huella `sha256`, la fecha en ISO-8601, la IP, el navegador (255 caracteres), el ámbito
+  (`contenido_digital`) y la versión del plugin en `_convoca_renuncia_prueba`. Antes solo se guardaba la fecha
+  y un `1`, así que no se podía demostrar qué se leyó.
+- **texto de la casilla editable** en *Cursos → Ajustes* (`convoca_courses_renuncia_texto`), con redacción de
+  fábrica revisada: pierde el derecho al consumir, solo contenido digital, casilla opcional y alternativa real.
+- **ámbito por curso**: nueva casilla «Curso 100 % digital» en la ficha del curso, apagada por defecto. La
+  renuncia solo se ofrece cuando la instalación la activa **y** el curso es digital; en cursos con directos,
+  tutorías o material físico la casilla no aparece, y una renuncia enviada a mano se descarta. La excepción no
+  cubre esa parte, que sigue siendo reembolsable.
+- 17 pruebas nuevas entre `CondicionesPruebaTest` y `RenunciaAmbitoTest`.
+
 ## [0.14.0] — 2026-10-29
 
 ### Añadido
