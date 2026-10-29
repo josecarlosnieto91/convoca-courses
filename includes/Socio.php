@@ -90,6 +90,70 @@ class Socio {
 	}
 
 	/**
+	 * Matrícula de un pago, o 0.
+	 *
+	 * @param int $pago_id Pago.
+	 * @return int
+	 */
+	public static function matricula_de_pago( int $pago_id ): int {
+		if ( $pago_id <= 0 ) {
+			return 0;
+		}
+
+		$matriculas = get_posts(
+			array(
+				'post_type'      => CPT_Matricula::TYPE,
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- un pago tiene una matrícula.
+				'meta_query'     => array(
+					array(
+						'key'   => '_convoca_pago_id',
+						'value' => $pago_id,
+					),
+				),
+			)
+		);
+
+		return isset( $matriculas[0] ) ? (int) $matriculas[0] : 0;
+	}
+
+	/**
+	 * Nombre de quien paga, para el recibo.
+	 *
+	 * @param string $nombre  Nombre que trae el filtro (vacío por defecto).
+	 * @param int    $pago_id Pago.
+	 * @return string
+	 */
+	public static function nombre_pagador( string $nombre, int $pago_id ): string {
+		if ( '' !== $nombre ) {
+			return $nombre;
+		}
+
+		$matricula = self::matricula_de_pago( $pago_id );
+
+		if ( $matricula <= 0 ) {
+			return '';
+		}
+
+		$member_id = (int) get_post_meta( $matricula, self::META_MEMBER, true );
+
+		if ( $member_id > 0 ) {
+			return (string) get_the_title( $member_id );
+		}
+
+		$user_id = (int) get_post_meta( $matricula, '_convoca_user_id', true );
+		$usuario = $user_id > 0 ? get_userdata( $user_id ) : null;
+
+		if ( is_object( $usuario ) && property_exists( $usuario, 'display_name' ) ) {
+			return (string) $usuario->display_name;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Cursos en los que está matriculada una ficha de socio.
 	 *
 	 * @param int $member_id Ficha.

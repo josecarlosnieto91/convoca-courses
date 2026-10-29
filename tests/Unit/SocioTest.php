@@ -78,6 +78,31 @@ final class SocioTest extends TestCase {
 	}
 
 	/**
+	 * Un pago sin matrícula no da nombre.
+	 */
+	public function test_un_pago_sin_matricula_no_da_nombre(): void {
+		$this->assertSame( '', Socio::nombre_pagador( '', 4242 ) );
+		$this->assertSame( 0, Socio::matricula_de_pago( 0 ) );
+	}
+
+	/**
+	 * El nombre del filtro manda si ya viene.
+	 */
+	public function test_el_nombre_del_filtro_manda(): void {
+		$this->assertSame( 'Ana', Socio::nombre_pagador( 'Ana', 4242 ) );
+	}
+
+	/**
+	 * La matrícula de un pago se encuentra por su meta.
+	 */
+	public function test_encuentra_la_matricula_de_un_pago(): void {
+		$GLOBALS['convoca_test_post_types'][900]               = 'convoca_matricula';
+		$GLOBALS['convoca_test_meta'][900]['_convoca_pago_id'] = 4242;
+
+		$this->assertSame( 900, Socio::matricula_de_pago( 4242 ) );
+	}
+
+	/**
 	 * La matrícula se vincula al crearse.
 	 */
 	public function test_la_matricula_se_vincula_al_crearse(): void {

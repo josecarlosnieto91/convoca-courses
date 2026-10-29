@@ -1,3 +1,11 @@
+## [0.6.2] — 2026-10-29
+
+### Añadido
+
+- **el recibo del pago lleva el nombre de quien paga**. Courses engancha
+  `convoca_gateway_receipt_payer_name` y lo resuelve desde la matrícula: primero la ficha de socio y, si no
+  la hay, el nombre del usuario. Sin datos nuevos y sin tocar Gateway.
+
 ## [0.6.1] — 2026-10-29
 
 ### Añadido

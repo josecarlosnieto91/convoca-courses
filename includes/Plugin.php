@@ -62,6 +62,9 @@ final class Plugin {
 		// Aprobar el examen tiene que cerrar el círculo: completar las lecciones pide el certificado
 		// antes de que exista nota, y hasta ahora nadie volvía a preguntar después.
 		add_action( 'convoca_courses_exam_submitted', array( Certificate::class, 'on_exam_submitted' ), 10, 4 );
+
+		// El recibo del pago lleva el nombre de quien paga: el alumno o su ficha de socio.
+		add_filter( 'convoca_gateway_receipt_payer_name', array( Socio::class, 'nombre_pagador' ), 10, 2 );
 		Assets::register();
 
 		$fields = new Admin_Fields();
