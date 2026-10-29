@@ -155,6 +155,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'Ofrecer también la renuncia expresa al desistimiento (solo si la entidad lo tiene autorizado).', 'convoca-courses' ); ?>
 			</label>
 		</p>
+		<p class="description">
+			<?php esc_html_e( 'La casilla es opcional y solo alcanza al contenido digital: quien no la marque conserva los 14 días completos. Al guardar la matrícula se archiva el texto exacto que se mostró, con la fecha, la IP y el navegador, para poder demostrar el consentimiento.', 'convoca-courses' ); ?>
+		</p>
+		<textarea
+			name="<?php echo esc_attr( (string) $renuncia_texto_option ); ?>"
+			id="convoca-renuncia-texto"
+			rows="4"
+			class="large-text"
+			placeholder="<?php echo esc_attr( (string) $renuncia_defecto ); ?>"
+		><?php echo esc_textarea( (string) $renuncia_texto ); ?></textarea>
+		<p class="description">
+			<?php esc_html_e( 'Texto de la casilla de renuncia. Debe decir con claridad que se pierde el derecho al empezar a consumir el contenido, que la casilla es opcional y que el alcance es solo el contenido digital. Si se deja vacío, se usa la redacción de fábrica.', 'convoca-courses' ); ?>
+		</p>
 
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">

@@ -161,11 +161,9 @@ class Matricula_Identidad {
 			$estado       = 'ok';
 			$matricula_id = (int) $resultado;
 
-			update_post_meta( $matricula_id, Condiciones::META_CONSENTIMIENTO, current_time( 'mysql' ) );
-
-			if ( $renuncia && Condiciones::renuncia_activa() ) {
-				update_post_meta( $matricula_id, Condiciones::META_RENUNCIA, '1' );
-			}
+			// Se guarda lo que se aceptó y, si se marcó, la renuncia con su prueba: texto exacto, fecha, IP y
+			// navegador. Sin eso, la excepción del 103.m no se puede sostener si alguien la discute.
+			Condiciones::registrar_aceptacion( $matricula_id, $renuncia );
 
 			// Matriculado, se le manda el acceso: sin esto tendría que descubrir por su cuenta que
 			// existe un formulario para pedirlo.

@@ -104,6 +104,18 @@ class Settings {
 
 		register_setting(
 			self::GROUP,
+			Condiciones::OPTION_RENUNCIA_TEXTO,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => static function ( $value ) {
+					return sanitize_text_field( (string) $value );
+				},
+				'default'           => '',
+			)
+		);
+
+		register_setting(
+			self::GROUP,
 			Condiciones::OPTION_RENUNCIA,
 			array(
 				'type'              => 'boolean',
@@ -200,6 +212,9 @@ class Settings {
 				'consentimiento_defecto' => Condiciones::texto_consentimiento(),
 				'renuncia_activa'        => Condiciones::renuncia_activa(),
 				'renuncia_option'        => Condiciones::OPTION_RENUNCIA,
+				'renuncia_texto'         => (string) get_option( Condiciones::OPTION_RENUNCIA_TEXTO, '' ),
+				'renuncia_texto_option'  => Condiciones::OPTION_RENUNCIA_TEXTO,
+				'renuncia_defecto'       => Condiciones::texto_renuncia(),
 				'plantilla_propia'       => Course_Template::activa(),
 				'plantilla_option'       => Course_Template::OPTION,
 				'entidad_faltan'         => array_map(
