@@ -22,7 +22,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Identidad {
 
 	/**
-	 * Cookie de sesión.
+	 * Marca el correo como confirmado.
+	 *
+	 * @param int $id Identidad.
+	 * @return void
+	 */
+	public static function marcar_verificada( int $id ): void {
+		global $wpdb;
+
+		if ( $id <= 0 ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- tabla propia del plugin.
+		$wpdb->update(
+			self::tabla(),
+			array( 'verificado' => current_time( 'mysql', true ) ),
+			array( 'id' => $id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+	}
+
+	/**
+	 * Firma la cookie de sesión.
 	 */
 	public const COOKIE = 'convoca_identidad';
 
@@ -35,6 +58,11 @@ class Identidad {
 	 * Vida del enlace y del código, en segundos.
 	 */
 	public const VIDA = 1800;
+
+	/**
+	 * Meta de la matrícula con la identidad vinculada.
+	 */
+	public const META_MATRICULA = '_convoca_identidad_id';
 
 	/**
 	 * Nombre de la tabla con prefijo.

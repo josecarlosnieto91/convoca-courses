@@ -71,6 +71,7 @@ final class Plugin {
 
 		// Acceso del alumnado con identidad propia (sin usuario de WordPress).
 		Identidad_Acceso::register();
+		Matricula_Identidad::register();
 		Assets::register();
 
 		$fields = new Admin_Fields();

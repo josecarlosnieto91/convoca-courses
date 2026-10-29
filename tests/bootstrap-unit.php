@@ -356,13 +356,20 @@ if ( ! function_exists( 'wp_nonce_field' ) ) {
 	/**
 	 * Campo oculto del nonce.
 	 *
-	 * @param string $accion Acción.
-	 * @param string $nombre Nombre.
+	 * @param string $accion  Acción.
+	 * @param string $nombre  Nombre.
+	 * @param bool   $referer Referer (se ignora).
+	 * @param bool   $mostrar Si debe imprimirse.
 	 * @return string
 	 */
-	function wp_nonce_field( $accion, $nombre = '_wpnonce' ) {
+	function wp_nonce_field( $accion, $nombre = '_wpnonce', $referer = true, $mostrar = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- mismo nombre que WordPress.
+		unset( $referer );
 		$html = '<input type="hidden" name="' . $nombre . '" value="nonce-' . $accion . '">';
-		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- campo ya construido y escapado.
+
+		if ( $mostrar ) {
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- campo ya construido y escapado.
+		}
+
 		return $html;
 	}
 }

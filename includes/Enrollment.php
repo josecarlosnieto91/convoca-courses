@@ -115,8 +115,81 @@ class Enrollment {
 	 * @param array<string,mixed> $args      Opciones: estado, pago, importe, referencia_pago.
 	 * @return int|\WP_Error Identificador de la matrícula o error.
 	 */
+	/**
+	 * Matrícula de alguien sin cuenta de WordPress.
+	 *
+	 * Crea o recupera la identidad por correo y matricula con ella. Si el curso es de pago, la matrícula queda
+	 * como siempre a la espera del cobro; la identidad existe ya, pero no da acceso a nada por sí sola.
+	 *
+	 * @param string $email     Correo.
+	 * @param string $nombre    Nombre.
+	 * @param int    $course_id Curso.
+	 * @return int|\WP_Error Matrícula.
+	 */
+	public static function enroll_por_identidad( string $email, string $nombre, int $course_id ) {
+		$identidad_id = Identidad::alta( $email, $nombre );
+
+		if ( $identidad_id <= 0 ) {
+			return new \WP_Error( 'convoca_courses_no_email', __( 'Ese correo no vale.', 'convoca-courses' ) );
+		}
+
+		$previa = self::find_por_identidad( $identidad_id, $course_id );
+		if ( $previa > 0 ) {
+			return $previa;
+		}
+
+		return self::enroll( 0, $course_id, array( 'identidad_id' => $identidad_id ) );
+	}
+
+	/**
+	 * Matrícula de una identidad en un curso, o 0.
+	 *
+	 * @param int $identidad_id Identidad.
+	 * @param int $course_id    Curso.
+	 * @return int
+	 */
+	public static function find_por_identidad( int $identidad_id, int $course_id ): int {
+		if ( $identidad_id <= 0 || $course_id <= 0 ) {
+			return 0;
+		}
+
+		$filas = get_posts(
+			array(
+				'post_type'      => CPT_Matricula::TYPE,
+				'post_status'    => array( 'publish', 'pending', 'private' ),
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- una matrícula por persona y curso.
+				'meta_query'     => array(
+					array(
+						'key'   => Identidad::META_MATRICULA,
+						'value' => $identidad_id,
+					),
+				),
+			)
+		);
+
+		foreach ( $filas as $fila ) {
+			if ( CPT_Matricula::course_id( (int) $fila ) === $course_id ) {
+				return (int) $fila;
+			}
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Matricula a una persona en un curso.
+	 *
+	 * @param int                  $user_id   Persona de WordPress (0 si va con identidad propia).
+	 * @param int                  $course_id Curso.
+	 * @param array<string, mixed> $args      `identidad_id` para matricular sin cuenta.
+	 * @return int|\WP_Error
+	 */
 	public static function enroll( int $user_id, int $course_id, array $args = array() ) {
-		if ( $user_id <= 0 ) {
+		$identidad_id = isset( $args['identidad_id'] ) ? (int) $args['identidad_id'] : 0;
+
+		if ( $user_id <= 0 && $identidad_id <= 0 ) {
 			return new \WP_Error( 'convoca_courses_no_user', __( 'Hay que iniciar sesión para matricularse.', 'convoca-courses' ) );
 		}
 
@@ -160,12 +233,22 @@ class Enrollment {
 			}
 		}
 
-		$user  = get_userdata( $user_id );
+		$user  = $user_id > 0 ? get_userdata( $user_id ) : null;
+		$quien = '';
+		if ( $user ) {
+			$quien = (string) $user->display_name;
+		} elseif ( $identidad_id > 0 ) {
+			$fila = Identidad::por_id( $identidad_id );
+			if ( null !== $fila ) {
+				$quien = '' !== (string) $fila['nombre'] ? (string) $fila['nombre'] : (string) $fila['email'];
+			}
+		}
+
 		$title = sprintf(
 			/* translators: 1: course title, 2: user display name. */
 			__( '%1$s — %2$s', 'convoca-courses' ),
 			$course->post_title,
-			$user ? $user->display_name : (string) $user_id
+			'' !== $quien ? $quien : (string) $user_id
 		);
 
 		$enrollment_id = wp_insert_post(
@@ -196,8 +279,14 @@ class Enrollment {
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'motivo_precio', isset( $args['motivo_precio'] ) ? (string) $args['motivo_precio'] : 'general' );
 		update_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'convocatoria_id', $cohort_id );
 
+		if ( $identidad_id > 0 ) {
+			update_post_meta( $enrollment_id, Identidad::META_MATRICULA, $identidad_id );
+		}
+
 		// Si el correo coincide con una ficha de socio, la matrícula queda vinculada a ella.
-		Socio::vincular_matricula( (int) $enrollment_id, $user_id );
+		if ( $user_id > 0 ) {
+			Socio::vincular_matricula( (int) $enrollment_id, $user_id );
+		}
 
 		if ( $locked ) {
 			\Convoca\Core\Utils::release_lock( $lock_key );

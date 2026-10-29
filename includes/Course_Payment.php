@@ -231,6 +231,12 @@ class Course_Payment {
 			Enrollment::set_status( $enrollment_id, 'activa' );
 		}
 
+		// Pagar confirma el correo: la identidad queda verificada (no hay que pedir nada más).
+		$identidad_id = (int) get_post_meta( $enrollment_id, Identidad::META_MATRICULA, true );
+		if ( $identidad_id > 0 ) {
+			Identidad::marcar_verificada( $identidad_id );
+		}
+
 		/**
 		 * Matrícula activada por pago confirmado.
 		 *

@@ -1,3 +1,17 @@
+## [0.11.0] — 2026-10-29
+
+### Añadido
+
+- **matrícula sin cuenta de WordPress**: `[convoca_matricula course="123"]` pide correo y nombre, crea la
+  identidad y matricula. La matrícula guarda `_convoca_identidad_id`. No se crea ningún `WP_User`.
+- Al **confirmar el pago**, la identidad queda marcada como verificada: pagar ya demuestra que el correo es
+  bueno y no hay que pedir nada más.
+
+### Nota
+
+- Las matrículas anteriores siguen con su usuario de WordPress y no se migran. `Enrollment::enroll()` acepta
+  `user_id = 0` solo cuando llega una identidad, así que ninguna llamada antigua cambia de comportamiento.
+
 ## [0.10.0] — 2026-10-29
 
 ### Añadido
