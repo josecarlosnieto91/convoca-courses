@@ -85,7 +85,7 @@ class Attempts {
 
 		if ( $identidad_id > 0 ) {
 			// Alumnado sin cuenta: la puerta es tener matrícula en el curso.
-			if ( Enrollment::find_por_identidad( $identidad_id, $course_id ) <= 0 ) {
+			if ( Enrollment::find_por_identidad( $identidad_id, $course_id, true ) <= 0 ) {
 				return new \WP_Error( 'convoca_courses_exam_locked', __( 'Todavía no puedes abrir este examen.', 'convoca-courses' ) );
 			}
 		} elseif ( ! Access::can_take_exam( $user_id, $course_id, CPT_Examen::module_id( $exam_id ) ) ) {

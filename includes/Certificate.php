@@ -49,7 +49,7 @@ class Certificate {
 		// Identidad propia: la matrícula se busca por el intento, no por el usuario.
 		$intento = Attempts::get( $attempt_id );
 		if ( null !== $intento && (int) ( $intento['identidad_id'] ?? 0 ) > 0 ) {
-			$enrollment = Enrollment::find_por_identidad( (int) $intento['identidad_id'], $course_id );
+			$enrollment = Enrollment::find_por_identidad( (int) $intento['identidad_id'], $course_id, true );
 			if ( $enrollment > 0 ) {
 				self::maybe_issue( $enrollment );
 			}

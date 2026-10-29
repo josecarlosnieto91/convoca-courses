@@ -144,11 +144,14 @@ class Enrollment {
 	/**
 	 * Matrícula de una identidad en un curso, o 0.
 	 *
-	 * @param int $identidad_id Identidad.
-	 * @param int $course_id    Curso.
+	 * @param int  $identidad_id     Identidad.
+	 * @param int  $course_id        Curso.
+	 * @param bool $solo_con_acceso  Si es true, una matrícula cancelada no cuenta: es lo que necesitan la
+	 *                               puerta del curso, el examen y el certificado. En false se usa para no
+	 *                               duplicar al matricular (una cancelada no impide volver a matricularse).
 	 * @return int
 	 */
-	public static function find_por_identidad( int $identidad_id, int $course_id ): int {
+	public static function find_por_identidad( int $identidad_id, int $course_id, bool $solo_con_acceso = false ): int {
 		if ( $identidad_id <= 0 || $course_id <= 0 ) {
 			return 0;
 		}
@@ -170,9 +173,17 @@ class Enrollment {
 		);
 
 		foreach ( $filas as $fila ) {
-			if ( CPT_Matricula::course_id( (int) $fila ) === $course_id ) {
-				return (int) $fila;
+			if ( CPT_Matricula::course_id( (int) $fila ) !== $course_id ) {
+				continue;
 			}
+
+			// Una matrícula cancelada (desistimiento, baja) no da acceso: sin esta comprobación el enlace
+			// del curso seguía abierto después de desistir.
+			if ( $solo_con_acceso && ! in_array( CPT_Matricula::status( (int) $fila ), array( 'activa', 'completada' ), true ) ) {
+				continue;
+			}
+
+			return (int) $fila;
 		}
 
 		return 0;

@@ -1,3 +1,12 @@
+## [0.18.1] — 2026-10-29
+
+### Corregido
+
+- **el desistimiento no cortaba el acceso del alumnado sin cuenta**: `Enrollment::find_por_identidad()`
+  devolvía la matrícula aunque estuviera `cancelada`, así que el curso y el examen seguían abiertos después
+  de desistir. Ahora acepta `$solo_con_acceso` y la puerta del curso, el examen y el certificado lo exigen.
+  Medido en la demo: sin el arreglo, `con_acceso_despues=3476`; con él, `0`.
+
 ## [0.18.0] — 2026-10-29
 
 ### Añadido

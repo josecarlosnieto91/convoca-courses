@@ -64,7 +64,7 @@ class Matricula_Identidad {
 		$identidad_id = Identidad::actual();
 
 		if ( $identidad_id > 0 ) {
-			$matricula = Enrollment::find_por_identidad( $identidad_id, $course_id );
+			$matricula = Enrollment::find_por_identidad( $identidad_id, $course_id, true );
 
 			if ( $matricula > 0 ) {
 				$estado = CPT_Matricula::status( $matricula );
