@@ -126,6 +126,10 @@ namespace {
 	 * @param string $text Texto.
 	 * @return string
 	 */
+	function sanitize_email( $email ) {
+		return strtolower( trim( (string) $email ) );
+	}
+
 	function sanitize_text_field( $text ) {
 		return trim( (string) $text );
 	}
