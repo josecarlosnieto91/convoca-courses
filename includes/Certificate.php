@@ -132,6 +132,9 @@ class Certificate {
 		 */
 		do_action( 'convoca_courses_certificate_issued', $enrollment_id, $code );
 
+		// Aviso de cierre a quien la organización haya decidido (o al administrador).
+		Notifications::aviso_cierre( $enrollment_id );
+
 		if ( $user_id > 0 ) {
 			Notifications::certificate_issued( $user_id, $course_id, $code, self::verify_url( $code ) );
 		}

@@ -309,7 +309,7 @@ class Desistimiento {
 			number_format_i18n( $importe, 2 )
 		);
 
-		$correo_entidad = (string) ( $entidad['correo'] ?? '' );
+		$correo_entidad = (string) ( $entidad['email_desistimiento'] ?? '' );
 		if ( '' !== $correo_entidad ) {
 			Notifications::send_to_email(
 				$correo_entidad,

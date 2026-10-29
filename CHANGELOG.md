@@ -1,3 +1,9 @@
+## [0.19.1] — 2026-10-29
+
+### Cambiado
+
+- **aviso de cierre al correo que decida la entidad**
+
 ## [0.19.0] — 2026-10-29
 
 ### Cambiado

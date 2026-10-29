@@ -34,6 +34,7 @@ class Entidad {
 			'nombre'              => __( 'Nombre o razón social', 'convoca-courses' ),
 			'nif'                 => __( 'NIF / CIF', 'convoca-courses' ),
 			'email_desistimiento' => __( 'Correo para desistimientos', 'convoca-courses' ),
+			'email_avisos'        => __( 'Correo para avisos (vacío: el administrador de WordPress)', 'convoca-courses' ),
 			'direccion'           => __( 'Dirección postal', 'convoca-courses' ),
 			'telefono'            => __( 'Teléfono de contacto', 'convoca-courses' ),
 		);
@@ -105,6 +106,7 @@ class Entidad {
 		$datos['nombre']              = isset( $input['nombre'] ) ? sanitize_text_field( (string) $input['nombre'] ) : '';
 		$datos['nif']                 = isset( $input['nif'] ) ? strtoupper( sanitize_text_field( (string) $input['nif'] ) ) : '';
 		$datos['email_desistimiento'] = isset( $input['email_desistimiento'] ) ? sanitize_email( (string) $input['email_desistimiento'] ) : '';
+		$datos['email_avisos']        = isset( $input['email_avisos'] ) ? sanitize_email( (string) $input['email_avisos'] ) : '';
 		$datos['direccion']           = isset( $input['direccion'] ) ? sanitize_text_field( (string) $input['direccion'] ) : '';
 		$datos['telefono']            = isset( $input['telefono'] ) ? sanitize_text_field( (string) $input['telefono'] ) : '';
 

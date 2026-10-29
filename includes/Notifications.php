@@ -218,6 +218,69 @@ class Notifications {
 	}
 
 	/**
+	 * A quién se avisa cuando termina un curso.
+	 *
+	 * Lo decide cada instalación en *Ajustes → Entidad*; si no hay correo configurado, al administrador de
+	 * WordPress. No se inventa un buzón fijo: cada organización tiene el suyo.
+	 *
+	 * @return string
+	 */
+	public static function destinatario_avisos(): string {
+		$entidad = Entidad::datos();
+		$correo  = isset( $entidad['email_avisos'] ) ? (string) $entidad['email_avisos'] : '';
+
+		if ( '' !== $correo && is_email( $correo ) ) {
+			return $correo;
+		}
+
+		return (string) get_option( 'admin_email', '' );
+	}
+
+	/**
+	 * Avisa a la entidad (o al administrador) de que alguien ha terminado el curso.
+	 *
+	 * @param int $enrollment_id Matrícula.
+	 * @return bool
+	 */
+	public static function aviso_cierre( int $enrollment_id ): bool {
+		if ( $enrollment_id <= 0 || '1' === (string) get_post_meta( $enrollment_id, '_convoca_aviso_cierre', true ) ) {
+			return false;
+		}
+
+		$course_id = CPT_Matricula::course_id( $enrollment_id );
+		$destino   = self::destinatario_avisos();
+		$alumno    = (string) get_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'email', true );
+		$nombre    = (string) get_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'nombre', true );
+		$codigo    = (string) get_post_meta( $enrollment_id, CPT_Base::META_PREFIX . 'cert_codigo', true );
+
+		if ( '' === $destino ) {
+			return false;
+		}
+
+		$cuerpo = sprintf(
+			/* translators: 1: curso, 2: alumno, 3: correo, 4: código */
+			__( "Curso terminado: %1\$s\nAlumno: %2\$s\nCorreo: %3\$s\nCertificado: %4\$s", 'convoca-courses' ),
+			$course_id > 0 ? (string) get_the_title( $course_id ) : '',
+			'' !== $nombre ? $nombre : $alumno,
+			$alumno,
+			$codigo
+		);
+
+		$enviado = self::send_to_email(
+			$destino,
+			__( 'Curso terminado', 'convoca-courses' ),
+			$cuerpo,
+			'curso_terminado'
+		);
+
+		if ( $enviado ) {
+			update_post_meta( $enrollment_id, '_convoca_aviso_cierre', '1' );
+		}
+
+		return $enviado;
+	}
+
+	/**
 	 * Envía un aviso a una identidad del alumnado (sin usuario de WordPress).
 	 *
 	 * @param int                 $identidad_id Identidad.
