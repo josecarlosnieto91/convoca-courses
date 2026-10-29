@@ -139,6 +139,16 @@ class Matricula_Identidad {
 		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );
 		$estado    = is_wp_error( $resultado ) ? 'error' : 'ok';
 
+		// Matriculado, se le manda el acceso: sin esto tendría que descubrir por su cuenta que existe
+		// un formulario para pedirlo.
+		if ( 'ok' === $estado ) {
+			$identidad = Identidad::por_email( $email );
+
+			if ( null !== $identidad ) {
+				Identidad_Acceso::enviar( (int) $identidad['id'] );
+			}
+		}
+
 		$destino = $course > 0 ? get_permalink( $course ) : home_url( '/' );
 
 		wp_safe_redirect( add_query_arg( 'convoca_matricula', $estado, $destino ? $destino : home_url( '/' ) ) );

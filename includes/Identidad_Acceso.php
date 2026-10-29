@@ -104,7 +104,27 @@ class Identidad_Acceso {
 			exit;
 		}
 
-		$par = Identidad::emitir( $id );
+		self::enviar( $id );
+
+		wp_safe_redirect( add_query_arg( 'convoca_enviado', '1', wp_get_referer() ? wp_get_referer() : home_url( '/' ) ) );
+		exit;
+	}
+
+	/**
+	 * Emite y envía el enlace y el código de acceso.
+	 *
+	 * @param int $id Identidad.
+	 * @return void
+	 */
+	public static function enviar( int $id ): void {
+		$fila = Identidad::por_id( $id );
+
+		if ( null === $fila ) {
+			return;
+		}
+
+		$email = (string) $fila['email'];
+		$par   = Identidad::emitir( $id );
 
 		wp_mail(
 			$email,
@@ -124,9 +144,6 @@ class Identidad_Acceso {
 				$par['codigo']
 			)
 		);
-
-		wp_safe_redirect( add_query_arg( 'convoca_enviado', '1', wp_get_referer() ? wp_get_referer() : home_url( '/' ) ) );
-		exit;
 	}
 
 	/**

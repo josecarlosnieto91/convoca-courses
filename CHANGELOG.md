@@ -1,3 +1,11 @@
+## [0.12.2] — 2026-10-29
+
+### Corregido
+
+- **al matricularse se envía el acceso**. La prueba de extremo a extremo lo destapó: el alumno quedaba
+  matriculado y sin recibir nada, y tenía que descubrir por su cuenta que había un formulario para pedir el
+  enlace. Ahora `[convoca_matricula]` emite y envía el enlace y el código en el mismo paso.
+
 ## [0.12.1] — 2026-10-29
 
 ### Corregido
