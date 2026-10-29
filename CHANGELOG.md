@@ -1,3 +1,13 @@
+## [0.9.0] — 2026-10-29
+
+### Añadido
+
+- **plantilla propia de la ficha del curso**, apagada por defecto. Un tema puede seguir pintando el curso como
+  hasta ahora; cuando lo pinta como una entrada cualquiera —sin matrícula, sin programa y sin botón de
+  empezar—, se activa en **Cursos → Ajustes → Ficha del curso** y el plugin usa la suya. El cuerpo lo sigue
+  pintando `[convoca_curso]`, así que no hay dos versiones de la misma lógica.
+- El tema puede sustituirla con `convoca-curso.php` o `single-convoca_curso.php`.
+
 ## [0.8.0] — 2026-10-29
 
 ### Añadido

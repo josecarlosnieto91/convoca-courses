@@ -65,6 +65,9 @@ final class Plugin {
 
 		// El recibo del pago lleva el nombre de quien paga: el alumno o su ficha de socio.
 		add_filter( 'convoca_gateway_receipt_payer_name', array( Socio::class, 'nombre_pagador' ), 10, 2 );
+
+		// Plantilla propia de la ficha: apagada por defecto, manda el tema.
+		Course_Template::register();
 		Assets::register();
 
 		$fields = new Admin_Fields();

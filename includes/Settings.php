@@ -80,6 +80,18 @@ class Settings {
 
 		register_setting(
 			self::GROUP,
+			Course_Template::OPTION,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => static function ( $value ) {
+					return (bool) $value;
+				},
+				'default'           => false,
+			)
+		);
+
+		register_setting(
+			self::GROUP,
 			Installer::KEEP_DATA_OPTION,
 			array(
 				'type'              => 'boolean',
@@ -134,17 +146,19 @@ class Settings {
 		Certificate::render_template(
 			'ajustes.php',
 			array(
-				'group'          => self::GROUP,
-				'page'           => self::PAGE,
-				'config'         => $config,
-				'pro'            => $pro,
-				'keep_data'      => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
-				'video_option'   => Video::OPTION,
-				'keep_option'    => Installer::KEEP_DATA_OPTION,
-				'entidad'        => Entidad::datos(),
-				'entidad_option' => Entidad::OPTION,
-				'entidad_campos' => Entidad::campos(),
-				'entidad_faltan' => array_map(
+				'group'            => self::GROUP,
+				'page'             => self::PAGE,
+				'config'           => $config,
+				'pro'              => $pro,
+				'keep_data'        => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
+				'video_option'     => Video::OPTION,
+				'keep_option'      => Installer::KEEP_DATA_OPTION,
+				'entidad'          => Entidad::datos(),
+				'entidad_option'   => Entidad::OPTION,
+				'entidad_campos'   => Entidad::campos(),
+				'plantilla_propia' => Course_Template::activa(),
+				'plantilla_option' => Course_Template::OPTION,
+				'entidad_faltan'   => array_map(
 					static function ( $campo ) {
 						return Entidad::campos()[ $campo ] ?? $campo;
 					},

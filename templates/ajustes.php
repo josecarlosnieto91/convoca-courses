@@ -128,6 +128,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<tr>
+				<th scope="row"><?php esc_html_e( 'Ficha del curso', 'convoca-courses' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="<?php echo esc_attr( (string) $plantilla_option ); ?>" value="1" <?php checked( (bool) $plantilla_propia ); ?> />
+						<?php esc_html_e( 'Usar la plantilla del plugin para la ficha del curso.', 'convoca-courses' ); ?>
+					</label>
+					<p class="description">
+						<?php esc_html_e( 'Desmarcado (por defecto), la ficha la pinta el tema. Márcalo si el tema la muestra como una entrada cualquiera, sin matrícula ni programa. Un tema puede sustituirla con convoca-curso.php.', 'convoca-courses' ); ?>
+					</p>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><?php esc_html_e( 'Al desinstalar', 'convoca-courses' ); ?></th>
 				<td>
 					<label>
