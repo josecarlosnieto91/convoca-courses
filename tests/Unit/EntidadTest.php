@@ -145,6 +145,23 @@ final class EntidadTest extends TestCase {
 	}
 
 	/**
+	 * Con datos, el shortcode publica el texto como HTML.
+	 */
+	public function test_con_datos_el_shortcode_publica(): void {
+		$GLOBALS['convoca_courses_opciones'][ Entidad::OPTION ] = array(
+			'nombre'              => 'Entidad A',
+			'nif'                 => 'A00000000',
+			'email_desistimiento' => 'bajas@a.test',
+		);
+
+		$html = Condiciones::render();
+
+		$this->assertStringContainsString( 'convoca-condiciones', $html );
+		$this->assertStringContainsString( 'Entidad A', $html );
+		$this->assertStringContainsString( '<p>', $html );
+	}
+
+	/**
 	 * Sin datos, el shortcode calla al visitante y avisa al administrador.
 	 */
 	public function test_sin_datos_no_se_publica(): void {

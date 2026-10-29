@@ -1112,3 +1112,16 @@ if ( ! function_exists( 'esc_textarea' ) ) {
 		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
 	}
 }
+
+if ( ! function_exists( 'wpautop' ) ) {
+	/**
+	 * Párrafos (doble simple).
+	 *
+	 * @param string $texto Texto.
+	 * @return string
+	 */
+	function wpautop( $texto ) {
+		$texto = trim( (string) $texto );
+		return '' === $texto ? '' : '<p>' . str_replace( "\n\n", "</p>\n<p>", $texto ) . '</p>';
+	}
+}

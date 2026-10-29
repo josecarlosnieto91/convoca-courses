@@ -21,7 +21,30 @@ final class IdentidadTest extends TestCase {
 	protected function setUp(): void {
 		$GLOBALS['convoca_courses_opciones'] = array();
 		unset( $_COOKIE[ Identidad::COOKIE ] );
+
+		$this->wpdb_previo = $GLOBALS['wpdb'] ?? null;
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- doble de pruebas.
+		$GLOBALS['wpdb'] = new \Convoca\Courses\Tests\WpdbDoble();
 	}
+
+	/**
+	 * Restaura la base de datos anterior.
+	 */
+	protected function tearDown(): void {
+		if ( null === $this->wpdb_previo ) {
+			unset( $GLOBALS['wpdb'] );
+		} else {
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- se restaura.
+			$GLOBALS['wpdb'] = $this->wpdb_previo;
+		}
+	}
+
+	/**
+	 * Base de datos previa, para restaurarla.
+	 *
+	 * @var mixed
+	 */
+	private $wpdb_previo = null;
 
 	/**
 	 * El correo se normaliza a minúsculas y sin espacios.
@@ -73,6 +96,89 @@ final class IdentidadTest extends TestCase {
 		$_COOKIE[ Identidad::COOKIE ] = '7|' . $expira . '|' . Identidad::firma_cookie( 7, $expira );
 
 		$this->assertSame( 0, Identidad::actual() );
+	}
+
+	/**
+	 * Alta: el correo queda normalizado y no se duplica.
+	 */
+	public function test_alta_y_no_duplica(): void {
+		$tabla = 'wp_' . \Convoca\Courses\Installer::IDENTIDADES_TABLE;
+		unset( $GLOBALS['wpdb']->filas[ $tabla ] );
+
+		$id = Identidad::alta( '  Ana@Ejemplo.test ', 'Ana' );
+		$this->assertGreaterThan( 0, $id );
+
+		$otra = Identidad::alta( 'ana@ejemplo.test', 'Ana otra vez' );
+		$this->assertSame( $id, $otra );
+
+		$fila = Identidad::por_email( 'ANA@ejemplo.test' );
+		$this->assertNotNull( $fila );
+		$this->assertSame( 'ana@ejemplo.test', $fila['email'] );
+	}
+
+	/**
+	 * Un correo inválido no crea identidad.
+	 */
+	public function test_alta_rechaza_correo_invalido(): void {
+		$this->assertSame( 0, Identidad::alta( 'no-es-correo' ) );
+	}
+
+	/**
+	 * Se emite enlace y código, y ambos se validan.
+	 */
+	public function test_emitir_y_validar(): void {
+		$tabla = 'wp_' . \Convoca\Courses\Installer::IDENTIDADES_TABLE;
+		unset( $GLOBALS['wpdb']->filas[ $tabla ] );
+		$id = Identidad::alta( 'bea@ejemplo.test' );
+
+		$par = Identidad::emitir( $id );
+
+		$this->assertSame( 64, strlen( $par['token'] ) );
+		$this->assertSame( 6, strlen( $par['codigo'] ) );
+		$this->assertTrue( Identidad::token_valido( $id, $par['token'] ) );
+		$this->assertTrue( Identidad::codigo_valido( $id, $par['codigo'] ) );
+		$this->assertFalse( Identidad::token_valido( $id, 'otro-token' ) );
+		$this->assertFalse( Identidad::codigo_valido( $id, '000001' ) );
+	}
+
+	/**
+	 * Un acceso solo sirve una vez.
+	 */
+	public function test_el_acceso_se_gasta(): void {
+		$tabla = 'wp_' . \Convoca\Courses\Installer::IDENTIDADES_TABLE;
+		unset( $GLOBALS['wpdb']->filas[ $tabla ] );
+		$id  = Identidad::alta( 'carla@ejemplo.test' );
+		$par = Identidad::emitir( $id );
+
+		Identidad::consumir( $id );
+
+		$this->assertFalse( Identidad::token_valido( $id, $par['token'] ) );
+		$this->assertFalse( Identidad::codigo_valido( $id, $par['codigo'] ) );
+	}
+
+	/**
+	 * Sin sesión, el shortcode pinta el formulario con el campo de correo y el del código.
+	 */
+	public function test_el_shortcode_pinta_el_formulario(): void {
+		$html = \Convoca\Courses\Identidad_Acceso::render();
+
+		$this->assertStringContainsString( 'convoca-acceso', $html );
+		$this->assertStringContainsString( 'name="email"', $html );
+		$this->assertStringContainsString( 'name="codigo"', $html );
+	}
+
+	/**
+	 * Con sesión, saluda por el correo.
+	 */
+	public function test_con_sesion_saluda(): void {
+		$id                           = Identidad::alta( 'dora@ejemplo.test' );
+		$exp                          = time() + 3600;
+		$_COOKIE[ Identidad::COOKIE ] = $id . '|' . $exp . '|' . Identidad::firma_cookie( $id, $exp );
+
+		$html = \Convoca\Courses\Identidad_Acceso::render();
+
+		$this->assertStringContainsString( 'dora@ejemplo.test', $html );
+		$this->assertStringNotContainsString( 'name="codigo"', $html );
 	}
 
 	/**

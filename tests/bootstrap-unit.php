@@ -475,3 +475,39 @@ if ( ! function_exists( 'sanitize_textarea_field' ) ) {
 		return trim( preg_replace( '/<[^>]*>/', '', (string) $valor ) );
 	}
 }
+
+/**
+ * Doble de la base de datos para las pruebas de la tabla de identidades.
+ */
+require_once __DIR__ . '/WpdbDoble.php';
+
+/**
+ * El doble de `$wpdb` solo se instala en las pruebas que lo necesitan (ver IdentidadTest).
+ */
+
+if ( ! function_exists( 'current_time' ) ) {
+	/**
+	 * Hora actual (doble: UTC en formato MySQL).
+	 *
+	 * @param string $tipo   Tipo.
+	 * @param bool   $gmt    Si es GMT.
+	 * @return string
+	 */
+	function current_time( $tipo = 'mysql', $gmt = false ) {
+		unset( $tipo, $gmt );
+		return gmdate( 'Y-m-d H:i:s' );
+	}
+}
+
+if ( ! function_exists( 'wp_rand' ) ) {
+	/**
+	 * Número aleatorio (doble determinista).
+	 *
+	 * @param int $min Mínimo.
+	 * @param int $max Máximo.
+	 * @return int
+	 */
+	function wp_rand( $min = 0, $max = 0 ) {
+		return (int) ( ( (int) $min + (int) $max ) / 2 );
+	}
+}
