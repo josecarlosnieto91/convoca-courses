@@ -75,6 +75,63 @@ class Embudo {
 	}
 
 	/**
+	 * Cuántas matrículas de un curso están en un estado.
+	 *
+	 * Los estados se leen de las matrículas, no de un contador: así no hay un número que se pueda
+	 * desincronizar de la realidad.
+	 *
+	 * @param int    $curso_id Curso.
+	 * @param string $estado   `activa`, `completada` o `cancelada`.
+	 * @return int
+	 */
+	public static function matriculas_en_estado( int $curso_id, string $estado ): int {
+		if ( $curso_id <= 0 ) {
+			return 0;
+		}
+
+		$ids = get_posts(
+			array(
+				'post_type'      => CPT_Matricula::TYPE,
+				'post_status'    => array( 'publish', 'pending', 'private' ),
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- el informe es de administración.
+				'meta_query'     => array(
+					array(
+						'key'   => CPT_Base::META_PREFIX . 'curso',
+						'value' => $curso_id,
+					),
+					array(
+						'key'   => CPT_Base::META_PREFIX . 'estado',
+						'value' => $estado,
+					),
+				),
+			)
+		);
+
+		return count( $ids );
+	}
+
+	/**
+	 * Resumen del embudo de un curso.
+	 *
+	 * @param int $curso_id Curso.
+	 * @return array<string,int|float>
+	 */
+	public static function resumen( int $curso_id ): array {
+		$datos = self::datos( $curso_id );
+
+		return array(
+			'matricula'   => (int) ( $datos['matricula'] ?? 0 ),
+			'pago'        => (int) ( $datos['pago'] ?? 0 ),
+			'tasa_pago'   => self::tasa( $curso_id, 'pago' ),
+			'activas'     => self::matriculas_en_estado( $curso_id, 'activa' ),
+			'completadas' => self::matriculas_en_estado( $curso_id, 'completada' ),
+			'canceladas'  => self::matriculas_en_estado( $curso_id, 'cancelada' ),
+		);
+	}
+
+	/**
 	 * Porcentaje de un hito sobre las matrículas.
 	 *
 	 * @param int    $curso_id Curso.

@@ -1,3 +1,9 @@
+## [0.19.2] — 2026-10-30
+
+### Cambiado
+
+- **pantalla del embudo**
+
 ## [0.19.1] — 2026-10-29
 
 ### Cambiado

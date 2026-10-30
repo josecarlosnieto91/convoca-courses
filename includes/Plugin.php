@@ -100,6 +100,7 @@ final class Plugin {
 
 		if ( is_admin() ) {
 			Settings::register();
+			Admin_Embudo::register();
 		}
 
 		// Resultado del cobro: los ganchos que ya dispara Convoca Gateway. Si el gateway no está, no
