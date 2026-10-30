@@ -98,7 +98,7 @@ class Embudo {
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- el informe es de administración.
 				'meta_query'     => array(
 					array(
-						'key'   => CPT_Base::META_PREFIX . 'curso',
+						'key'   => CPT_Base::META_PREFIX . 'curso_id',
 						'value' => $curso_id,
 					),
 					array(

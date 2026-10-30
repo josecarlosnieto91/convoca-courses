@@ -76,22 +76,26 @@ final class EmbudoTest extends TestCase {
 	 * El resumen cuenta los estados leyendo las matrículas, no un contador aparte.
 	 */
 	public function test_el_resumen_cuenta_los_estados(): void {
-		$GLOBALS['convoca_test_post_types'][801]                               = CPT_Matricula::TYPE;
-		$GLOBALS['convoca_test_meta'][801][ CPT_Base::META_PREFIX . 'curso' ]  = '3441';
-		$GLOBALS['convoca_test_meta'][801][ CPT_Base::META_PREFIX . 'estado' ] = 'activa';
+		$GLOBALS['convoca_test_post_types'][801]                                 = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][801][ CPT_Base::META_PREFIX . 'curso_id' ] = '3441';
+		$GLOBALS['convoca_test_meta'][801][ CPT_Base::META_PREFIX . 'estado' ]   = 'activa';
 
-		$GLOBALS['convoca_test_post_types'][802]                               = CPT_Matricula::TYPE;
-		$GLOBALS['convoca_test_meta'][802][ CPT_Base::META_PREFIX . 'curso' ]  = '3441';
-		$GLOBALS['convoca_test_meta'][802][ CPT_Base::META_PREFIX . 'estado' ] = 'completada';
+		$GLOBALS['convoca_test_post_types'][802]                                 = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][802][ CPT_Base::META_PREFIX . 'curso_id' ] = '3441';
+		$GLOBALS['convoca_test_meta'][802][ CPT_Base::META_PREFIX . 'estado' ]   = 'completada';
 
-		$GLOBALS['convoca_test_post_types'][803]                               = CPT_Matricula::TYPE;
-		$GLOBALS['convoca_test_meta'][803][ CPT_Base::META_PREFIX . 'curso' ]  = '3441';
-		$GLOBALS['convoca_test_meta'][803][ CPT_Base::META_PREFIX . 'estado' ] = 'cancelada';
+		$GLOBALS['convoca_test_post_types'][803]                                 = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][803][ CPT_Base::META_PREFIX . 'curso_id' ] = '3441';
+		$GLOBALS['convoca_test_meta'][803][ CPT_Base::META_PREFIX . 'estado' ]   = 'cancelada';
 
 		// De otro curso: no debe contar.
-		$GLOBALS['convoca_test_post_types'][804]                               = CPT_Matricula::TYPE;
-		$GLOBALS['convoca_test_meta'][804][ CPT_Base::META_PREFIX . 'curso' ]  = '9999';
-		$GLOBALS['convoca_test_meta'][804][ CPT_Base::META_PREFIX . 'estado' ] = 'activa';
+		$GLOBALS['convoca_test_post_types'][804]                                 = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][804][ CPT_Base::META_PREFIX . 'curso_id' ] = '9999';
+		$GLOBALS['convoca_test_meta'][804][ CPT_Base::META_PREFIX . 'estado' ]   = 'activa';
+
+		// El meta se siembra con la misma clave que lee el resto del plugin: si aquí se usara otra, la
+		// prueba y el código estarían de acuerdo entre ellos y en desacuerdo con la realidad.
+		$this->assertSame( 3441, CPT_Matricula::course_id( 801 ), 'la clave del curso es la que lee el plugin' );
 
 		Embudo::registrar( 3441, 'matricula' );
 		Embudo::registrar( 3441, 'pago' );

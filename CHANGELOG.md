@@ -1,3 +1,9 @@
+## [0.19.3] — 2026-10-30
+
+### Cambiado
+
+- **el informe lee la clave real del curso**
+
 ## [0.19.2] — 2026-10-30
 
 ### Cambiado
