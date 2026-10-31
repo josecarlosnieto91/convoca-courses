@@ -260,7 +260,10 @@ class Handlers {
 		$identidad     = Access::identidad_actual();
 		$enrollment_id = Access::matricula_actual( $course_id );
 
-		if ( 0 === $user_id && $identidad > 0 ) {
+		// Si hay cookie de identidad, el progreso es suyo aunque el navegador tenga una sesión
+		// abierta: antes se guardaba en el usuario y el certificado del alumno nunca se emitía
+		// (courses#39).
+		if ( $identidad > 0 ) {
 			Progress::complete_identidad( $identidad, $course_id, $lesson_id );
 			$progress = Progress::for_course_identidad( $identidad, $course_id );
 		} else {

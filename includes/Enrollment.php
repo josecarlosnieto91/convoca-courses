@@ -38,7 +38,9 @@ class Enrollment {
 		$found = get_posts(
 			array(
 				'post_type'        => CPT_Matricula::TYPE,
-				'post_status'      => 'any',
+				// `any` incluye la papelera: una matrícula enviada a la basura seguía dando acceso
+				// (courses#43).
+				'post_status'      => array( 'publish', 'pending', 'private' ),
 				'posts_per_page'   => 1,
 				'fields'           => 'ids',
 				'suppress_filters' => false,
@@ -355,6 +357,27 @@ class Enrollment {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Matrícula activa (o completada) de una persona en un curso.
+	 *
+	 * @param int $user_id   Persona.
+	 * @param int $course_id Curso.
+	 * @return int
+	 */
+	/**
+	 * Una matrícula enviada a la papelera queda cancelada.
+	 *
+	 * @param int $post_id Entrada.
+	 * @return void
+	 */
+	public static function al_papelera( int $post_id ): void {
+		if ( CPT_Matricula::TYPE !== get_post_type( $post_id ) ) {
+			return;
+		}
+
+		update_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado', 'cancelada' );
 	}
 
 	/**

@@ -69,7 +69,7 @@ class Access {
 	private static function lecciones_hechas( int $user_id, int $course_id ): array {
 		$identidad = self::identidad_actual();
 
-		if ( $user_id <= 0 && $identidad > 0 ) {
+		if ( $identidad > 0 ) {
 			return Progress::completed_lesson_ids_identidad( $identidad, $course_id );
 		}
 
@@ -122,7 +122,7 @@ class Access {
 		if ( self::is_expired( $user_id, $course_id ) ) {
 			$identidad = self::identidad_actual();
 
-			return $user_id <= 0 && $identidad > 0
+			return $identidad > 0
 				? Progress::is_completed_identidad( $identidad, $lesson_id )
 				: Progress::is_completed( $user_id, $lesson_id );
 		}
@@ -369,7 +369,7 @@ class Access {
 	public static function scope_percent( int $user_id, int $course_id, int $module_id = 0 ): float {
 		if ( $module_id <= 0 ) {
 			$identidad = self::identidad_actual();
-			$progress  = $user_id <= 0 && $identidad > 0
+			$progress  = $identidad > 0
 				? Progress::for_course_identidad( $identidad, $course_id )
 				: Progress::for_course( $user_id, $course_id );
 

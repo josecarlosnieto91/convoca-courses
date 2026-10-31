@@ -1,3 +1,9 @@
+## [0.23.0] — 2026-10-31
+
+### Cambiado
+
+- **ocho issues del circuito: examen, certificado, matricula y theme**
+
 ## [0.22.0] — 2026-10-31
 
 ### Cambiado

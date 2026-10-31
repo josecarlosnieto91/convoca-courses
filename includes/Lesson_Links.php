@@ -290,6 +290,38 @@ class Lesson_Links {
 		$html = Shortcodes::lesson( array( 'id' => (string) $lesson_id ) );
 
 		status_header( 200 );
+
+		// El theme del sitio puede ser FSE (block theme): allí `get_header()` no existe y la lección
+		// salía sin menú, sin pie y con body_class de «home blog» (courses#36). En un block theme se
+		// pintan las partes de plantilla y el título del documento a mano.
+		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+			add_filter(
+				'pre_get_document_title',
+				static function () use ( $lesson_id ) {
+					return (string) get_the_title( $lesson_id );
+				}
+			);
+
+			add_filter(
+				'body_class',
+				static function ( $clases ) {
+					$clases[] = 'convoca-courses-leccion';
+
+					return $clases;
+				}
+			);
+
+			wp_head();
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lo genera WordPress.
+			echo do_blocks( '<!-- wp:template-part {"slug":"header","theme":"' . esc_attr( (string) get_stylesheet() ) . '"} /-->' );
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML del shortcode, escapado en su plantilla.
+			echo '<main class="convoca-courses convoca-courses--leccion">' . $html . '</main>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lo genera WordPress.
+			echo do_blocks( '<!-- wp:template-part {"slug":"footer","theme":"' . esc_attr( (string) get_stylesheet() ) . '"} /-->' );
+			wp_footer();
+			exit;
+		}
+
 		get_header();
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML del propio shortcode, ya escapado en sus plantillas.
 		echo '<main class="convoca-courses convoca-courses--leccion">' . $html . '</main>';

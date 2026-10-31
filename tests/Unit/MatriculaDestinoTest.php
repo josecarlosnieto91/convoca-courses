@@ -49,6 +49,56 @@ final class MatriculaDestinoTest extends TestCase {
 	}
 
 	/**
+	 * Sin aceptar las condiciones se vuelve al formulario con aviso, no a un 400 en texto plano.
+	 */
+	public function test_sin_consentimiento_vuelve_con_aviso(): void {
+		$GLOBALS['convoca_courses_referer'] = 'https://demo.local/pagina-del-formulario/';
+
+		$_POST = array(
+			'_convoca_nonce' => 'nonce',
+			'email'          => 'alguien@example.com',
+			'nombre'         => 'Alguien',
+			'course'         => '3441',
+			'mayor_14'       => '1',
+		);
+
+		try {
+			Matricula_Identidad::procesar();
+			$this->fail( 'debería redirigir' );
+		} catch ( \Convoca_Courses_Redirect $redireccion ) {
+			$this->assertStringContainsString( 'convoca_matricula=error', $redireccion->destino );
+			$this->assertStringContainsString( 'convoca_error=condiciones', $redireccion->destino );
+		}
+	}
+
+	/**
+	 * Un NIF inválido no pasa: la factura no se crea con «123».
+	 */
+	public function test_un_nif_invalido_vuelve_con_aviso(): void {
+		$GLOBALS['convoca_courses_referer'] = 'https://demo.local/pagina-del-formulario/';
+
+		$_POST = array(
+			'_convoca_nonce'    => 'nonce',
+			'email'             => 'alguien@example.com',
+			'nombre'            => 'Alguien',
+			'course'            => '3441',
+			'consentimiento'    => '1',
+			'mayor_14'          => '1',
+			'factura'           => '1',
+			'factura_nif'       => '123',
+			'factura_razon'     => 'Empresa SL',
+			'factura_direccion' => 'Calle 1',
+		);
+
+		try {
+			Matricula_Identidad::procesar();
+			$this->fail( 'debería redirigir' );
+		} catch ( \Convoca_Courses_Redirect $redireccion ) {
+			$this->assertStringContainsString( 'convoca_error=nif', $redireccion->destino );
+		}
+	}
+
+	/**
 	 * Sin referente, se cae al curso: nunca a una URL vacía.
 	 */
 	public function test_sin_referente_cae_al_curso(): void {

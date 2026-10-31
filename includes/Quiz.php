@@ -156,6 +156,14 @@ class Quiz {
 			$orden[ $j ] = $temporal;
 		}
 
+		// Un barajado puede devolver el orden natural por casualidad. Si eso pasa y la correcta está
+		// escrita la primera, marcar siempre la primera opción aprueba el examen (courses#42). Se
+		// rota una posición para que la primera mostrada nunca sea la 0 original.
+		if ( range( 0, $total - 1 ) === $orden ) {
+			$primera = array_shift( $orden );
+			$orden[] = $primera;
+		}
+
 		return $orden;
 	}
 

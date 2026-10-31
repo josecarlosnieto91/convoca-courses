@@ -104,9 +104,21 @@ class Certificate {
 			return $existing;
 		}
 
-		$progress = $identidad_id > 0
-			? Progress::for_course_identidad( $identidad_id, $course_id )
-			: Progress::for_course( $user_id, $course_id );
+		$progress = $identidad_id > 0 ? Progress::for_course_identidad( $identidad_id, $course_id ) : array(
+			'done'  => 0,
+			'total' => 0,
+		);
+
+		// Compatibilidad con el progreso que quedó guardado en el usuario antes de que la identidad
+		// mandara: si el suyo está más avanzado, se tiene en cuenta para no dejar sin certificado a
+		// quien ya completó el curso (courses#39).
+		if ( $user_id > 0 ) {
+			$del_usuario = Progress::for_course( $user_id, $course_id );
+
+			if ( (int) $del_usuario['done'] > (int) $progress['done'] ) {
+				$progress = $del_usuario;
+			}
+		}
 
 		if ( $progress['total'] <= 0 || $progress['done'] < $progress['total'] ) {
 			return '';
@@ -116,6 +128,11 @@ class Certificate {
 		// Es la puerta que impide certificar a quien no ha demostrado nada.
 		if ( Gradebook::has_evaluation( $course_id ) ) {
 			$notas = Gradebook::for_user( $user_id, $course_id, $identidad_id );
+
+			if ( ! $notas['aprobado'] && $user_id > 0 ) {
+				$notas = Gradebook::for_user( $user_id, $course_id, 0 );
+			}
+
 			if ( ! $notas['aprobado'] ) {
 				return '';
 			}

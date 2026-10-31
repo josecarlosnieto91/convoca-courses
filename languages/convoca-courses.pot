@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.22.0\n"
+"Project-Id-Version: Convoca Courses 0.23.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-31T14:07:43+00:00\n"
+"POT-Creation-Date: 2026-10-31T19:12:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
@@ -59,7 +59,7 @@ msgstr ""
 
 #: admin/class-admin-columns.php:49
 #: templates/ajustes.php:199
-#: templates/curso.php:47
+#: templates/curso.php:53
 #: templates/metabox-curso.php:60
 msgid "Certificado"
 msgstr ""
@@ -78,7 +78,7 @@ msgid "Módulo"
 msgstr ""
 
 #: admin/class-admin-columns.php:128
-#: templates/curso.php:34
+#: templates/curso.php:40
 #: templates/metabox-curso.php:16
 msgid "Precio"
 msgstr ""
@@ -144,7 +144,7 @@ msgid "Entregas"
 msgstr ""
 
 #: admin/class-admin-entregas.php:59
-#: includes/Handlers.php:510
+#: includes/Handlers.php:513
 msgid "No tienes permiso para corregir entregas."
 msgstr ""
 
@@ -158,12 +158,12 @@ msgstr ""
 
 #: admin/class-admin-examen.php:218
 #: admin/class-admin-examen.php:263
-#: includes/Handlers.php:506
-#: includes/Handlers.php:561
-#: includes/Handlers.php:593
-#: includes/Handlers.php:618
-#: includes/Handlers.php:654
-#: includes/Handlers.php:831
+#: includes/Handlers.php:509
+#: includes/Handlers.php:564
+#: includes/Handlers.php:596
+#: includes/Handlers.php:621
+#: includes/Handlers.php:657
+#: includes/Handlers.php:834
 msgid "La sesión ha caducado. Vuelve a intentarlo."
 msgstr ""
 
@@ -265,12 +265,12 @@ msgid "Todavía no puedes abrir este examen."
 msgstr ""
 
 #: includes/Attempts.php:103
-#: includes/Handlers.php:805
+#: includes/Handlers.php:808
 msgid "Has agotado los intentos de este examen."
 msgstr ""
 
 #: includes/Attempts.php:108
-#: includes/Handlers.php:807
+#: includes/Handlers.php:810
 msgid "El examen no tiene preguntas todavía."
 msgstr ""
 
@@ -295,7 +295,7 @@ msgid "QR de verificación"
 msgstr ""
 
 #: includes/Certificate_QR.php:94
-#: templates/certificado.php:130
+#: templates/certificado.php:126
 msgid "Verificación"
 msgstr ""
 
@@ -550,37 +550,37 @@ msgstr ""
 msgid "Conserva este correo como prueba de tu solicitud."
 msgstr ""
 
-#: includes/Enrollment.php:133
+#: includes/Enrollment.php:135
 #: includes/Identidad_Acceso.php:115
 msgid "Ese correo no vale."
 msgstr ""
 
-#: includes/Enrollment.php:204
+#: includes/Enrollment.php:206
 msgid "Hay que iniciar sesión para matricularse."
 msgstr ""
 
-#: includes/Enrollment.php:209
+#: includes/Enrollment.php:211
 msgid "El curso no existe o no está publicado."
 msgstr ""
 
-#: includes/Enrollment.php:219
+#: includes/Enrollment.php:221
 msgid "Ya estás matriculado en este curso."
 msgstr ""
 
-#: includes/Enrollment.php:228
+#: includes/Enrollment.php:230
 msgid "No hay ninguna convocatoria abierta con plazas para este curso."
 msgstr ""
 
-#: includes/Enrollment.php:239
+#: includes/Enrollment.php:241
 msgid "No se ha podido reservar la plaza. Inténtalo de nuevo en unos segundos."
 msgstr ""
 
-#: includes/Enrollment.php:243
+#: includes/Enrollment.php:245
 msgid "No quedan plazas en este curso."
 msgstr ""
 
 #. translators: 1: course title, 2: user display name.
-#: includes/Enrollment.php:260
+#: includes/Enrollment.php:262
 #, php-format
 msgid "%1$s — %2$s"
 msgstr ""
@@ -590,7 +590,7 @@ msgid "Nombre o razón social"
 msgstr ""
 
 #: includes/Entidad.php:35
-#: includes/Matricula_Identidad.php:135
+#: includes/Matricula_Identidad.php:145
 msgid "NIF / CIF"
 msgstr ""
 
@@ -626,100 +626,100 @@ msgstr ""
 msgid "Hacen falta asunto y mensaje."
 msgstr ""
 
-#: includes/Handlers.php:295
+#: includes/Handlers.php:298
 msgid "No tienes acceso a este vídeo."
 msgstr ""
 
-#: includes/Handlers.php:300
+#: includes/Handlers.php:303
 msgid "El vídeo no está configurado."
 msgstr ""
 
-#: includes/Handlers.php:565
+#: includes/Handlers.php:568
 #: includes/Shortcodes.php:118
 msgid "El acta de notas solo la ve quien gestiona el curso."
 msgstr ""
 
-#: includes/Handlers.php:597
+#: includes/Handlers.php:600
 msgid "No tienes permiso para escribir al alumnado."
 msgstr ""
 
-#: includes/Handlers.php:622
+#: includes/Handlers.php:625
 msgid "No tienes permiso para exportar el banco de preguntas."
 msgstr ""
 
-#: includes/Handlers.php:658
+#: includes/Handlers.php:661
 msgid "No tienes permiso para importar preguntas."
 msgstr ""
 
-#: includes/Handlers.php:793
+#: includes/Handlers.php:796
 msgid "Matrícula realizada. Ya puedes empezar el curso."
 msgstr ""
 
-#: includes/Handlers.php:795
+#: includes/Handlers.php:798
 msgid "Matrícula cancelada."
 msgstr ""
 
-#: includes/Handlers.php:797
+#: includes/Handlers.php:800
 msgid "Lección marcada como completada."
 msgstr ""
 
-#: includes/Handlers.php:799
+#: includes/Handlers.php:802
 msgid "Examen enviado y corregido."
 msgstr ""
 
-#: includes/Handlers.php:801
+#: includes/Handlers.php:804
 msgid "Se ha pasado el tiempo del examen: el intento se ha cerrado sin corregir."
 msgstr ""
 
-#: includes/Handlers.php:803
+#: includes/Handlers.php:806
 msgid "El examen todavía no está abierto: completa antes las lecciones que pide el curso."
 msgstr ""
 
-#: includes/Handlers.php:809
+#: includes/Handlers.php:812
 msgid "No se ha podido completar la operación con el examen."
 msgstr ""
 
-#: includes/Handlers.php:811
+#: includes/Handlers.php:814
 msgid "Tarea entregada."
 msgstr ""
 
-#: includes/Handlers.php:813
+#: includes/Handlers.php:816
 msgid "Entrega corregida y alumno avisado."
 msgstr ""
 
-#: includes/Handlers.php:815
+#: includes/Handlers.php:818
 msgid "No se ha podido subir el fichero: revisa el tipo y el tamaño que admite el sitio."
 msgstr ""
 
-#: includes/Handlers.php:817
+#: includes/Handlers.php:820
 msgid "No se ha podido completar la operación con la tarea."
 msgstr ""
 
-#: includes/Handlers.php:819
+#: includes/Handlers.php:822
 msgid "Mensaje enviado al alumnado del curso."
 msgstr ""
 
-#: includes/Handlers.php:821
+#: includes/Handlers.php:824
 msgid "No se ha podido enviar el mensaje al alumnado."
 msgstr ""
 
-#: includes/Handlers.php:823
+#: includes/Handlers.php:826
 msgid "Preguntas importadas."
 msgstr ""
 
-#: includes/Handlers.php:825
+#: includes/Handlers.php:828
 msgid "No se ha podido importar el banco de preguntas."
 msgstr ""
 
-#: includes/Handlers.php:827
+#: includes/Handlers.php:830
 msgid "Matrícula reservada. Completa el pago para activarla."
 msgstr ""
 
-#: includes/Handlers.php:829
+#: includes/Handlers.php:832
 msgid "No se ha podido preparar el pago. La matrícula queda pendiente: inténtalo de nuevo o contacta con el centro."
 msgstr ""
 
-#: includes/Handlers.php:833
+#: includes/Handlers.php:836
 msgid "No se ha podido completar la operación."
 msgstr ""
 
@@ -736,7 +736,7 @@ msgid "El módulo de la lección no cuelga de ningún curso."
 msgstr ""
 
 #: includes/Identidad_Acceso.php:105
-#: includes/Matricula_Identidad.php:177
+#: includes/Matricula_Identidad.php:217
 msgid "La petición ha caducado. Vuelve a intentarlo."
 msgstr ""
 
@@ -779,7 +779,7 @@ msgid "Te hemos enviado un enlace y un código. Revisa el correo."
 msgstr ""
 
 #: includes/Identidad_Acceso.php:344
-#: includes/Matricula_Identidad.php:112
+#: includes/Matricula_Identidad.php:122
 msgid "Tu correo"
 msgstr ""
 
@@ -821,49 +821,57 @@ msgstr ""
 msgid "Matrícula hecha. Revisa tu correo para entrar al curso."
 msgstr ""
 
-#: includes/Matricula_Identidad.php:94
-msgid "No se ha podido completar la matrícula. Revisa el correo."
-msgstr ""
-
-#: includes/Matricula_Identidad.php:114
-msgid "Tu nombre"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:130
-msgid "Tengo 14 años o más."
-msgstr ""
-
-#: includes/Matricula_Identidad.php:134
-msgid "Necesito factura"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:137
-msgid "Razón social"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:139
-msgid "Dirección fiscal"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:142
-#: templates/curso.php:105
-msgid "Matricularme"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:147
-msgid "¿Ya te has matriculado? Entra aquí"
-msgstr ""
-
-#: includes/Matricula_Identidad.php:186
+#: includes/Matricula_Identidad.php:95
 msgid "Hay que aceptar las condiciones de venta para matricularte."
 msgstr ""
 
-#: includes/Matricula_Identidad.php:194
+#: includes/Matricula_Identidad.php:96
 msgid "Para matricularte tienes que tener 14 años o más."
 msgstr ""
 
-#: includes/Matricula_Identidad.php:203
+#: includes/Matricula_Identidad.php:97
 msgid "Para la factura hacen falta el NIF y la razón social."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:98
+msgid "Ese NIF no es válido. Revisa el número y la letra."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:99
+msgid "Ese correo no es válido."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:101
+msgid "No se ha podido completar la matrícula. Revisa los datos."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:124
+msgid "Tu nombre"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:140
+msgid "Tengo 14 años o más."
+msgstr ""
+
+#: includes/Matricula_Identidad.php:144
+msgid "Necesito factura"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:147
+msgid "Razón social"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:149
+msgid "Dirección fiscal"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:152
+#: templates/curso.php:116
+msgid "Matricularme"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:159
+msgid "¿Ya te has matriculado? Entra aquí"
 msgstr ""
 
 #. translators: %s: task title.
@@ -1260,77 +1268,77 @@ msgstr ""
 msgid "Conservar cursos, matrículas y progreso al desinstalar el plugin."
 msgstr ""
 
-#: templates/certificado.php:85
+#: templates/certificado.php:81
 msgid "Certificado de aprovechamiento"
 msgstr ""
 
-#: templates/certificado.php:87
+#: templates/certificado.php:83
 msgid "Se certifica que"
 msgstr ""
 
-#: templates/certificado.php:89
+#: templates/certificado.php:85
 msgid "ha completado el curso"
 msgstr ""
 
 #. translators: %s: issue date.
-#: templates/certificado.php:98
+#: templates/certificado.php:94
 #, php-format
 msgid "Emitido el %s"
 msgstr ""
 
 #. translators: %s: score, 0-100.
-#: templates/certificado.php:106
+#: templates/certificado.php:102
 #, php-format
 msgid " · Nota final %s sobre 100"
 msgstr ""
 
-#: templates/curso.php:37
+#: templates/curso.php:43
 #: templates/metabox-curso.php:26
 msgid "Plazas"
 msgstr ""
 
-#: templates/curso.php:40
+#: templates/curso.php:46
 msgid "sin límite"
 msgstr ""
 
-#: templates/curso.php:47
+#: templates/curso.php:53
 msgid "sí"
 msgstr ""
 
-#: templates/curso.php:58
+#: templates/curso.php:69
 msgid "Tu matrícula está pendiente de pago."
 msgstr ""
 
-#: templates/curso.php:62
+#: templates/curso.php:73
 msgid "Completar el pago"
 msgstr ""
 
 #. translators: 1: completed lessons, 2: total lessons, 3: percentage.
-#: templates/curso.php:76
+#: templates/curso.php:87
 #: templates/lecciones.php:26
 #, php-format
 msgid "%1$d de %2$d lecciones completadas (%3$s %%)."
 msgstr ""
 
-#: templates/curso.php:86
+#: templates/curso.php:97
 msgid "Ver el recibo del pago"
 msgstr ""
 
 #. translators: %s: course price.
-#: templates/curso.php:101
+#: templates/curso.php:112
 #, php-format
 msgid "Comprar plaza — %s"
 msgstr ""
 
-#: templates/curso.php:121
+#: templates/curso.php:132
 msgid "Si ya tienes cuenta en la web, entra por aquí."
 msgstr ""
 
-#: templates/curso.php:127
+#: templates/curso.php:138
 msgid "Inicia sesión para matricularte"
 msgstr ""
 
-#: templates/curso.php:134
+#: templates/curso.php:145
 msgid "Contenido del curso"
 msgstr ""
 

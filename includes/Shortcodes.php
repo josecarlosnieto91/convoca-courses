@@ -358,7 +358,7 @@ class Shortcodes {
 				'attachment'     => $attachment > 0 ? Material::url( (int) $attachment, $lesson_id ) : '',
 				'video'          => $video,
 				'video_allowed'  => $video_allowed,
-				'completed'      => ( 0 === $user_id && Access::identidad_actual() > 0 )
+				'completed'      => Access::identidad_actual() > 0
 					? Progress::is_completed_identidad( Access::identidad_actual(), $lesson_id )
 					: Progress::is_completed( $user_id, $lesson_id ),
 				'complete_url'   => Handlers::complete_form_action(),

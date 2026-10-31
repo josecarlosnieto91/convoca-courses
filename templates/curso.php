@@ -27,7 +27,13 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 	<?php endif; ?>
 
 	<header class="convoca-courses__header">
-		<h2 class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></h2>
+		<?php
+		// En la ficha del curso el título lo pinta el tema; repetirlo aquí daba dos títulos
+		// seguidos (courses#37). Fuera de la ficha (un shortcode en una página) sí hace falta.
+		if ( ! is_singular( \Convoca\Courses\CPT_Curso::TYPE ) ) :
+			?>
+			<p class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></p>
+		<?php endif; ?>
 
 		<ul class="convoca-courses__facts">
 			<?php if ( '' !== (string) $price ) : ?>
@@ -50,7 +56,12 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 	</header>
 
 	<div class="convoca-courses__content">
-		<?php echo wp_kses_post( (string) $content ); ?>
+		<?php
+		// Lo mismo con la entradilla: si el tema ya pinta el contenido del curso, no se repite.
+		if ( ! is_singular( \Convoca\Courses\CPT_Curso::TYPE ) ) {
+			echo wp_kses_post( (string) $content );
+		}
+		?>
 	</div>
 
 	<?php if ( ! $enrolled && 'pendiente' === (string) $enrollment_status ) : ?>

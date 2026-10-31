@@ -90,8 +90,18 @@ class Matricula_Identidad {
 		}
 
 		if ( 'error' === $resultado ) {
+			$clave    = isset( $_GET['convoca_error'] ) ? sanitize_key( wp_unslash( (string) $_GET['convoca_error'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$mensajes = array(
+				'condiciones' => __( 'Hay que aceptar las condiciones de venta para matricularte.', 'convoca-courses' ),
+				'edad'        => __( 'Para matricularte tienes que tener 14 años o más.', 'convoca-courses' ),
+				'factura'     => __( 'Para la factura hacen falta el NIF y la razón social.', 'convoca-courses' ),
+				'nif'         => __( 'Ese NIF no es válido. Revisa el número y la letra.', 'convoca-courses' ),
+				'correo'      => __( 'Ese correo no es válido.', 'convoca-courses' ),
+			);
+			$mensaje  = $mensajes[ $clave ] ?? __( 'No se ha podido completar la matrícula. Revisa los datos.', 'convoca-courses' );
+
 			return '<div class="convoca-matricula convoca-alert convoca-alert--warning">'
-				. esc_html__( 'No se ha podido completar la matrícula. Revisa el correo.', 'convoca-courses' )
+				. esc_html( $mensaje )
 				. '</div>';
 		}
 
@@ -143,11 +153,41 @@ class Matricula_Identidad {
 		$html .= '</form>';
 
 		// Quien ya se matriculó antes y perdió el correo necesita una puerta de vuelta (courses#31).
-		$html .= '<p class="convoca-matricula__acceso"><a href="' . esc_url( Identidad_Acceso::url_acceso() ) . '">'
-			. esc_html__( '¿Ya te has matriculado? Entra aquí', 'convoca-courses' )
-			. '</a></p>';
+		// Si la página de acceso no existe, mejor no poner enlace que mandar a la portada (courses#38).
+		if ( Identidad_Acceso::pagina() > 0 ) {
+			$html .= '<p class="convoca-matricula__acceso"><a href="' . esc_url( Identidad_Acceso::url_acceso() ) . '">'
+				. esc_html__( '¿Ya te has matriculado? Entra aquí', 'convoca-courses' )
+				. '</a></p>';
+		}
 
 		return '<div class="convoca-matricula">' . $html . '</div>';
+	}
+
+	/**
+	 * Vuelve al formulario con un aviso, sin morir en una página de error.
+	 *
+	 * @param int    $course Curso.
+	 * @param string $clave  Clave del aviso (condiciones, edad, factura, nif).
+	 * @return void
+	 */
+	private static function volver_con_error( int $course, string $clave ): void {
+		$destino = wp_get_referer();
+
+		if ( ! $destino ) {
+			$destino = $course > 0 ? (string) get_permalink( $course ) : home_url( '/' );
+		}
+
+		$destino = remove_query_arg( array( 'convoca_matricula', 'convoca_error' ), $destino );
+		$destino = add_query_arg(
+			array(
+				'convoca_matricula' => 'error',
+				'convoca_error'     => $clave,
+			),
+			$destino
+		);
+
+		wp_safe_redirect( $destino );
+		exit;
 	}
 
 	/**
@@ -180,30 +220,24 @@ class Matricula_Identidad {
 			);
 		}
 
-		// Sin aceptar las condiciones no hay matrícula: es la prueba de que se informó.
+		// Sin aceptar las condiciones no hay matrícula: es la prueba de que se informó. Se vuelve al
+		// formulario con el aviso, no a una página de error en texto plano (courses#41).
 		if ( ! $consentimiento ) {
-			wp_die(
-				esc_html__( 'Hay que aceptar las condiciones de venta para matricularte.', 'convoca-courses' ),
-				'',
-				array( 'response' => 400 )
-			);
+			self::volver_con_error( $course, 'condiciones' );
 		}
 
 		if ( ! $mayor_14 ) {
-			wp_die(
-				esc_html__( 'Para matricularte tienes que tener 14 años o más.', 'convoca-courses' ),
-				'',
-				array( 'response' => 400 )
-			);
+			self::volver_con_error( $course, 'edad' );
 		}
 
-		// Si pide factura, el NIF y la razón social son obligatorios: un recibo sin ellos no vale.
+		// Si pide factura, el NIF y la razón social son obligatorios, y el NIF tiene que ser válido:
+		// una factura con «123» no vale para Hacienda (courses#40).
 		if ( $factura && ( '' === $factura_nif || '' === $factura_razon ) ) {
-			wp_die(
-				esc_html__( 'Para la factura hacen falta el NIF y la razón social.', 'convoca-courses' ),
-				'',
-				array( 'response' => 400 )
-			);
+			self::volver_con_error( $course, 'factura' );
+		}
+
+		if ( $factura && ! Documento::valido( $factura_nif ) ) {
+			self::volver_con_error( $course, 'nif' );
 		}
 
 		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );
