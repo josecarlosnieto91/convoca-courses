@@ -1,3 +1,9 @@
+## [0.23.3] — 2026-10-31
+
+### Cambiado
+
+- **titulo del documento en la leccion**
+
 ## [0.23.2] — 2026-10-31
 
 ### Cambiado

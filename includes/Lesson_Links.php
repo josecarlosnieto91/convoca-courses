@@ -322,6 +322,10 @@ class Lesson_Links {
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 			<?php
+			// El tema no emite `<title>` en el head (el título lo pinta la plantilla), así que la
+			// lección salía sin ninguno. Se imprime aquí y se quita el de WordPress para no duplicar.
+			remove_action( 'wp_head', '_wp_render_title_tag', 1 );
+			echo '<title>' . esc_html( (string) get_the_title( $lesson_id ) ) . '</title>' . "\n";
 			wp_head();
 			?>
 </head>
