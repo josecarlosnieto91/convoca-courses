@@ -1,3 +1,9 @@
+## [0.23.6] — 2026-10-31
+
+### Cambiado
+
+- **restaurar la matricula de la papelera**
+
 ## [0.23.5] — 2026-10-31
 
 ### Cambiado

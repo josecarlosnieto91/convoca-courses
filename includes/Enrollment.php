@@ -377,7 +377,38 @@ class Enrollment {
 			return;
 		}
 
+		// Se guarda el estado para poder devolverlo al restaurar: sin esto, una matrícula que va a
+		// la papelera y vuelve se queda «cancelada» y el curso pide matricularse otra vez (courses#43).
+		$estado = (string) CPT_Matricula::status( $post_id );
+
+		if ( '' !== $estado && 'cancelada' !== $estado ) {
+			update_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado_antes_papelera', $estado );
+		}
+
 		update_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado', 'cancelada' );
+	}
+
+	/**
+	 * Devuelve el estado que tenía la matrícula antes de ir a la papelera.
+	 *
+	 * @param int $post_id Matrícula.
+	 * @return void
+	 */
+	public static function al_restaurar( int $post_id ): void {
+		if ( CPT_Matricula::TYPE !== get_post_type( $post_id ) ) {
+			return;
+		}
+
+		$previo = (string) get_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado_antes_papelera', true );
+
+		if ( '' !== $previo ) {
+			update_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado', $previo );
+		}
+
+		delete_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado_antes_papelera' );
+
+		// La consulta de acceso pudo quedar cacheada con la matrícula fuera de juego.
+		clean_post_cache( $post_id );
 	}
 
 	/**

@@ -119,6 +119,18 @@ if ( ! function_exists( 'apply_filters' ) ) {
 	}
 }
 
+if ( ! function_exists( 'clean_post_cache' ) ) {
+	/**
+	 * Limpia la caché del post (doble: no hay caché que limpiar).
+	 *
+	 * @param int $post_id Post.
+	 * @return void
+	 */
+	function clean_post_cache( $post_id ) {
+		unset( $post_id );
+	}
+}
+
 if ( ! function_exists( 'do_action' ) ) {
 	/**
 	 * Acciones: no hace nada.

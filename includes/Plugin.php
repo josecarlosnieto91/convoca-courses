@@ -66,6 +66,7 @@ final class Plugin {
 		// Enviar una matrícula a la papelera es una baja: se marca cancelada para que no quede un
 		// estado incoherente si se restaura (courses#43).
 		add_action( 'wp_trash_post', array( Enrollment::class, 'al_papelera' ) );
+		add_action( 'untrashed_post', array( Enrollment::class, 'al_restaurar' ) );
 
 		// El recibo del pago lleva el nombre de quien paga: el alumno o su ficha de socio.
 		add_filter( 'convoca_gateway_receipt_payer_name', array( Socio::class, 'nombre_pagador' ), 10, 2 );
