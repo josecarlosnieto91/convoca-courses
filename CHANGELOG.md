@@ -1,3 +1,9 @@
+## [0.23.4] — 2026-10-31
+
+### Cambiado
+
+- **matricula sin pedir datos al socio**
+
 ## [0.23.3] — 2026-10-31
 
 ### Cambiado

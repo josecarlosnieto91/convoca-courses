@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.23.3\n"
+"Project-Id-Version: Convoca Courses 0.23.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-31T20:26:19+00:00\n"
+"POT-Creation-Date: 2026-10-31T21:10:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
@@ -90,6 +90,7 @@ msgid "Matrículas"
 msgstr ""
 
 #: admin/class-admin-columns.php:145
+#: includes/Cursos_Para_Socio.php:86
 msgid "Gratis"
 msgstr ""
 
@@ -590,7 +591,7 @@ msgid "Nombre o razón social"
 msgstr ""
 
 #: includes/Entidad.php:35
-#: includes/Matricula_Identidad.php:145
+#: includes/Matricula_Identidad.php:187
 msgid "NIF / CIF"
 msgstr ""
 
@@ -736,7 +737,7 @@ msgid "El módulo de la lección no cuelga de ningún curso."
 msgstr ""
 
 #: includes/Identidad_Acceso.php:105
-#: includes/Matricula_Identidad.php:217
+#: includes/Matricula_Identidad.php:260
 msgid "La petición ha caducado. Vuelve a intentarlo."
 msgstr ""
 
@@ -779,7 +780,7 @@ msgid "Te hemos enviado un enlace y un código. Revisa el correo."
 msgstr ""
 
 #: includes/Identidad_Acceso.php:344
-#: includes/Matricula_Identidad.php:122
+#: includes/Matricula_Identidad.php:163
 msgid "Tu correo"
 msgstr ""
 
@@ -845,32 +846,36 @@ msgstr ""
 msgid "No se ha podido completar la matrícula. Revisa los datos."
 msgstr ""
 
-#: includes/Matricula_Identidad.php:124
+#: includes/Matricula_Identidad.php:159
+msgid "Te matriculas como"
+msgstr ""
+
+#: includes/Matricula_Identidad.php:165
 msgid "Tu nombre"
 msgstr ""
 
-#: includes/Matricula_Identidad.php:140
+#: includes/Matricula_Identidad.php:182
 msgid "Tengo 14 años o más."
 msgstr ""
 
-#: includes/Matricula_Identidad.php:144
+#: includes/Matricula_Identidad.php:186
 msgid "Necesito factura"
 msgstr ""
 
-#: includes/Matricula_Identidad.php:147
+#: includes/Matricula_Identidad.php:189
 msgid "Razón social"
 msgstr ""
 
-#: includes/Matricula_Identidad.php:149
+#: includes/Matricula_Identidad.php:191
 msgid "Dirección fiscal"
 msgstr ""
 
-#: includes/Matricula_Identidad.php:152
+#: includes/Matricula_Identidad.php:194
 #: templates/curso.php:116
 msgid "Matricularme"
 msgstr ""
 
-#: includes/Matricula_Identidad.php:159
+#: includes/Matricula_Identidad.php:201
 msgid "¿Ya te has matriculado? Entra aquí"
 msgstr ""
 

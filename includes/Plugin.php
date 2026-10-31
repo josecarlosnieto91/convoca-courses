@@ -101,6 +101,7 @@ final class Plugin {
 		Reminders::register();
 		Lesson_Links::register();
 		Material::register();
+		Cursos_Para_Socio::init();
 
 		if ( is_admin() ) {
 			Settings::register();

@@ -109,6 +109,37 @@ class Matricula_Identidad {
 	}
 
 	/**
+	 * Datos con los que se matricula: los del socio si hay sesión, los del formulario si no.
+	 *
+	 * Con sesión de socio iniciada y `members` contestando al contrato, el correo y el nombre
+	 * salen de su ficha y **se descarta lo que venga en el POST**: así no se puede matricular a
+	 * nombre de otro cambiando el campo, y el socio no vuelve a teclear lo que ya está guardado.
+	 *
+	 * @param array<string,mixed> $entrada Datos recibidos (normalmente `$_POST`).
+	 * @param int                 $user_id Usuario de WordPress.
+	 * @return array{email:string,nombre:string,socio:bool}
+	 */
+	public static function datos_confirmados( array $entrada, int $user_id = 0 ): array {
+		$user_id = $user_id > 0 ? $user_id : get_current_user_id();
+
+		$socio = Members_Bridge::datos_socio( $user_id );
+
+		if ( array() !== $socio ) {
+			return array(
+				'email'  => (string) $socio['email'],
+				'nombre' => (string) $socio['nombre'],
+				'socio'  => true,
+			);
+		}
+
+		return array(
+			'email'  => isset( $entrada['email'] ) ? sanitize_email( (string) $entrada['email'] ) : '',
+			'nombre' => isset( $entrada['nombre'] ) ? sanitize_text_field( (string) $entrada['nombre'] ) : '',
+			'socio'  => false,
+		);
+	}
+
+	/**
 	 * Formulario: correo y nombre.
 	 *
 	 * @param int $course_id Curso.
@@ -119,10 +150,21 @@ class Matricula_Identidad {
 		$html .= '<input type="hidden" name="action" value="' . esc_attr( self::ACCION ) . '" />';
 		$html .= '<input type="hidden" name="course" value="' . esc_attr( (string) $course_id ) . '" />';
 		$html .= wp_nonce_field( self::ACCION, '_convoca_nonce', true, false );
-		$html .= '<p><label for="convoca-email-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Tu correo', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="email" id="convoca-email-' . esc_attr( (string) $course_id ) . '" name="email" required autocomplete="email" /></p>';
-		$html .= '<p><label for="convoca-nombre-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Tu nombre', 'convoca-courses' ) . '</label>';
-		$html .= '<input type="text" id="convoca-nombre-' . esc_attr( (string) $course_id ) . '" name="nombre" required autocomplete="name" /></p>';
+		// Si hay sesión de socio, la identidad ya se sabe: no se piden otra vez los datos ni se
+		// dejan campos editables que podrían matricular a otra persona (members).
+		$socio = Members_Bridge::datos_socio( get_current_user_id() );
+
+		if ( array() !== $socio ) {
+			$html .= '<p class="convoca-matricula__socio">';
+			$html .= esc_html__( 'Te matriculas como', 'convoca-courses' ) . ' <strong>' . esc_html( (string) $socio['nombre'] ) . '</strong>';
+			$html .= ' <span class="convoca-matricula__correo">' . esc_html( (string) $socio['email'] ) . '</span></p>';
+			$html .= '<input type="hidden" name="convoca_datos_socio" value="1" />';
+		} else {
+			$html .= '<p><label for="convoca-email-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Tu correo', 'convoca-courses' ) . '</label>';
+			$html .= '<input type="email" id="convoca-email-' . esc_attr( (string) $course_id ) . '" name="email" required autocomplete="email" /></p>';
+			$html .= '<p><label for="convoca-nombre-' . esc_attr( (string) $course_id ) . '">' . esc_html__( 'Tu nombre', 'convoca-courses' ) . '</label>';
+			$html .= '<input type="text" id="convoca-nombre-' . esc_attr( (string) $course_id ) . '" name="nombre" required autocomplete="name" /></p>';
+		}
 
 		// Consentimiento informado: sin marcarlo no hay matrícula, y sin él no se puede invocar el 103.m.
 		$html .= '<p><label><input type="checkbox" name="consentimiento" value="1" required /> ';
@@ -198,8 +240,9 @@ class Matricula_Identidad {
 	public static function procesar(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- se comprueba justo debajo.
 		$nonce          = isset( $_POST['_convoca_nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['_convoca_nonce'] ) ) : '';
-		$email          = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( (string) $_POST['email'] ) ) : '';
-		$nombre         = isset( $_POST['nombre'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['nombre'] ) ) : '';
+		$confirmados    = self::datos_confirmados( wp_unslash( $_POST ) );
+		$email          = (string) $confirmados['email'];
+		$nombre         = (string) $confirmados['nombre'];
 		$course         = isset( $_POST['course'] ) ? (int) $_POST['course'] : 0;
 		$consentimiento = ! empty( $_POST['consentimiento'] );
 		$renuncia       = ! empty( $_POST['renuncia'] );
