@@ -1,3 +1,9 @@
+## [0.21.1] — 2026-10-31
+
+### Cambiado
+
+- **QR como fichero en el PDF**
+
 ## [0.21.0] — 2026-10-31
 
 ### Cambiado
