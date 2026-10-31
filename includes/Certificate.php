@@ -466,6 +466,10 @@ class Certificate {
 			return $path;
 		}
 
+		// En el PDF el QR va como fichero: Dompdf no decodifica los data URI y acababa imprimiendo
+		// el texto alternativo en el hueco (courses#29).
+		$data['qr'] = Certificate_QR::image( (string) ( $data['verify'] ?? self::verify_url( $code ) ), true );
+
 		$html = self::render_template( 'certificado.php', $data, false );
 
 		try {
@@ -473,6 +477,8 @@ class Certificate {
 				array(
 					'isRemoteEnabled'      => false,
 					'isHtml5ParserEnabled' => true,
+					// El QR vive en uploads, dentro de la raíz del sitio: sin chroot Dompdf no lo lee.
+					'chroot'               => ABSPATH,
 				)
 			);
 			$dompdf->loadHtml( $html, 'UTF-8' );

@@ -44,10 +44,12 @@ class Certificate_QR {
 	 *
 	 * Nunca devuelve un bloque vacío: o hay imagen, o hay URL con su rótulo.
 	 *
-	 * @param string $data Contenido a codificar (la URL de verificación).
-	 * @return string HTML listo para el PDF.
+	 * @param string $data    Contenido a codificar (la URL de verificación).
+	 * @param bool   $fichero `true` para el PDF: Dompdf no decodifica data URIs y acaba imprimiendo
+	 *                        el `alt`; con un fichero dentro del `chroot` sí pinta la imagen.
+	 * @return string HTML listo para la web o para el PDF.
 	 */
-	public static function image( string $data ): string {
+	public static function image( string $data, bool $fichero = false ): string {
 		if ( '' === trim( $data ) ) {
 			return '';
 		}
@@ -68,6 +70,15 @@ class Certificate_QR {
 
 				$png = ( new \chillerlan\QRCode\QRCode( $options ) )->render( $data );
 
+				if ( $fichero ) {
+					$ruta = self::guardar( (string) $png );
+
+					if ( '' !== $ruta ) {
+						return '<img src="file://' . esc_attr( $ruta ) . '" alt="" />'
+							. '<span class="convoca-qr-fallback__url">' . esc_html( $data ) . '</span>';
+					}
+				}
+
 				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- es el formato obligatorio de un data URI de imagen, no ofuscación de código.
 				$imagen = '<img src="data:image/png;base64,' . base64_encode( (string) $png ) . '" alt="' . esc_attr__( 'QR de verificación', 'convoca-courses' ) . '" />';
 
@@ -82,6 +93,39 @@ class Certificate_QR {
 		// Sin librería (o sin PRO) se imprime la URL completa: es verificable a mano y no deja hueco.
 		return '<span class="convoca-qr-fallback__label">' . esc_html__( 'Verificación', 'convoca-courses' ) . '</span>'
 			. '<span class="convoca-qr-fallback__url">' . esc_html( $data ) . '</span>';
+	}
+
+	/**
+	 * Guarda el PNG del QR en uploads y devuelve su ruta absoluta.
+	 *
+	 * @param string $png Bytes del PNG.
+	 * @return string Ruta absoluta, o vacía si no se pudo escribir.
+	 */
+	private static function guardar( string $png ): string {
+		if ( '' === $png ) {
+			return '';
+		}
+
+		$uploads = wp_upload_dir();
+
+		if ( ! empty( $uploads['error'] ) ) {
+			return '';
+		}
+
+		$dir = trailingslashit( $uploads['basedir'] ) . 'convoca-courses';
+
+		if ( ! wp_mkdir_p( $dir ) ) {
+			return '';
+		}
+
+		$ruta = trailingslashit( $dir ) . 'qr-' . hash( 'sha1', $png ) . '.png';
+
+		if ( ! file_exists( $ruta ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- escritura en uploads del propio plugin.
+			file_put_contents( $ruta, $png );
+		}
+
+		return file_exists( $ruta ) ? $ruta : '';
 	}
 
 	/**
