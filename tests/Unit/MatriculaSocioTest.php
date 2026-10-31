@@ -95,6 +95,37 @@ final class MatriculaSocioTest extends TestCase {
 	}
 
 	/**
+	 * El formulario del socio no vuelve a pedir correo ni nombre.
+	 */
+	public function test_el_formulario_no_pide_datos_al_socio(): void {
+		$GLOBALS['convoca_courses_user_id']                                 = 9;
+		$GLOBALS['convoca_courses_filtros'][ Members_Bridge::FILTER_DATOS ] = array(
+			'email'  => 'socia@example.com',
+			'nombre' => 'Socia Activa',
+		);
+
+		$html = Matricula_Identidad::render( array( 'course' => '3441' ) );
+
+		$this->assertStringContainsString( 'Te matriculas como', $html );
+		$this->assertStringContainsString( 'Socia Activa', $html );
+		$this->assertStringNotContainsString( 'name="email"', $html );
+		$this->assertStringNotContainsString( 'name="nombre"', $html );
+	}
+
+	/**
+	 * Sin socio, el formulario sigue pidiendo correo y nombre.
+	 */
+	public function test_sin_socio_el_formulario_pide_los_datos(): void {
+		$GLOBALS['convoca_courses_user_id'] = 0;
+
+		$html = Matricula_Identidad::render( array( 'course' => '3441' ) );
+
+		$this->assertStringContainsString( 'name="email"', $html );
+		$this->assertStringContainsString( 'name="nombre"', $html );
+		$this->assertStringNotContainsString( 'Te matriculas como', $html );
+	}
+
+	/**
 	 * El puente limpia lo que le llegue: un correo inválido no pasa.
 	 */
 	public function test_el_puente_sanea_el_correo(): void {
