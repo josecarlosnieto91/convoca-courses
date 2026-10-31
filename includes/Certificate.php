@@ -19,6 +19,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Certificate {
 
 	/**
+	 * Adjunto con el logo del certificado.
+	 */
+	public const OPTION_LOGO = 'convoca_courses_certificado_logo';
+
+	/**
+	 * Texto de la firma.
+	 */
+	public const OPTION_FIRMA = 'convoca_courses_certificado_firma';
+
+	/**
+	 * Cargo de quien firma.
+	 */
+	public const OPTION_FIRMA_CARGO = 'convoca_courses_certificado_firma_cargo';
+
+	/**
 	 * Prefijo de los códigos de certificado.
 	 */
 	public const CODE_PREFIX = 'CC';
@@ -289,10 +304,10 @@ class Certificate {
 	}
 
 	/**
-	 * Datos del certificado para pintarlo.
+	 * Datos del certificado para pintarlo (`firma` es un array con texto y cargo).
 	 *
 	 * @param string $code Código.
-	 * @return array<string, string>|null
+	 * @return array<string, mixed>|null
 	 */
 	public static function data( string $code ): ?array {
 		$code = self::normalize( $code );
@@ -311,7 +326,11 @@ class Certificate {
 				'center' => (string) get_bloginfo( 'name' ),
 				'nota'   => $nota > 0 ? number_format_i18n( $nota, 2 ) : '',
 				'verify' => self::verify_url( $code ),
-				'qr'     => Certificate_QR::enabled() ? Certificate_QR::image( self::verify_url( $code ) ) : '',
+				// El bloque de verificación sale siempre: con QR si hay PRO y librería, y si no con la
+				// URL impresa. Nunca un rótulo sin nada debajo (courses#29).
+				'qr'     => Certificate_QR::image( self::verify_url( $code ) ),
+				'logo'   => self::logo_data_uri(),
+				'firma'  => self::firma(),
 			);
 		}
 
@@ -347,7 +366,72 @@ class Certificate {
 			'center' => (string) get_bloginfo( 'name' ),
 			'nota'   => '' === $nota ? '' : number_format_i18n( (float) $nota, 2 ),
 			'verify' => self::verify_url( $code ),
-			'qr'     => Certificate_QR::enabled() ? Certificate_QR::image( self::verify_url( $code ) ) : '',
+			'qr'     => Certificate_QR::image( self::verify_url( $code ) ),
+			'logo'   => self::logo_data_uri(),
+			'firma'  => self::firma(),
+		);
+	}
+
+	/**
+	 * Logo del certificado como data URI.
+	 *
+	 * Dompdf corre con `isRemoteEnabled=false`, así que una URL no sirve: hay que incrustar los bytes.
+	 * Se toma el logo configurado en este plugin y, si no lo hay, el del tema: un certificado sin
+	 * identidad visual no parece un certificado (courses#30).
+	 *
+	 * @return string Data URI, o cadena vacía si no hay logo legible.
+	 */
+	private static function logo_data_uri(): string {
+		$id = (int) get_option( self::OPTION_LOGO, 0 );
+
+		if ( $id <= 0 ) {
+			$id = (int) get_theme_mod( 'custom_logo', 0 );
+		}
+
+		if ( $id <= 0 ) {
+			return '';
+		}
+
+		$ruta = get_attached_file( $id );
+
+		if ( ! is_string( $ruta ) || '' === $ruta || ! is_readable( $ruta ) ) {
+			return '';
+		}
+
+		$tipo = (string) get_post_mime_type( $id );
+		if ( ! in_array( $tipo, array( 'image/png', 'image/jpeg' ), true ) ) {
+			$tipo = 'image/png';
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- fichero local de uploads, no una URL.
+		$bytes = file_get_contents( $ruta );
+
+		if ( false === $bytes || '' === $bytes ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- formato obligatorio del data URI.
+		return 'data:' . $tipo . ';base64,' . base64_encode( $bytes );
+	}
+
+	/**
+	 * Firma del certificado: quién lo expide y con qué cargo.
+	 *
+	 * Cada instalación lo configura en Ajustes; si no, firma el nombre del sitio.
+	 *
+	 * @return array{texto: string, cargo: string}
+	 */
+	private static function firma(): array {
+		$texto = (string) get_option( self::OPTION_FIRMA, '' );
+		$cargo = (string) get_option( self::OPTION_FIRMA_CARGO, '' );
+
+		if ( '' === $texto ) {
+			$texto = (string) get_bloginfo( 'name' );
+		}
+
+		return array(
+			'texto' => $texto,
+			'cargo' => $cargo,
 		);
 	}
 

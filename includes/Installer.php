@@ -93,6 +93,9 @@ class Installer {
 		Verification::register_rewrite();
 		flush_rewrite_rules();
 
+		// Sin esta página, quien recibe un enlace caducado no tiene dónde pedir otro (courses#31).
+		Identidad_Acceso::asegurar_pagina();
+
 		update_option( self::DB_OPTION, CONVOCA_COURSES_DB_VERSION, false );
 	}
 

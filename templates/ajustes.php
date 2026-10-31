@@ -196,6 +196,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</p>
 		<?php endif; ?>
 
+		<h2><?php esc_html_e( 'Certificado', 'convoca-courses' ); ?></h2>
+		<p class="description">
+			<?php esc_html_e( 'Cada organización firma con su propia identidad. Sin logo configurado se usa el del tema; sin firma, el nombre del sitio.', 'convoca-courses' ); ?>
+		</p>
+		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row"><label for="convoca-cert-logo"><?php esc_html_e( 'Logo', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="number" min="0" step="1" id="convoca-cert-logo" name="<?php echo esc_attr( (string) $cert_logo_option ); ?>" value="<?php echo esc_attr( (string) $cert_logo ); ?>" class="small-text" />
+					<a class="button" href="<?php echo esc_url( admin_url( 'upload.php' ) ); ?>"><?php esc_html_e( 'Ver biblioteca de medios', 'convoca-courses' ); ?></a>
+					<p class="description">
+						<?php esc_html_e( 'Identificador del adjunto (PNG o JPEG). Déjalo en 0 para usar el logo del tema. Se incrusta en el PDF: tiene que ser un fichero de este sitio.', 'convoca-courses' ); ?>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-cert-firma"><?php esc_html_e( 'Firma', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="text" id="convoca-cert-firma" name="<?php echo esc_attr( (string) $cert_firma_option ); ?>" value="<?php echo esc_attr( (string) $cert_firma ); ?>" class="regular-text" />
+					<p class="description"><?php esc_html_e( 'Nombre de quien expide el certificado. Vacío: el nombre del sitio.', 'convoca-courses' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="convoca-cert-cargo"><?php esc_html_e( 'Cargo', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="text" id="convoca-cert-cargo" name="<?php echo esc_attr( (string) $cert_firma_cargo_option ); ?>" value="<?php echo esc_attr( (string) $cert_firma_cargo ); ?>" class="regular-text" />
+					<p class="description"><?php esc_html_e( 'Aparece bajo la firma. Opcional.', 'convoca-courses' ); ?></p>
+				</td>
+			</tr>
+		</table>
+
 		<h2><?php esc_html_e( 'Datos', 'convoca-courses' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<tr>

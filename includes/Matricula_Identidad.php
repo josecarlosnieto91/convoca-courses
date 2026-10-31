@@ -142,6 +142,11 @@ class Matricula_Identidad {
 		$html .= '<p><button type="submit" class="convoca-boton">' . esc_html__( 'Matricularme', 'convoca-courses' ) . '</button></p>';
 		$html .= '</form>';
 
+		// Quien ya se matriculó antes y perdió el correo necesita una puerta de vuelta (courses#31).
+		$html .= '<p class="convoca-matricula__acceso"><a href="' . esc_url( Identidad_Acceso::url_acceso() ) . '">'
+			. esc_html__( '¿Ya te has matriculado? Entra aquí', 'convoca-courses' )
+			. '</a></p>';
+
 		return '<div class="convoca-matricula">' . $html . '</div>';
 	}
 

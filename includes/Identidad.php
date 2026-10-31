@@ -57,7 +57,9 @@ class Identidad {
 	/**
 	 * Vida del enlace y del código, en segundos.
 	 */
-	public const VIDA = 1800;
+	// 24 horas: 30 minutos dejaba fuera a quien abría el correo por la noche o lo retomaba al día
+	// siguiente, y no había forma de pedir otro enlace desde ninguna página (courses#31).
+	public const VIDA = 86400;
 
 	/**
 	 * Meta de la matrícula con la identidad vinculada.

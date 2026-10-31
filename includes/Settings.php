@@ -147,6 +147,41 @@ class Settings {
 			)
 		);
 
+		// Logo y firma del certificado: cada instalación firma con su identidad (courses#30).
+		register_setting(
+			self::GROUP,
+			Certificate::OPTION_LOGO,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 0,
+			)
+		);
+
+		register_setting(
+			self::GROUP,
+			Certificate::OPTION_FIRMA,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => static function ( $value ) {
+					return sanitize_text_field( (string) $value );
+				},
+				'default'           => '',
+			)
+		);
+
+		register_setting(
+			self::GROUP,
+			Certificate::OPTION_FIRMA_CARGO,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => static function ( $value ) {
+					return sanitize_text_field( (string) $value );
+				},
+				'default'           => '',
+			)
+		);
+
 		register_setting(
 			self::GROUP,
 			Installer::KEEP_DATA_OPTION,
@@ -229,6 +264,12 @@ class Settings {
 				'renuncia_defecto'        => Condiciones::texto_renuncia(),
 				'plantilla_propia'        => Course_Template::activa(),
 				'plantilla_option'        => Course_Template::OPTION,
+				'cert_logo'               => (int) get_option( Certificate::OPTION_LOGO, 0 ),
+				'cert_logo_option'        => Certificate::OPTION_LOGO,
+				'cert_firma'              => (string) get_option( Certificate::OPTION_FIRMA, '' ),
+				'cert_firma_option'       => Certificate::OPTION_FIRMA,
+				'cert_firma_cargo'        => (string) get_option( Certificate::OPTION_FIRMA_CARGO, '' ),
+				'cert_firma_cargo_option' => Certificate::OPTION_FIRMA_CARGO,
 				'entidad_faltan'          => array_map(
 					static function ( $campo ) {
 						return Entidad::campos()[ $campo ] ?? $campo;

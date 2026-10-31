@@ -1,3 +1,9 @@
+## [0.21.0] — 2026-10-31
+
+### Cambiado
+
+- **examen sin cuenta, enlace de acceso y certificado**
+
 ## [0.20.2] — 2026-10-31
 
 ### Cambiado

@@ -34,6 +34,16 @@ class Identidad_Acceso {
 	public const PARAM_TOKEN = 'convoca_acceso';
 
 	/**
+	 * Opción con la página pública de acceso.
+	 */
+	public const OPCION_PAGINA = 'convoca_courses_acceso_page';
+
+	/**
+	 * Ruta de esa página.
+	 */
+	public const SLUG_PAGINA = 'acceso-alumnado';
+
+	/**
 	 * Engancha el shortcode y el enlace.
 	 *
 	 * @return void
@@ -41,6 +51,9 @@ class Identidad_Acceso {
 	public static function register(): void {
 		add_shortcode( self::SHORTCODE, array( __CLASS__, 'render' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'atender_enlace' ) );
+
+		// La página de acceso se crea al activar el plugin (ver `Installer::activate`), no en cada
+		// petición: escribir en la base de datos en cada carga sería peor que el problema que resuelve.
 
 		foreach ( array( self::ACCION, self::ACCION . '_codigo' ) as $convoca_accion ) {
 			add_action( 'admin_post_nopriv_' . $convoca_accion, array( __CLASS__, 'procesar' ) );
@@ -131,8 +144,8 @@ class Identidad_Acceso {
 			__( 'Tu acceso al curso', 'convoca-courses' ),
 			sprintf(
 				/* translators: 1: enlace, 2: código. */
-				'%1$s' . "\n\n" . '%2$s' . "\n\n" . '%3$s %4$s',
-				__( 'Entra con este enlace (caduca en 30 minutos):', 'convoca-courses' ),
+				'%1$s' . "\n\n" . '%2$s' . "\n\n" . '%3$s %4$s' . "\n\n" . '%5$s' . "\n" . '%6$s',
+				__( 'Entra con este enlace (caduca en 24 horas):', 'convoca-courses' ),
 				add_query_arg(
 					array(
 						self::PARAM_TOKEN => $par['token'],
@@ -141,7 +154,9 @@ class Identidad_Acceso {
 					home_url( '/' )
 				),
 				__( 'O usa este código:', 'convoca-courses' ),
-				$par['codigo']
+				$par['codigo'],
+				__( 'Si el enlace ha caducado, pide otro aquí:', 'convoca-courses' ),
+				self::url_acceso()
 			),
 			'acceso_identidad'
 		);
@@ -174,7 +189,10 @@ class Identidad_Acceso {
 		$id    = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( ! Identidad::token_valido( $id, $token ) ) {
-			return false;
+			// Antes se caía a la portada sin decir nada: el alumnado no sabía si el enlace era malo,
+			// si había caducado o si ya estaba dentro (courses#31).
+			wp_safe_redirect( add_query_arg( 'convoca_acceso', 'caducado', self::url_acceso() ) );
+			exit;
 		}
 
 		Identidad::consumir( $id );
@@ -183,6 +201,65 @@ class Identidad_Acceso {
 		wp_safe_redirect( remove_query_arg( self::PARAM_TOKEN, add_query_arg( 'id', $id ) ) );
 
 		return true;
+	}
+
+	/**
+	 * Página pública con el formulario de acceso, creada una sola vez.
+	 *
+	 * @return int Identificador de la página; 0 si no se pudo crear.
+	 */
+	public static function pagina(): int {
+		$guardada = (int) get_option( self::OPCION_PAGINA, -1 );
+
+		if ( $guardada > 0 && 'page' === get_post_type( $guardada ) ) {
+			return $guardada;
+		}
+
+		$existente = get_page_by_path( self::SLUG_PAGINA, 'OBJECT', 'page' );
+
+		if ( $existente instanceof \WP_Post ) {
+			update_option( self::OPCION_PAGINA, (int) $existente->ID );
+
+			return (int) $existente->ID;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * URL pública para pedir el acceso.
+	 *
+	 * @return string
+	 */
+	public static function url_acceso(): string {
+		$id = self::pagina();
+
+		return $id > 0 ? (string) get_permalink( $id ) : home_url( '/' );
+	}
+
+	/**
+	 * Crea la página de acceso si no existe. Idempotente.
+	 *
+	 * @return void
+	 */
+	public static function asegurar_pagina(): void {
+		if ( self::pagina() > 0 ) {
+			return;
+		}
+
+		$id = wp_insert_post(
+			array(
+				'post_title'   => __( 'Acceso al alumnado', 'convoca-courses' ),
+				'post_name'    => self::SLUG_PAGINA,
+				'post_content' => '[' . self::SHORTCODE . ']',
+				'post_status'  => 'publish',
+				'post_type'    => 'page',
+			)
+		);
+
+		if ( $id > 0 ) {
+			update_option( self::OPCION_PAGINA, (int) $id );
+		}
 	}
 
 	/**
@@ -203,6 +280,12 @@ class Identidad_Acceso {
 		}
 
 		$aviso = '';
+
+		if ( isset( $_GET['convoca_acceso'] ) && 'caducado' === sanitize_text_field( wp_unslash( (string) $_GET['convoca_acceso'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$aviso = '<div class="convoca-alert convoca-alert--warning">'
+				. esc_html__( 'Ese enlace ha caducado. Pide uno nuevo con tu correo aquí abajo, o entra con el código de 6 cifras.', 'convoca-courses' )
+				. '</div>';
+		}
 
 		if ( isset( $_GET['convoca_enviado'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$aviso = '<div class="convoca-alert convoca-alert--info">'

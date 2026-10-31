@@ -180,7 +180,13 @@ class Shortcodes {
 			return self::error_box();
 		}
 
-		return Certificate::render_template( 'examen.php', Exam_View::data( $exam_id, get_current_user_id() ), false );
+		// La identidad de la cookie viaja con el examen: sin ella el alumnado matriculado por correo
+		// veía «Inicia sesión para hacer el examen» (courses#28).
+		return Certificate::render_template(
+			'examen.php',
+			Exam_View::data( $exam_id, get_current_user_id(), Access::identidad_actual() ),
+			false
+		);
 	}
 
 	/**

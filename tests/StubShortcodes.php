@@ -160,6 +160,37 @@ if ( ! function_exists( 'add_action' ) ) {
 	function has_action( $hook ) {
 		return isset( $GLOBALS['convoca_courses_acciones'][ $hook ] ) ? 10 : false;
 	}
+
+	/**
+	 * Ajuste del tema (doble).
+	 *
+	 * @param string $name     Nombre.
+	 * @param mixed  $fallback Valor por defecto.
+	 * @return mixed
+	 */
+	function get_theme_mod( $name, $fallback = false ) {
+		return $GLOBALS['convoca_test_theme_mod'][ $name ] ?? $fallback;
+	}
+
+	/**
+	 * Ruta del adjunto (doble).
+	 *
+	 * @param int $id Adjunto.
+	 * @return string|false
+	 */
+	function get_attached_file( $id ) {
+		return $GLOBALS['convoca_test_attached'][ (int) $id ] ?? false;
+	}
+
+	/**
+	 * Tipo MIME del adjunto (doble).
+	 *
+	 * @param int $id Adjunto.
+	 * @return string|false
+	 */
+	function get_post_mime_type( $id ) {
+		return $GLOBALS['convoca_test_mime'][ (int) $id ] ?? false;
+	}
 }
 
 if ( ! function_exists( 'wp_die' ) ) {

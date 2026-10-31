@@ -22,17 +22,28 @@ class Exam_View {
 	/**
 	 * Datos completos de un examen para una persona.
 	 *
-	 * @param int $exam_id Examen.
-	 * @param int $user_id Persona.
+	 * @param int $exam_id      Examen.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $identidad_id Identidad de la cookie; 0 para resolverla aquí.
 	 * @return array<string, mixed>
 	 */
-	public static function data( int $exam_id, int $user_id ): array {
+	public static function data( int $exam_id, int $user_id, int $identidad_id = 0 ): array {
+		// El alumnado sin cuenta no tiene `$user_id`: sin esto la plantilla caía en «sin_sesion» y no
+		// podía presentarse aunque tuviera la matrícula activa (courses#28).
+		if ( $user_id <= 0 && $identidad_id <= 0 ) {
+			$identidad_id = Access::identidad_actual();
+		}
+
+		if ( $user_id > 0 ) {
+			$identidad_id = 0;
+		}
+
 		$course_id  = CPT_Examen::course_id( $exam_id );
 		$module_id  = CPT_Examen::module_id( $exam_id );
 		$minimo     = CPT_Examen::min_score( $exam_id );
 		$permitidos = CPT_Examen::max_attempts( $exam_id );
-		$usados     = Attempts::count_for( $user_id, $exam_id );
-		$abierto    = Attempts::current( $user_id, $exam_id );
+		$usados     = Attempts::count_for( $user_id, $exam_id, $identidad_id );
+		$abierto    = Attempts::current( $user_id, $exam_id, $identidad_id );
 		$puede      = $course_id > 0 && Access::can_take_exam( $user_id, $course_id, $module_id );
 		$quedan     = Attempts::remaining( $permitidos, $usados );
 
@@ -52,7 +63,7 @@ class Exam_View {
 			}
 		}
 
-		$intentos = self::attempts_data( $user_id, $exam_id );
+		$intentos = self::attempts_data( $user_id, $exam_id, $identidad_id );
 
 		return array(
 			'exam_id'       => $exam_id,
@@ -61,7 +72,7 @@ class Exam_View {
 			'intro'         => (string) apply_filters( 'the_content', (string) get_post_field( 'post_content', $exam_id ) ),
 			'enrolled'      => $course_id > 0 && Access::is_enrolled( $user_id, $course_id ),
 			'manage'        => Access::can_manage(),
-			'logged_in'     => $user_id > 0,
+			'logged_in'     => $user_id > 0 || $identidad_id > 0,
 			'can_take'      => $puede,
 			'expired'       => $course_id > 0 && Access::is_expired( $user_id, $course_id ),
 			'min_score'     => $minimo,
@@ -73,37 +84,40 @@ class Exam_View {
 			'open'          => $abierto,
 			'questions'     => $preguntas,
 			'attempts'      => $intentos,
-			'best'          => Attempts::best_score( $user_id, $exam_id ),
-			'passed'        => Attempts::has_passed( $user_id, $exam_id ),
+			'best'          => Attempts::best_score( $user_id, $exam_id, $identidad_id ),
+			'passed'        => Attempts::has_passed( $user_id, $exam_id, $identidad_id ),
 			'open_url'      => Handlers::exam_form_action(),
 			'open_nonce'    => Handlers::exam_open_nonce( $exam_id ),
 			'course_url'    => $course_id > 0 ? (string) get_permalink( $course_id ) : '',
 			'notice'        => self::notice(),
-			'result'        => self::requested_attempt( $user_id, $exam_id ),
+			'result'        => self::requested_attempt( $user_id, $exam_id, $identidad_id ),
 		);
 	}
 
 	/**
 	 * Historial de intentos cerrados, del más reciente al más antiguo.
 	 *
-	 * @param int $user_id Persona.
-	 * @param int $exam_id Examen.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $exam_id      Examen.
+	 * @param int $identidad_id Identidad (0 si va con usuario).
 	 * @return array<int, array<string, mixed>>
 	 */
-	public static function attempts_data( int $user_id, int $exam_id ): array {
+	public static function attempts_data( int $user_id, int $exam_id, int $identidad_id = 0 ): array {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $exam_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $exam_id <= 0 ) {
 			return array();
 		}
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
+		$dueno = $identidad_id > 0 ? 'identidad_id' : 'user_id';
+		$quien = $identidad_id > 0 ? $identidad_id : $user_id;
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE user_id = %d AND exam_id = %d AND estado <> 'abierto' ORDER BY id DESC",
-				$user_id,
+				"SELECT * FROM {$table} WHERE {$dueno} = %d AND exam_id = %d AND estado <> 'abierto' ORDER BY id DESC",
+				$quien,
 				$exam_id
 			),
 			'ARRAY_A'
@@ -120,11 +134,12 @@ class Exam_View {
 	/**
 	 * Intento concreto pedido en la URL, si es de esta persona.
 	 *
-	 * @param int $user_id Persona.
-	 * @param int $exam_id Examen.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $exam_id      Examen.
+	 * @param int $identidad_id Identidad (0 si va con usuario).
 	 * @return array<string, mixed>|null
 	 */
-	private static function requested_attempt( int $user_id, int $exam_id ): ?array {
+	private static function requested_attempt( int $user_id, int $exam_id, int $identidad_id = 0 ): ?array {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo lectura de un identificador para pintar un resultado propio.
 		$attempt_id = isset( $_GET['convoca_intento'] ) ? absint( wp_unslash( (string) $_GET['convoca_intento'] ) ) : 0;
 
@@ -137,7 +152,11 @@ class Exam_View {
 			return null;
 		}
 
-		if ( (int) $attempt['user_id'] !== $user_id || (int) $attempt['exam_id'] !== $exam_id ) {
+		$dueno_ok = $identidad_id > 0
+			? (int) ( $attempt['identidad_id'] ?? 0 ) === $identidad_id
+			: (int) $attempt['user_id'] === $user_id;
+
+		if ( ! $dueno_ok || (int) $attempt['exam_id'] !== $exam_id ) {
 			return null;
 		}
 

@@ -231,7 +231,14 @@ final class IdentidadTest extends TestCase {
 		$_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ] = 'falso';
 		$_GET['id'] = $id;
 
-		$this->assertFalse( \Convoca\Courses\Identidad_Acceso::intentar_enlace() );
+		// Ya no se cae a la portada en silencio: se manda a la página de acceso con el aviso
+		// (courses#31).
+		try {
+			\Convoca\Courses\Identidad_Acceso::intentar_enlace();
+			$this->fail( 'debería redirigir con el aviso de caducidad' );
+		} catch ( \Convoca_Courses_Redirect $redireccion ) {
+			$this->assertStringContainsString( 'convoca_acceso=caducado', $redireccion->destino );
+		}
 
 		unset( $_GET[ \Convoca\Courses\Identidad_Acceso::PARAM_TOKEN ], $_GET['id'] );
 	}

@@ -416,24 +416,27 @@ class Attempts {
 	/**
 	 * Mejor nota de una persona en un examen.
 	 *
-	 * @param int $user_id Persona.
-	 * @param int $exam_id Examen.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $exam_id      Examen.
+	 * @param int $identidad_id Identidad (0 si va con usuario).
 	 * @return float
 	 */
-	public static function best_score( int $user_id, int $exam_id ): float {
+	public static function best_score( int $user_id, int $exam_id, int $identidad_id = 0 ): float {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $exam_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $exam_id <= 0 ) {
 			return 0.0;
 		}
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
+		$dueno = $identidad_id > 0 ? 'identidad_id' : 'user_id';
+		$quien = $identidad_id > 0 ? $identidad_id : $user_id;
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
 		$score = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT MAX(puntuacion) FROM {$table} WHERE user_id = %d AND exam_id = %d AND estado = 'enviado'",
-				$user_id,
+				"SELECT MAX(puntuacion) FROM {$table} WHERE {$dueno} = %d AND exam_id = %d AND estado = 'enviado'",
+				$quien,
 				$exam_id
 			)
 		);
@@ -492,26 +495,29 @@ class Attempts {
 	}
 
 	/**
-	 * ¿Ha aprobado esta persona el examen en algún intento?
+	 * ¿Ha aprobado esta persona el examen?
 	 *
-	 * @param int $user_id Persona.
-	 * @param int $exam_id Examen.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $exam_id      Examen.
+	 * @param int $identidad_id Identidad (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function has_passed( int $user_id, int $exam_id ): bool {
+	public static function has_passed( int $user_id, int $exam_id, int $identidad_id = 0 ): bool {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $exam_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $exam_id <= 0 ) {
 			return false;
 		}
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
+		$dueno = $identidad_id > 0 ? 'identidad_id' : 'user_id';
+		$quien = $identidad_id > 0 ? $identidad_id : $user_id;
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
 		$found = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND exam_id = %d AND aprobado = 1",
-				$user_id,
+				"SELECT COUNT(*) FROM {$table} WHERE {$dueno} = %d AND exam_id = %d AND aprobado = 1",
+				$quien,
 				$exam_id
 			)
 		);

@@ -348,12 +348,9 @@ class Handlers {
 			return;
 		}
 
-		if ( ! is_user_logged_in() ) {
-			self::redirect_to_login( '' );
-			return;
-		}
-
-		$result = Attempts::open( get_current_user_id(), $exam_id );
+		// Sin sesión de WordPress también se puede: la matrícula puede venir de la identidad de la
+		// cookie y `Attempts::open` la comprueba (courses#28).
+		$result = Attempts::open( get_current_user_id(), $exam_id, Access::identidad_actual() );
 
 		if ( is_wp_error( $result ) ) {
 			self::redirect_back( CPT_Examen::course_id( $exam_id ), self::exam_error_key( $result->get_error_code() ), $result->get_error_code() );
@@ -383,11 +380,6 @@ class Handlers {
 			return;
 		}
 
-		if ( ! is_user_logged_in() ) {
-			self::redirect_to_login( '' );
-			return;
-		}
-
 		$respuestas = array();
 		foreach ( (array) $entrantes as $question_id => $valor ) {
 			if ( is_array( $valor ) ) {
@@ -397,7 +389,7 @@ class Handlers {
 			$respuestas[ (int) $question_id ] = sanitize_text_field( (string) $valor );
 		}
 
-		$result = Attempts::submit( $attempt_id, get_current_user_id(), $respuestas );
+		$result = Attempts::submit( $attempt_id, get_current_user_id(), $respuestas, Access::identidad_actual() );
 
 		if ( is_wp_error( $result ) ) {
 			self::redirect_back( 0, self::exam_error_key( $result->get_error_code() ), $result->get_error_code() );
