@@ -112,8 +112,16 @@ class Certificate {
 		// Compatibilidad con el progreso que quedó guardado en el usuario antes de que la identidad
 		// mandara: si el suyo está más avanzado, se tiene en cuenta para no dejar sin certificado a
 		// quien ya completó el curso (courses#39).
-		if ( $user_id > 0 ) {
-			$del_usuario = Progress::for_course( $user_id, $course_id );
+		$dueno = $user_id;
+
+		// Una matrícula por identidad no guarda `user_id`. Si el alumno hizo el examen con una sesión
+		// abierta en el navegador, su progreso quedó en ese usuario: el intento conserva el vínculo.
+		if ( $dueno <= 0 && $identidad_id > 0 ) {
+			$dueno = self::usuario_del_intento( $identidad_id, $course_id );
+		}
+
+		if ( $dueno > 0 ) {
+			$del_usuario = Progress::for_course( $dueno, $course_id );
 
 			if ( (int) $del_usuario['done'] > (int) $progress['done'] ) {
 				$progress = $del_usuario;
@@ -387,6 +395,34 @@ class Certificate {
 			'logo'   => self::logo_data_uri(),
 			'firma'  => self::firma(),
 		);
+	}
+
+	/**
+	 * Usuario con el que se hizo el último intento de una identidad en un curso.
+	 *
+	 * Sirve para recuperar el progreso que quedó guardado en la sesión del navegador antes de que la
+	 * identidad mandara (courses#39).
+	 *
+	 * @param int $identidad_id Identidad.
+	 * @param int $course_id    Curso.
+	 * @return int Usuario, o 0.
+	 */
+	private static function usuario_del_intento( int $identidad_id, int $course_id ): int {
+		global $wpdb;
+
+		$tabla = Installer::table( Installer::ATTEMPTS_TABLE );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
+		$usuario = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT user_id FROM {$tabla} WHERE identidad_id = %d AND course_id = %d ORDER BY id DESC LIMIT 1",
+				$identidad_id,
+				$course_id
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return (int) $usuario;
 	}
 
 	/**
