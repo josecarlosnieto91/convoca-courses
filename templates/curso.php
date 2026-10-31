@@ -30,7 +30,7 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 		<?php
 		// En la ficha del curso el título lo pinta el tema; repetirlo aquí daba dos títulos
 		// seguidos (courses#37). Fuera de la ficha (un shortcode en una página) sí hace falta.
-		if ( ! is_singular( \Convoca\Courses\CPT_Curso::TYPE ) ) :
+		if ( ! is_singular() ) :
 			?>
 			<p class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></p>
 		<?php endif; ?>
@@ -58,7 +58,7 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 	<div class="convoca-courses__content">
 		<?php
 		// Lo mismo con la entradilla: si el tema ya pinta el contenido del curso, no se repite.
-		if ( ! is_singular( \Convoca\Courses\CPT_Curso::TYPE ) ) {
+		if ( ! is_singular() ) {
 			echo wp_kses_post( (string) $content );
 		}
 		?>

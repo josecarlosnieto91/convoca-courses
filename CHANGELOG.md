@@ -1,3 +1,9 @@
+## [0.23.1] — 2026-10-31
+
+### Cambiado
+
+- **ficha sin duplicado en pagina singular**
+
 ## [0.23.0] — 2026-10-31
 
 ### Cambiado
