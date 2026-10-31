@@ -415,6 +415,41 @@ class Certificate {
 	}
 
 	/**
+	 * Tipografías del tema empaquetadas, con su familia y peso.
+	 *
+	 * @return array<int, array{familia: string, peso: string, fichero: string}>
+	 */
+	private static function fuentes_empaquetadas(): array {
+		return array(
+			array(
+				'familia' => 'Outfit',
+				'peso'    => '600',
+				'fichero' => 'Outfit-SemiBold.ttf',
+			),
+			array(
+				'familia' => 'Outfit',
+				'peso'    => '700',
+				'fichero' => 'Outfit-Bold.ttf',
+			),
+			array(
+				'familia' => 'Lato',
+				'peso'    => '400',
+				'fichero' => 'Lato-Regular.ttf',
+			),
+			array(
+				'familia' => 'Lato',
+				'peso'    => '700',
+				'fichero' => 'Lato-Bold.ttf',
+			),
+			array(
+				'familia' => 'Lato',
+				'peso'    => '900',
+				'fichero' => 'Lato-Black.ttf',
+			),
+		);
+	}
+
+	/**
 	 * Firma del certificado: quién lo expide y con qué cargo.
 	 *
 	 * Cada instalación lo configura en Ajustes; si no, firma el nombre del sitio.
@@ -470,14 +505,13 @@ class Certificate {
 		// el texto alternativo en el hueco (courses#29).
 		$data['qr'] = Certificate_QR::image( (string) ( $data['verify'] ?? self::verify_url( $code ) ), true );
 
-		// Fuentes del tema empaquetadas: sin registrarlas, Dompdf vuelve a DejaVu y el CSS miente
-		// (courses#35).
-		$data['fuentes'] = 'file://' . CONVOCA_COURSES_DIR . 'assets/fonts/';
+		// Las fuentes se registran en Dompdf por código, no con `@font-face`: el CSS con `file://` no
+		// le bastaba y volvía a Helvetica (courses#35).
 
 		$html = self::render_template( 'certificado.php', $data, false );
 
 		try {
-			$dompdf = new \Dompdf\Dompdf(
+			$dompdf   = new \Dompdf\Dompdf(
 				array(
 					'isRemoteEnabled'      => false,
 					'isHtml5ParserEnabled' => true,
@@ -485,6 +519,23 @@ class Certificate {
 					'chroot'               => ABSPATH,
 				)
 			);
+			$metricas = $dompdf->getFontMetrics();
+
+			foreach ( self::fuentes_empaquetadas() as $convoca_fuente ) {
+				$convoca_ruta = CONVOCA_COURSES_DIR . 'assets/fonts/' . $convoca_fuente['fichero'];
+
+				if ( is_readable( $convoca_ruta ) ) {
+					$metricas->registerFont(
+						array(
+							'family' => $convoca_fuente['familia'],
+							'style'  => 'normal',
+							'weight' => $convoca_fuente['peso'],
+						),
+						$convoca_ruta
+					);
+				}
+			}
+
 			$dompdf->loadHtml( $html, 'UTF-8' );
 			$dompdf->setPaper( 'A4', 'landscape' );
 			$dompdf->render();

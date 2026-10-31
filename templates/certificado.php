@@ -14,22 +14,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$convoca_firma   = isset( $firma ) && is_array( $firma ) ? $firma : array(
+$convoca_firma = isset( $firma ) && is_array( $firma ) ? $firma : array(
 	'texto' => (string) $center,
 	'cargo' => '',
 );
-$convoca_fuentes = isset( $fuentes ) ? (string) $fuentes : '';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 	<meta charset="utf-8" />
 	<style>
-		@font-face { font-family: 'Lato'; font-style: normal; font-weight: 400; src: url('<?php echo esc_attr( $convoca_fuentes . 'Lato-Regular.ttf' ); ?>'); }
-		@font-face { font-family: 'Lato'; font-style: normal; font-weight: 700; src: url('<?php echo esc_attr( $convoca_fuentes . 'Lato-Bold.ttf' ); ?>'); }
-		@font-face { font-family: 'Lato'; font-style: normal; font-weight: 900; src: url('<?php echo esc_attr( $convoca_fuentes . 'Lato-Black.ttf' ); ?>'); }
-		@font-face { font-family: 'Outfit'; font-style: normal; font-weight: 600; src: url('<?php echo esc_attr( $convoca_fuentes . 'Outfit-SemiBold.ttf' ); ?>'); }
-		@font-face { font-family: 'Outfit'; font-style: normal; font-weight: 700; src: url('<?php echo esc_attr( $convoca_fuentes . 'Outfit-Bold.ttf' ); ?>'); }
+		/* Las TTF se registran en Dompdf desde el generador: con la fuente enlazada por CSS volvía a
+			Helvetica. */
 
 		@page { margin: 0; size: A4 landscape; }
 		html, body { margin: 0; padding: 0; }

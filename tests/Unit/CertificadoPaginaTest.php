@@ -34,6 +34,7 @@ final class CertificadoPaginaTest extends TestCase {
 		$this->assertStringContainsString( 'height: 210mm', $css, 'A4 horizontal son 210 mm de alto' );
 		$this->assertStringContainsString( 'size: A4 landscape', $css );
 		$this->assertStringNotContainsString( 'height: 100%', $css, 'Dompdf no lo estira y descuadra el cálculo' );
+		$this->assertStringNotContainsString( '@font-face {', $css, 'las fuentes se registran desde PHP' );
 	}
 
 	/**
@@ -58,14 +59,22 @@ final class CertificadoPaginaTest extends TestCase {
 	}
 
 	/**
-	 * Las tipografías del tema van empaquetadas, no por CSS remoto.
+	 * Las tipografías del tema van empaquetadas y se registran en Dompdf desde PHP.
 	 */
 	public function test_las_fuentes_son_del_tema_y_van_empaquetadas(): void {
-		$css = $this->plantilla();
+		$css     = $this->plantilla();
+		$fuentes = dirname( __DIR__, 2 ) . '/assets/fonts';
 
-		$this->assertStringContainsString( '@font-face', $css );
-		$this->assertStringContainsString( 'Outfit-SemiBold.ttf', $css );
-		$this->assertStringContainsString( 'Lato-Regular.ttf', $css );
+		foreach ( array( 'Outfit-SemiBold.ttf', 'Outfit-Bold.ttf', 'Lato-Regular.ttf', 'Lato-Bold.ttf', 'Lato-Black.ttf' ) as $fichero ) {
+			$this->assertFileExists( $fuentes . '/' . $fichero );
+		}
+
+		$this->assertStringContainsString( "'Outfit'", $css );
+		$this->assertStringContainsString( "'Lato'", $css );
 		$this->assertStringNotContainsString( 'DejaVu', $css, 'la fuente por defecto de Dompdf no es la del tema' );
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- fichero local del repo.
+		$codigo = (string) file_get_contents( dirname( __DIR__, 2 ) . '/includes/Certificate.php' );
+		$this->assertStringContainsString( 'registerFont', $codigo, 'sin registrar la TTF, Dompdf vuelve a Helvetica' );
 	}
 }
