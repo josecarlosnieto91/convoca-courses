@@ -119,6 +119,36 @@ if ( ! function_exists( 'apply_filters' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_update_post' ) ) {
+	/**
+	 * Actualiza un post (doble: aplica solo el status).
+	 *
+	 * @param array $datos Datos.
+	 * @return int
+	 */
+	function wp_update_post( $datos ) {
+		$id = (int) ( $datos['ID'] ?? 0 );
+
+		if ( isset( $datos['post_status'] ) ) {
+			$GLOBALS['convoca_test_post_status'][ $id ] = (string) $datos['post_status'];
+		}
+
+		return $id;
+	}
+}
+
+if ( ! function_exists( 'get_post_status' ) ) {
+	/**
+	 * Status del post (doble).
+	 *
+	 * @param int $post_id Post.
+	 * @return string|false
+	 */
+	function get_post_status( $post_id ) {
+		return $GLOBALS['convoca_test_post_status'][ (int) $post_id ] ?? 'draft';
+	}
+}
+
 if ( ! function_exists( 'clean_post_cache' ) ) {
 	/**
 	 * Limpia la caché del post (doble: no hay caché que limpiar).

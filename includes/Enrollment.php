@@ -403,6 +403,18 @@ class Enrollment {
 
 		if ( '' !== $previo ) {
 			update_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado', $previo );
+
+			// WordPress devuelve la entrada al status que tenía guardado, que puede ser `draft`: una
+			// matrícula activa en borrador no la encuentra el control de acceso y el curso vuelve a
+			// pedir matrícula (courses#43).
+			if ( in_array( $previo, array( 'activa', 'completada' ), true ) && 'publish' !== get_post_status( $post_id ) ) {
+				wp_update_post(
+					array(
+						'ID'          => $post_id,
+						'post_status' => 'publish',
+					)
+				);
+			}
 		}
 
 		delete_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado_antes_papelera' );

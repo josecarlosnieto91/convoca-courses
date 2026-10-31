@@ -51,6 +51,9 @@ final class PapeleraMatriculaTest extends TestCase {
 
 		$this->assertSame( 'completada', $GLOBALS['convoca_test_meta'][500]['_convoca_estado'] );
 		$this->assertArrayNotHasKey( '_convoca_estado_antes_papelera', $GLOBALS['convoca_test_meta'][500] );
+		// WordPress puede devolverla en `draft`: una matrícula activa tiene que quedar publicada o el
+		// control de acceso no la encuentra.
+		$this->assertSame( 'publish', $GLOBALS['convoca_test_post_status'][500] );
 	}
 
 	/**

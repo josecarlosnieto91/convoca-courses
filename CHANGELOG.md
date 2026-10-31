@@ -1,3 +1,9 @@
+## [0.23.7] — 2026-10-31
+
+### Cambiado
+
+- **matricula restaurada en publish**
+
 ## [0.23.6] — 2026-10-31
 
 ### Cambiado
