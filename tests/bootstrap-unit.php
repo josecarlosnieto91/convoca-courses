@@ -324,14 +324,25 @@ if ( ! function_exists( 'admin_url' ) ) {
 }
 if ( ! function_exists( 'add_query_arg' ) ) {
 	/**
-	 * Añade parámetros a una URL.
+	 * Añade parámetros a una URL, con las dos firmas de WordPress.
 	 *
-	 * @param array  $args Parámetros.
-	 * @param string $url  URL base.
+	 * @param mixed ...$args Clave, valor y URL; o mapa y URL.
 	 * @return string
 	 */
-	function add_query_arg( $args = array(), $url = '' ) {
-		return (string) $url . '?' . http_build_query( (array) $args );
+	function add_query_arg( ...$args ) {
+		// Las dos firmas de WordPress: (clave, valor, url) y (mapa, url).
+		if ( count( $args ) >= 3 ) {
+			list( $clave, $valor, $url ) = $args;
+			$union                       = false !== strpos( (string) $url, '?' ) ? '&' : '?';
+
+			return (string) $url . $union . rawurlencode( (string) $clave ) . '=' . rawurlencode( (string) $valor );
+		}
+
+		$mapa  = (array) ( $args[0] ?? array() );
+		$url   = (string) ( $args[1] ?? '' );
+		$union = false !== strpos( $url, '?' ) ? '&' : '?';
+
+		return $url . $union . http_build_query( $mapa );
 	}
 }
 

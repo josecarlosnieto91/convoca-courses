@@ -221,9 +221,18 @@ class Matricula_Identidad {
 			}
 		}
 
-		$destino = $course > 0 ? get_permalink( $course ) : home_url( '/' );
+		// Se vuelve a la página donde estaba el formulario, no al archivo del curso: allí está el aviso
+		// («te hemos enviado el acceso») y allí puede seguir el recorrido. Antes aterrizaba en el listado
+		// del CPT y el alumno no veía qué había pasado (courses#27).
+		$destino = wp_get_referer();
 
-		wp_safe_redirect( add_query_arg( 'convoca_matricula', $estado, $destino ? $destino : home_url( '/' ) ) );
+		if ( ! $destino ) {
+			$destino = $course > 0 ? (string) get_permalink( $course ) : home_url( '/' );
+		}
+
+		$destino = remove_query_arg( 'convoca_matricula', $destino );
+
+		wp_safe_redirect( add_query_arg( 'convoca_matricula', $estado, $destino ) );
 		exit;
 	}
 }

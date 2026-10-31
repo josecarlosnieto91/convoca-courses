@@ -1,3 +1,9 @@
+## [0.20.2] — 2026-10-31
+
+### Cambiado
+
+- **volver a la pagina del formulario**
+
 ## [0.20.1] — 2026-10-31
 
 ### Cambiado
