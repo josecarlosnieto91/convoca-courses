@@ -280,8 +280,10 @@ class Lesson_Links {
 
 			// No se redirige en silencio: quien tiene matrícula pero la lección está bloqueada necesita
 			// saber por qué, y quien no la tiene, que le falta matricularse (courses#27).
-			$motivo  = Access::matricula_actual( $course_id ) > 0 ? 'bloqueada' : 'sin_matricula';
-			$destino = add_query_arg( 'convoca_acceso', $motivo, $destino );
+			$motivo = Access::matricula_actual( $course_id ) > 0 ? 'bloqueada' : 'sin_matricula';
+			// `convoca_aviso`, no `convoca_acceso`: el segundo es el token y el aviso se releía
+			// como token inválido (courses#45).
+			$destino = add_query_arg( Identidad_Acceso::PARAM_AVISO, $motivo, $destino );
 
 			wp_safe_redirect( $destino );
 			exit;

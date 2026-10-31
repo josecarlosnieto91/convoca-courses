@@ -34,6 +34,20 @@ class Identidad_Acceso {
 	public const PARAM_TOKEN = 'convoca_acceso';
 
 	/**
+	 * Parámetro del aviso (caducado, bloqueada, sin_matricula).
+	 *
+	 * Va aparte del token a propósito: con el mismo nombre, un aviso `convoca_acceso=caducado` se
+	 * leía como un token, no validaba y volvía a redirigir al mismo aviso: bucle de 50 saltos
+	 * (courses#45).
+	 */
+	public const PARAM_AVISO = 'convoca_aviso';
+
+	/**
+	 * Valores que son aviso y nunca un token.
+	 */
+	public const AVISOS = array( 'caducado', 'bloqueada', 'sin_matricula' );
+
+	/**
 	 * Opción con la página pública de acceso.
 	 */
 	public const OPCION_PAGINA = 'convoca_courses_acceso_page';
@@ -204,10 +218,16 @@ class Identidad_Acceso {
 		$token = sanitize_text_field( wp_unslash( (string) $_GET[ self::PARAM_TOKEN ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$id    = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
+		// Un aviso no es un token, y sin `id` no hay enlace que validar. Sin esta salida, el aviso
+		// se releía como token, fallaba y se redirigía a sí mismo (courses#45).
+		if ( $id <= 0 || in_array( $token, self::AVISOS, true ) ) {
+			return false;
+		}
+
 		if ( ! Identidad::token_valido( $id, $token ) ) {
 			// Antes se caía a la portada sin decir nada: el alumnado no sabía si el enlace era malo,
 			// si había caducado o si ya estaba dentro (courses#31).
-			wp_safe_redirect( add_query_arg( 'convoca_acceso', 'caducado', self::url_acceso() ) );
+			wp_safe_redirect( add_query_arg( self::PARAM_AVISO, 'caducado', self::url_acceso() ) );
 			exit;
 		}
 
@@ -315,7 +335,24 @@ class Identidad_Acceso {
 
 		$aviso = '';
 
-		if ( isset( $_GET['convoca_acceso'] ) && 'caducado' === sanitize_text_field( wp_unslash( (string) $_GET['convoca_acceso'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// `convoca_aviso` es el parámetro bueno; se acepta `convoca_acceso` con un valor de aviso
+		// para que los enlaces que ya están en los correos no se queden sin mensaje (courses#45).
+		// Son parámetros de la URL, no de un formulario: no hay nonce que verificar.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$aviso_param = isset( $_GET[ self::PARAM_AVISO ] )
+			? sanitize_text_field( wp_unslash( (string) $_GET[ self::PARAM_AVISO ] ) )
+			: '';
+
+		if ( '' === $aviso_param && isset( $_GET[ self::PARAM_TOKEN ] ) ) {
+			$posible = sanitize_text_field( wp_unslash( (string) $_GET[ self::PARAM_TOKEN ] ) );
+
+			if ( in_array( $posible, self::AVISOS, true ) ) {
+				$aviso_param = $posible;
+			}
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( 'caducado' === $aviso_param ) {
 			$aviso = '<div class="convoca-alert convoca-alert--warning">'
 				. esc_html__( 'Ese enlace ha caducado. Pide uno nuevo con tu correo aquí abajo, o entra con el código de 6 cifras.', 'convoca-courses' )
 				. '</div>';

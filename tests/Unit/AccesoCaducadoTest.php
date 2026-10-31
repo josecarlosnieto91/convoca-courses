@@ -44,7 +44,7 @@ final class AccesoCaducadoTest extends TestCase {
 			Identidad_Acceso::intentar_enlace();
 			$this->fail( 'debería redirigir' );
 		} catch ( \Convoca_Courses_Redirect $redireccion ) {
-			$this->assertStringContainsString( 'convoca_acceso=caducado', $redireccion->destino );
+			$this->assertStringContainsString( 'convoca_aviso=caducado', $redireccion->destino );
 		}
 	}
 

@@ -1,3 +1,9 @@
+## [0.23.5] — 2026-10-31
+
+### Cambiado
+
+- **fin del bucle del enlace usado**
+
 ## [0.23.4] — 2026-10-31
 
 ### Cambiado
