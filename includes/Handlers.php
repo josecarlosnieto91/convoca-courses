@@ -85,10 +85,17 @@ class Handlers {
 		add_action( 'admin_post_' . self::ACTION_ENROLL, array( __CLASS__, 'handle_enroll' ) );
 		add_action( 'admin_post_nopriv_' . self::ACTION_ENROLL, array( __CLASS__, 'handle_enroll' ) );
 		add_action( 'admin_post_' . self::ACTION_CANCEL, array( __CLASS__, 'handle_cancel' ) );
+		// Estas cuatro las usa el alumnado, que puede no tener sesión de WordPress: sin la variante
+		// `nopriv`, el POST llega a admin-post.php y no lo atiende nadie (lección sin completar,
+		// página en blanco). Medido en el circuito del navegador de courses#27.
 		add_action( 'admin_post_' . self::ACTION_COMPLETE, array( __CLASS__, 'handle_complete' ) );
+		add_action( 'admin_post_nopriv_' . self::ACTION_COMPLETE, array( __CLASS__, 'handle_complete' ) );
 		add_action( 'admin_post_' . self::ACTION_EXAM_OPEN, array( __CLASS__, 'handle_exam_open' ) );
+		add_action( 'admin_post_nopriv_' . self::ACTION_EXAM_OPEN, array( __CLASS__, 'handle_exam_open' ) );
 		add_action( 'admin_post_' . self::ACTION_EXAM_SUBMIT, array( __CLASS__, 'handle_exam_submit' ) );
+		add_action( 'admin_post_nopriv_' . self::ACTION_EXAM_SUBMIT, array( __CLASS__, 'handle_exam_submit' ) );
 		add_action( 'admin_post_' . self::ACTION_TASK_SUBMIT, array( __CLASS__, 'handle_task_submit' ) );
+		add_action( 'admin_post_nopriv_' . self::ACTION_TASK_SUBMIT, array( __CLASS__, 'handle_task_submit' ) );
 		add_action( 'admin_post_' . self::ACTION_TASK_GRADE, array( __CLASS__, 'handle_task_grade' ) );
 		add_action( 'admin_post_' . self::ACTION_GRADEBOOK_CSV, array( __CLASS__, 'handle_gradebook_csv' ) );
 		add_action( 'admin_post_' . self::ACTION_GROUP_EMAIL, array( __CLASS__, 'handle_group_email' ) );

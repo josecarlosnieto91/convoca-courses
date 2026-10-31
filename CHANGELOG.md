@@ -1,3 +1,9 @@
+## [0.20.1] — 2026-10-31
+
+### Cambiado
+
+- **handlers del alumnado sin sesion**
+
 ## [0.20.0] — 2026-10-31
 
 ### Cambiado

@@ -150,6 +150,16 @@ if ( ! function_exists( 'add_action' ) ) {
 		);
 		return true;
 	}
+
+	/**
+	 * ¿Hay algo enganchado a este gancho?
+	 *
+	 * @param string $hook Gancho.
+	 * @return bool|int
+	 */
+	function has_action( $hook ) {
+		return isset( $GLOBALS['convoca_courses_acciones'][ $hook ] ) ? 10 : false;
+	}
 }
 
 if ( ! function_exists( 'wp_die' ) ) {
