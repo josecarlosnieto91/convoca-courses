@@ -21,11 +21,12 @@ final class HandlersSinSesionTest extends TestCase {
 	 * @return array<string, array{0: string}>
 	 */
 	public static function acciones(): array {
+		// Claves sin tilde a propósito: PHPCS alinea por bytes y la «ó» descuadra la columna.
 		return array(
-			'completar lección' => array( Handlers::ACTION_COMPLETE ),
-			'abrir examen'       => array( Handlers::ACTION_EXAM_OPEN ),
-			'enviar examen'      => array( Handlers::ACTION_EXAM_SUBMIT ),
-			'entregar tarea'     => array( Handlers::ACTION_TASK_SUBMIT ),
+			'completar leccion' => array( Handlers::ACTION_COMPLETE ),
+			'abrir examen'      => array( Handlers::ACTION_EXAM_OPEN ),
+			'enviar examen'     => array( Handlers::ACTION_EXAM_SUBMIT ),
+			'entregar tarea'    => array( Handlers::ACTION_TASK_SUBMIT ),
 		);
 	}
 
