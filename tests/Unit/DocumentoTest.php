@@ -22,12 +22,12 @@ final class DocumentoTest extends TestCase {
 	 */
 	public static function validos(): array {
 		return array(
-			'dni'              => array( '12345678Z' ),
-			'dni con espacios' => array( '12345678-z' ),
-			'nie x'            => array( 'X0000000T' ),
-			'nie y'            => array( 'Y0000001S' ),
-			'cif'              => array( 'A12345674' ),
-			'cif letra'        => array( 'B1234567D' ),
+			'dni'          => array( '12345678Z' ),
+			'dni_espacios' => array( '12345678-z' ),
+			'nie_x'        => array( 'X0000000T' ),
+			'nie_y'        => array( 'Y0000001S' ),
+			'cif'          => array( 'A12345674' ),
+			'cif_letra'    => array( 'B1234567D' ),
 		);
 	}
 
@@ -38,14 +38,14 @@ final class DocumentoTest extends TestCase {
 	 */
 	public static function invalidos(): array {
 		return array(
-			'corto'         => array( '123' ),
-			'letra mal'     => array( '12345678A' ),
-			'nie mal'       => array( 'X0000000A' ),
-			'cif mal'       => array( 'A12345678' ),
-			'nie letra mal' => array( 'Y0000001X' ),
-			'vacío'        => array( '' ),
-			'texto'         => array( 'NO TENGO' ),
-			'letra suelta'  => array( 'Z' ),
+			'corto'        => array( '123' ),
+			'letra_mal'    => array( '12345678A' ),
+			'nie_mal'      => array( 'X0000000A' ),
+			'cif_mal'      => array( 'A12345678' ),
+			'nie_letra'    => array( 'Y0000001X' ),
+			'vacio'        => array( '' ),
+			'texto'        => array( 'NO TENGO' ),
+			'letra_suelta' => array( 'Z' ),
 		);
 	}
 
