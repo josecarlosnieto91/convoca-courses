@@ -352,7 +352,9 @@ class Shortcodes {
 				'attachment'     => $attachment > 0 ? Material::url( (int) $attachment, $lesson_id ) : '',
 				'video'          => $video,
 				'video_allowed'  => $video_allowed,
-				'completed'      => Progress::is_completed( $user_id, $lesson_id ),
+				'completed'      => ( 0 === $user_id && Access::identidad_actual() > 0 )
+					? Progress::is_completed_identidad( Access::identidad_actual(), $lesson_id )
+					: Progress::is_completed( $user_id, $lesson_id ),
 				'complete_url'   => Handlers::complete_form_action(),
 				'complete_nonce' => Handlers::complete_nonce( $lesson_id ),
 				'duration'       => CPT_Leccion::get_int( $lesson_id, 'duracion', 0 ),

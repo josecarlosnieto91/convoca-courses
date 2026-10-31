@@ -63,7 +63,7 @@ class Exam_View {
 			'manage'        => Access::can_manage(),
 			'logged_in'     => $user_id > 0,
 			'can_take'      => $puede,
-			'expired'       => $course_id > 0 && $user_id > 0 && Access::is_expired( $user_id, $course_id ),
+			'expired'       => $course_id > 0 && Access::is_expired( $user_id, $course_id ),
 			'min_score'     => $minimo,
 			'time_limit'    => CPT_Examen::time_limit( $exam_id ),
 			'feedback'      => CPT_Examen::feedback( $exam_id ),

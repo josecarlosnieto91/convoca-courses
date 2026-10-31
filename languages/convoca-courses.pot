@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.19.3\n"
+"Project-Id-Version: Convoca Courses 0.20.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T21:30:53+00:00\n"
+"POT-Creation-Date: 2026-10-31T09:08:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
@@ -143,7 +143,7 @@ msgid "Entregas"
 msgstr ""
 
 #: admin/class-admin-entregas.php:59
-#: includes/Handlers.php:504
+#: includes/Handlers.php:511
 msgid "No tienes permiso para corregir entregas."
 msgstr ""
 
@@ -157,12 +157,12 @@ msgstr ""
 
 #: admin/class-admin-examen.php:218
 #: admin/class-admin-examen.php:263
-#: includes/Handlers.php:500
-#: includes/Handlers.php:555
-#: includes/Handlers.php:587
-#: includes/Handlers.php:612
-#: includes/Handlers.php:648
-#: includes/Handlers.php:825
+#: includes/Handlers.php:507
+#: includes/Handlers.php:562
+#: includes/Handlers.php:594
+#: includes/Handlers.php:619
+#: includes/Handlers.php:655
+#: includes/Handlers.php:832
 msgid "La sesión ha caducado. Vuelve a intentarlo."
 msgstr ""
 
@@ -264,12 +264,12 @@ msgid "Todavía no puedes abrir este examen."
 msgstr ""
 
 #: includes/Attempts.php:103
-#: includes/Handlers.php:799
+#: includes/Handlers.php:806
 msgid "Has agotado los intentos de este examen."
 msgstr ""
 
 #: includes/Attempts.php:108
-#: includes/Handlers.php:801
+#: includes/Handlers.php:808
 msgid "El examen no tiene preguntas todavía."
 msgstr ""
 
@@ -620,100 +620,100 @@ msgstr ""
 msgid "Hacen falta asunto y mensaje."
 msgstr ""
 
-#: includes/Handlers.php:281
+#: includes/Handlers.php:288
 msgid "No tienes acceso a este vídeo."
 msgstr ""
 
-#: includes/Handlers.php:286
+#: includes/Handlers.php:293
 msgid "El vídeo no está configurado."
 msgstr ""
 
-#: includes/Handlers.php:559
+#: includes/Handlers.php:566
 #: includes/Shortcodes.php:118
 msgid "El acta de notas solo la ve quien gestiona el curso."
 msgstr ""
 
-#: includes/Handlers.php:591
+#: includes/Handlers.php:598
 msgid "No tienes permiso para escribir al alumnado."
 msgstr ""
 
-#: includes/Handlers.php:616
+#: includes/Handlers.php:623
 msgid "No tienes permiso para exportar el banco de preguntas."
 msgstr ""
 
-#: includes/Handlers.php:652
+#: includes/Handlers.php:659
 msgid "No tienes permiso para importar preguntas."
 msgstr ""
 
-#: includes/Handlers.php:787
+#: includes/Handlers.php:794
 msgid "Matrícula realizada. Ya puedes empezar el curso."
 msgstr ""
 
-#: includes/Handlers.php:789
+#: includes/Handlers.php:796
 msgid "Matrícula cancelada."
 msgstr ""
 
-#: includes/Handlers.php:791
+#: includes/Handlers.php:798
 msgid "Lección marcada como completada."
 msgstr ""
 
-#: includes/Handlers.php:793
+#: includes/Handlers.php:800
 msgid "Examen enviado y corregido."
 msgstr ""
 
-#: includes/Handlers.php:795
+#: includes/Handlers.php:802
 msgid "Se ha pasado el tiempo del examen: el intento se ha cerrado sin corregir."
 msgstr ""
 
-#: includes/Handlers.php:797
+#: includes/Handlers.php:804
 msgid "El examen todavía no está abierto: completa antes las lecciones que pide el curso."
 msgstr ""
 
-#: includes/Handlers.php:803
+#: includes/Handlers.php:810
 msgid "No se ha podido completar la operación con el examen."
 msgstr ""
 
-#: includes/Handlers.php:805
+#: includes/Handlers.php:812
 msgid "Tarea entregada."
 msgstr ""
 
-#: includes/Handlers.php:807
+#: includes/Handlers.php:814
 msgid "Entrega corregida y alumno avisado."
 msgstr ""
 
-#: includes/Handlers.php:809
+#: includes/Handlers.php:816
 msgid "No se ha podido subir el fichero: revisa el tipo y el tamaño que admite el sitio."
 msgstr ""
 
-#: includes/Handlers.php:811
+#: includes/Handlers.php:818
 msgid "No se ha podido completar la operación con la tarea."
 msgstr ""
 
-#: includes/Handlers.php:813
+#: includes/Handlers.php:820
 msgid "Mensaje enviado al alumnado del curso."
 msgstr ""
 
-#: includes/Handlers.php:815
+#: includes/Handlers.php:822
 msgid "No se ha podido enviar el mensaje al alumnado."
 msgstr ""
 
-#: includes/Handlers.php:817
+#: includes/Handlers.php:824
 msgid "Preguntas importadas."
 msgstr ""
 
-#: includes/Handlers.php:819
+#: includes/Handlers.php:826
 msgid "No se ha podido importar el banco de preguntas."
 msgstr ""
 
-#: includes/Handlers.php:821
+#: includes/Handlers.php:828
 msgid "Matrícula reservada. Completa el pago para activarla."
 msgstr ""
 
-#: includes/Handlers.php:823
+#: includes/Handlers.php:830
 msgid "No se ha podido preparar el pago. La matrícula queda pendiente: inténtalo de nuevo o contacta con el centro."
 msgstr ""
 
-#: includes/Handlers.php:827
+#: includes/Handlers.php:834
 msgid "No se ha podido completar la operación."
 msgstr ""
 
@@ -982,7 +982,7 @@ msgstr ""
 msgid "El CSV no tiene preguntas legibles."
 msgstr ""
 
-#: includes/Shortcodes.php:517
+#: includes/Shortcodes.php:519
 msgid "No se ha encontrado el curso o la lección indicados."
 msgstr ""
 

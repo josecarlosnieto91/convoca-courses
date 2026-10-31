@@ -17,14 +17,75 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Access {
 
 	/**
+	 * Identidad del alumnado sin cuenta (la de la cookie), o 0.
+	 *
+	 * @return int
+	 */
+	public static function identidad_actual(): int {
+		return Identidad::actual();
+	}
+
+	/**
+	 * Matrícula con acceso a un curso, por cualquiera de las dos vías.
+	 *
+	 * El alumnado puede llegar de dos formas: con usuario de WordPress (matrículas de siempre) o con su
+	 * identidad en la cookie (matrícula por correo). Mirar solo la primera dejaba al segundo fuera de
+	 * todas las lecciones (courses#27).
+	 *
+	 * @param int $course_id Curso.
+	 * @param int $user_id   Persona; -1 para usar la de la petición actual.
+	 * @return int Matrícula activa, o 0.
+	 */
+	public static function matricula_actual( int $course_id, int $user_id = -1 ): int {
+		if ( $course_id <= 0 ) {
+			return 0;
+		}
+
+		$user_id = $user_id < 0 ? get_current_user_id() : $user_id;
+
+		if ( $user_id > 0 ) {
+			$matricula = Enrollment::active_id( $user_id, $course_id );
+			if ( $matricula > 0 ) {
+				return $matricula;
+			}
+		}
+
+		$identidad = self::identidad_actual();
+
+		if ( $identidad > 0 ) {
+			return Enrollment::find_por_identidad( $identidad, $course_id, true );
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Lecciones completadas, por usuario o por identidad.
+	 *
+	 * @param int $user_id   Persona (0 si va por identidad).
+	 * @param int $course_id Curso.
+	 * @return int[]
+	 */
+	private static function lecciones_hechas( int $user_id, int $course_id ): array {
+		$identidad = self::identidad_actual();
+
+		if ( $user_id <= 0 && $identidad > 0 ) {
+			return Progress::completed_lesson_ids_identidad( $identidad, $course_id );
+		}
+
+		return Progress::completed_lesson_ids( $user_id, $course_id );
+	}
+
+	/**
 	 * ¿La persona está matriculada y puede entrar al curso?
 	 *
-	 * @param int $user_id   Persona.
+	 * @param int $user_id   Persona (0 si va por identidad).
 	 * @param int $course_id Curso.
 	 * @return bool
 	 */
 	public static function is_enrolled( int $user_id, int $course_id ): bool {
-		return Enrollment::active_id( $user_id, $course_id ) > 0;
+		// La decisión la toma `matricula_actual()`, que mira las dos vías con la persona que le pasen.
+		return self::matricula_actual( $course_id, $user_id ) > 0;
 	}
 
 	/**
@@ -59,7 +120,11 @@ class Access {
 
 		// Curso caducado = solo lectura: puede volver a ver lo que ya había completado, nada más.
 		if ( self::is_expired( $user_id, $course_id ) ) {
-			return Progress::is_completed( $user_id, $lesson_id );
+			$identidad = self::identidad_actual();
+
+			return $user_id <= 0 && $identidad > 0
+				? Progress::is_completed_identidad( $identidad, $lesson_id )
+				: Progress::is_completed( $user_id, $lesson_id );
 		}
 
 		return self::is_unlocked( $user_id, $course_id, $lesson_id );
@@ -81,7 +146,7 @@ class Access {
 			return true;
 		}
 
-		$done = Progress::completed_lesson_ids( $user_id, $course_id );
+		$done = self::lecciones_hechas( $user_id, $course_id );
 
 		foreach ( CPT_Leccion::of_course( $course_id ) as $lesson ) {
 			if ( (int) $lesson->ID === $lesson_id ) {
@@ -212,7 +277,9 @@ class Access {
 	 * @return bool
 	 */
 	public static function is_expired( int $user_id, int $course_id ): bool {
-		$enrollment_id = Enrollment::active_id( $user_id, $course_id );
+		// La caducidad va con la matrícula, venga del usuario o de la identidad: antes se consultaba solo
+		// la del usuario y una matrícula por correo nunca caducaba (courses#27).
+		$enrollment_id = self::matricula_actual( $course_id, $user_id );
 		if ( $enrollment_id <= 0 ) {
 			return false;
 		}
@@ -301,7 +368,10 @@ class Access {
 	 */
 	public static function scope_percent( int $user_id, int $course_id, int $module_id = 0 ): float {
 		if ( $module_id <= 0 ) {
-			$progress = Progress::for_course( $user_id, $course_id );
+			$identidad = self::identidad_actual();
+			$progress  = $user_id <= 0 && $identidad > 0
+				? Progress::for_course_identidad( $identidad, $course_id )
+				: Progress::for_course( $user_id, $course_id );
 
 			return (float) $progress['percent'];
 		}
@@ -312,7 +382,7 @@ class Access {
 			return 100.0;
 		}
 
-		$hechas = Progress::completed_lesson_ids( $user_id, $course_id );
+		$hechas = self::lecciones_hechas( $user_id, $course_id );
 		$dentro = 0;
 		foreach ( $lecciones as $leccion ) {
 			if ( in_array( (int) $leccion->ID, $hechas, true ) ) {

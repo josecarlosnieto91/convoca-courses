@@ -589,3 +589,143 @@ body.dark .convoca-courses,
 		white-space: nowrap;
 	}
 }
+
+/*
+ * Formulario de matrícula (courses#26).
+ *
+ * Va autocontenido a propósito: la ficha puede pintarlo fuera de `.convoca-courses`, y entonces no
+ * heredaría las variables `--cc-*` ni las reglas de los campos. Se declaran aquí los mismos valores,
+ * con los mismos fallbacks, para que no dependa del tema ni del contenedor.
+ */
+
+.convoca-matricula {
+	--cc-accent: #ff8700;
+	--cc-accent-dark: #e67600;
+	--cc-ink: #1a1d24;
+	--cc-ink-soft: #4a5160;
+	--cc-surface: #ffffff;
+	--cc-surface-alt: #f4f6f8;
+	--cc-border: #cbd5e1;
+	--cc-ok: #166534;
+	--cc-error: #b91c1c;
+
+	box-sizing: border-box;
+	color: var(--cc-ink);
+	font-size: 1rem;
+	line-height: 1.6;
+	margin: 1.5rem 0;
+	max-width: 100%;
+}
+
+.convoca-matricula *,
+.convoca-matricula *::before,
+.convoca-matricula *::after {
+	box-sizing: inherit;
+}
+
+.convoca-matricula__form p {
+	margin: 0 0 1rem;
+}
+
+.convoca-matricula__form label {
+	color: var(--cc-ink);
+	display: block;
+	font-size: 0.95rem;
+	font-weight: 600;
+	margin-bottom: 0.35rem;
+}
+
+/* La etiqueta de un checkbox va en línea con su casilla, no encima. */
+.convoca-matricula__form label:has(input[type="checkbox"]) {
+	align-items: flex-start;
+	cursor: pointer;
+	display: flex;
+	font-weight: 400;
+	gap: 0.5rem;
+}
+
+.convoca-matricula__form input[type="email"],
+.convoca-matricula__form input[type="text"] {
+	background: var(--cc-surface);
+	border: 1px solid var(--cc-border);
+	border-radius: 8px;
+	color: var(--cc-ink);
+	font: inherit;
+	height: 2.75rem;
+	max-width: 100%;
+	padding: 0 0.75rem;
+	width: 100%;
+}
+
+.convoca-matricula__form input[type="email"]:focus-visible,
+.convoca-matricula__form input[type="text"]:focus-visible {
+	border-color: var(--cc-accent-dark);
+	outline: 2px solid var(--cc-accent);
+	outline-offset: 1px;
+}
+
+.convoca-matricula__form input[type="checkbox"] {
+	flex: 0 0 auto;
+	height: 1.15rem;
+	margin: 0.2rem 0 0;
+	width: 1.15rem;
+}
+
+/* Botón primario del plugin. Texto oscuro sobre naranja: 7:1, no el 2,4:1 del blanco sobre el mismo naranja. */
+.convoca-boton {
+	-webkit-appearance: none;
+	appearance: none;
+	background: var(--cc-accent, #ff8700);
+	border: 1px solid var(--cc-accent-dark, #e67600);
+	border-radius: 8px;
+	color: #1a1d24;
+	cursor: pointer;
+	display: inline-block;
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.2;
+	padding: 0.7rem 1.4rem;
+	text-decoration: none;
+	transition: background 0.2s ease;
+}
+
+.convoca-boton:hover,
+.convoca-boton:focus {
+	background: var(--cc-accent-dark, #e67600);
+	color: #1a1d24;
+}
+
+.convoca-boton:focus-visible {
+	outline: 3px solid #1a1d24;
+	outline-offset: 2px;
+}
+
+/* Avisos de la matrícula. */
+.convoca-alert {
+	background: var(--cc-surface-alt, #f4f6f8);
+	border-left: 4px solid var(--cc-accent, #ff8700);
+	border-radius: 8px;
+	color: var(--cc-ink, #1a1d24);
+	margin: 1rem 0;
+	padding: 0.75rem 1rem;
+}
+
+.convoca-alert--info {
+	border-left-color: #1d4ed8;
+}
+
+.convoca-alert--success,
+.convoca-alert--ok {
+	border-left-color: var(--cc-ok, #166534);
+}
+
+.convoca-alert--warning,
+.convoca-alert--error {
+	border-left-color: var(--cc-error, #b91c1c);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.convoca-boton {
+		transition: none;
+	}
+}

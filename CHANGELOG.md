@@ -1,3 +1,9 @@
+## [0.20.0] — 2026-10-31
+
+### Cambiado
+
+- **acceso sin cuenta y estilos del formulario**
+
 ## [0.19.3] — 2026-10-30
 
 ### Cambiado

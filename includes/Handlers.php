@@ -240,7 +240,9 @@ class Handlers {
 			return;
 		}
 
-		if ( ! is_user_logged_in() || ! Access::can_view_lesson( get_current_user_id(), $lesson_id ) ) {
+		// No se exige sesión de WordPress: el alumnado matriculado por correo también completa lecciones.
+		// Quien decide es `Access`, que resuelve la matrícula por usuario o por identidad (courses#27).
+		if ( ! Access::can_view_lesson( get_current_user_id(), $lesson_id ) ) {
 			self::redirect_back( Hierarchy::course_of_lesson( $lesson_id ), 'error' );
 			return;
 		}
@@ -248,14 +250,19 @@ class Handlers {
 		$user_id   = get_current_user_id();
 		$course_id = Hierarchy::course_of_lesson( $lesson_id );
 
-		Progress::complete( $user_id, $course_id, $lesson_id );
+		$identidad     = Access::identidad_actual();
+		$enrollment_id = Access::matricula_actual( $course_id );
 
-		$enrollment_id = Enrollment::active_id( $user_id, $course_id );
-		if ( $enrollment_id > 0 ) {
+		if ( 0 === $user_id && $identidad > 0 ) {
+			Progress::complete_identidad( $identidad, $course_id, $lesson_id );
+			$progress = Progress::for_course_identidad( $identidad, $course_id );
+		} else {
+			Progress::complete( $user_id, $course_id, $lesson_id );
 			$progress = Progress::for_course( $user_id, $course_id );
-			if ( $progress['total'] > 0 && $progress['done'] >= $progress['total'] ) {
-				Enrollment::set_status( $enrollment_id, 'completada' );
-			}
+		}
+
+		if ( $enrollment_id > 0 && $progress['total'] > 0 && $progress['done'] >= $progress['total'] ) {
+			Enrollment::set_status( $enrollment_id, 'completada' );
 		}
 
 		$referer = wp_get_referer();
