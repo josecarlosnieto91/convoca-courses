@@ -1,3 +1,9 @@
+## [0.23.2] — 2026-10-31
+
+### Cambiado
+
+- **leccion con documento html propio y h1**
+
 ## [0.23.1] — 2026-10-31
 
 ### Cambiado

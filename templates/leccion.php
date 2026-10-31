@@ -13,7 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <article class="convoca-courses convoca-courses--lesson" data-lesson="<?php echo esc_attr( (string) (int) $lesson_id ); ?>">
 	<header class="convoca-courses__header">
-		<h2 class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></h2>
+		<?php $titulo_tag = isset( $titulo_tag ) && in_array( $titulo_tag, array( 'h1', 'h2' ), true ) ? $titulo_tag : 'h2'; ?>
+		<<?php echo esc_html( $titulo_tag ); ?> class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></<?php echo esc_html( $titulo_tag ); ?>>
 		<ul class="convoca-courses__facts">
 			<li><span class="convoca-courses__label"><?php esc_html_e( 'Tipo', 'convoca-courses' ); ?></span> <?php echo esc_html( (string) $type ); ?></li>
 			<?php if ( (int) $duration > 0 ) : ?>

@@ -311,7 +311,23 @@ class Lesson_Links {
 				}
 			);
 
+			// `wp_head()` solo emite el CONTENIDO del head: el andamiaje del documento hay que
+			// imprimirlo aquí. Antes no se imprimía y la lección salía empezando por un `<meta>`,
+			// sin `<html>`, sin `<head>` y sin `<title>`: el título genérico y la ausencia de `h1`
+			// eran el síntoma de un documento que no se había abierto (courses#19).
+			?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+			<?php
 			wp_head();
+			?>
+</head>
+<body <?php body_class(); ?>>
+			<?php
+			wp_body_open();
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lo genera WordPress.
 			echo do_blocks( '<!-- wp:template-part {"slug":"header","theme":"' . esc_attr( (string) get_stylesheet() ) . '"} /-->' );
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML del shortcode, escapado en su plantilla.
@@ -319,6 +335,10 @@ class Lesson_Links {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lo genera WordPress.
 			echo do_blocks( '<!-- wp:template-part {"slug":"footer","theme":"' . esc_attr( (string) get_stylesheet() ) . '"} /-->' );
 			wp_footer();
+			?>
+</body>
+</html>
+			<?php
 			exit;
 		}
 

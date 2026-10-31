@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.23.1\n"
+"Project-Id-Version: Convoca Courses 0.23.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-31T19:16:31+00:00\n"
+"POT-Creation-Date: 2026-10-31T20:22:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
@@ -65,7 +65,7 @@ msgid "Certificado"
 msgstr ""
 
 #: admin/class-admin-columns.php:96
-#: templates/leccion.php:18
+#: templates/leccion.php:19
 #: templates/metabox-preguntas.php:80
 msgid "Tipo"
 msgstr ""
@@ -1012,7 +1012,7 @@ msgstr ""
 msgid "El CSV no tiene preguntas legibles."
 msgstr ""
 
-#: includes/Shortcodes.php:525
+#: includes/Shortcodes.php:527
 msgid "No se ha encontrado el curso o la lección indicados."
 msgstr ""
 
@@ -1510,65 +1510,65 @@ msgstr ""
 msgid "cerrado por tiempo"
 msgstr ""
 
-#: templates/leccion-bloqueada.php:19
+#: templates/leccion-bloqueada.php:20
 msgid "Esta lección se abre cuando completes las anteriores."
 msgstr ""
 
-#: templates/leccion-bloqueada.php:21
+#: templates/leccion-bloqueada.php:22
 msgid "Necesitas matricularte en el curso para ver esta lección."
 msgstr ""
 
-#: templates/leccion-bloqueada.php:26
+#: templates/leccion-bloqueada.php:27
 msgid "Ir a la portada del curso"
 msgstr ""
 
-#: templates/leccion.php:21
+#: templates/leccion.php:22
 msgid "Duración"
 msgstr ""
 
 #. translators: %d: minutes.
-#: templates/leccion.php:25
+#: templates/leccion.php:26
 #, php-format
 msgid "%d min"
 msgstr ""
 
-#: templates/leccion.php:37
+#: templates/leccion.php:38
 msgid "El vídeo de esta lección requiere una licencia PRO activa. El resto del curso sigue disponible."
 msgstr ""
 
-#: templates/leccion.php:43
+#: templates/leccion.php:44
 msgid "Tu navegador no puede reproducir este vídeo."
 msgstr ""
 
-#: templates/leccion.php:44
+#: templates/leccion.php:45
 msgid "Descargar el vídeo"
 msgstr ""
 
-#: templates/leccion.php:48
+#: templates/leccion.php:49
 msgid "El vídeo de esta lección todavía no está configurado."
 msgstr ""
 
-#: templates/leccion.php:62
+#: templates/leccion.php:63
 msgid "Abrir el PDF de la lección"
 msgstr ""
 
-#: templates/leccion.php:63
+#: templates/leccion.php:64
 msgid "Descargar el adjunto"
 msgstr ""
 
-#: templates/leccion.php:68
+#: templates/leccion.php:69
 msgid "Esta lección todavía no tiene el fichero adjunto."
 msgstr ""
 
-#: templates/leccion.php:74
+#: templates/leccion.php:75
 msgid "Lección completada"
 msgstr ""
 
-#: templates/leccion.php:80
+#: templates/leccion.php:81
 msgid "Marcar como completada"
 msgstr ""
 
-#: templates/leccion.php:85
+#: templates/leccion.php:86
 msgid "Volver al curso"
 msgstr ""
 

@@ -12,7 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="convoca-courses convoca-courses--locked">
-	<h2 class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></h2>
+	<?php $titulo_tag = isset( $titulo_tag ) && in_array( $titulo_tag, array( 'h1', 'h2' ), true ) ? $titulo_tag : 'h2'; ?>
+	<<?php echo esc_html( $titulo_tag ); ?> class="convoca-courses__title"><?php echo esc_html( (string) $title ); ?></<?php echo esc_html( $titulo_tag ); ?>>
 	<div class="convoca-courses-notice convoca-courses-notice--locked">
 		<?php
 		if ( $enrolled ) {

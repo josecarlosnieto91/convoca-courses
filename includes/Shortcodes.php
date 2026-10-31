@@ -326,6 +326,7 @@ class Shortcodes {
 				array(
 					'course_id'  => $course_id,
 					'title'      => (string) get_the_title( $lesson_id ),
+					'titulo_tag' => 'h1',
 					'enrolled'   => Access::is_enrolled( $user_id, $course_id ),
 					'course_url' => $course_id > 0 ? (string) get_permalink( $course_id ) : '',
 				),
@@ -352,6 +353,7 @@ class Shortcodes {
 				'lesson_id'      => $lesson_id,
 				'course_id'      => $course_id,
 				'title'          => (string) get_the_title( $lesson_id ),
+				'titulo_tag'     => 'h1',
 				'type'           => $type,
 				'content'        => (string) apply_filters( 'the_content', (string) get_post_field( 'post_content', $lesson_id ) ),
 				'attachment_id'  => $attachment,
