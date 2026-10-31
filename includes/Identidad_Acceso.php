@@ -52,6 +52,10 @@ class Identidad_Acceso {
 		add_shortcode( self::SHORTCODE, array( __CLASS__, 'render' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'atender_enlace' ) );
 
+		// Antes que nada: si hay identidad, la respuesta no se puede cachear ni compartir. nginx
+		// guardaba la lección de un alumno y la servía a quien ya no tenía acceso (courses#32).
+		add_action( 'template_redirect', array( __CLASS__, 'marcar_privado' ), 1 );
+
 		// La página de acceso se crea al activar el plugin (ver `Installer::activate`), no en cada
 		// petición: escribir en la base de datos en cada carga sería peor que el problema que resuelve.
 
@@ -97,18 +101,30 @@ class Identidad_Acceso {
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( ! wp_verify_nonce( $nonce, $accion ) ) {
-			wp_die( esc_html__( 'La petición ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+			wp_die(
+				esc_html__( 'La petición ha caducado. Vuelve a intentarlo.', 'convoca-courses' ),
+				'',
+				array( 'response' => 403 )
+			);
 		}
 
 		$id = Identidad::alta( $email );
 
 		if ( $id <= 0 ) {
-			wp_die( esc_html__( 'Ese correo no vale.', 'convoca-courses' ) );
+			wp_die(
+				esc_html__( 'Ese correo no vale.', 'convoca-courses' ),
+				'',
+				array( 'response' => 400 )
+			);
 		}
 
 		if ( self::ACCION . '_codigo' === $accion ) {
 			if ( ! Identidad::codigo_valido( $id, $codigo ) ) {
-				wp_die( esc_html__( 'El código no es válido o ha caducado. Pide otro.', 'convoca-courses' ) );
+				wp_die(
+					esc_html__( 'El código no es válido o ha caducado. Pide otro.', 'convoca-courses' ),
+					'',
+					array( 'response' => 400 )
+				);
 			}
 
 			Identidad::consumir( $id );
@@ -201,6 +217,24 @@ class Identidad_Acceso {
 		wp_safe_redirect( remove_query_arg( self::PARAM_TOKEN, add_query_arg( 'id', $id ) ) );
 
 		return true;
+	}
+
+	/**
+	 * Marca la respuesta como privada cuando hay identidad de alumnado.
+	 *
+	 * `X-Accel-Expires: 0` es la instrucción que nginx entiende para no guardar la respuesta en su
+	 * caché FastCGI; `Cache-Control: private, no-store` cubre navegadores y proxies intermedios.
+	 *
+	 * @return void
+	 */
+	public static function marcar_privado(): void {
+		if ( Identidad::actual() <= 0 || headers_sent() ) {
+			return;
+		}
+
+		header( 'Cache-Control: private, no-store, max-age=0' );
+		header( 'X-Accel-Expires: 0' );
+		header( 'Vary: Cookie', false );
 	}
 
 	/**

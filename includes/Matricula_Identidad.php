@@ -171,21 +171,39 @@ class Matricula_Identidad {
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( ! wp_verify_nonce( $nonce, self::ACCION ) ) {
-			wp_die( esc_html__( 'La petición ha caducado. Vuelve a intentarlo.', 'convoca-courses' ) );
+			// Un nonce caducado es una petición inválida del cliente, no una caída: 403 y no 500
+			// (courses#33).
+			wp_die(
+				esc_html__( 'La petición ha caducado. Vuelve a intentarlo.', 'convoca-courses' ),
+				'',
+				array( 'response' => 403 )
+			);
 		}
 
 		// Sin aceptar las condiciones no hay matrícula: es la prueba de que se informó.
 		if ( ! $consentimiento ) {
-			wp_die( esc_html__( 'Hay que aceptar las condiciones de venta para matricularte.', 'convoca-courses' ) );
+			wp_die(
+				esc_html__( 'Hay que aceptar las condiciones de venta para matricularte.', 'convoca-courses' ),
+				'',
+				array( 'response' => 400 )
+			);
 		}
 
 		if ( ! $mayor_14 ) {
-			wp_die( esc_html__( 'Para matricularte tienes que tener 14 años o más.', 'convoca-courses' ) );
+			wp_die(
+				esc_html__( 'Para matricularte tienes que tener 14 años o más.', 'convoca-courses' ),
+				'',
+				array( 'response' => 400 )
+			);
 		}
 
 		// Si pide factura, el NIF y la razón social son obligatorios: un recibo sin ellos no vale.
 		if ( $factura && ( '' === $factura_nif || '' === $factura_razon ) ) {
-			wp_die( esc_html__( 'Para la factura hacen falta el NIF y la razón social.', 'convoca-courses' ) );
+			wp_die(
+				esc_html__( 'Para la factura hacen falta el NIF y la razón social.', 'convoca-courses' ),
+				'',
+				array( 'response' => 400 )
+			);
 		}
 
 		$resultado = Enrollment::enroll_por_identidad( $email, $nombre, $course );

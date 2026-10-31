@@ -1,3 +1,9 @@
+## [0.21.3] — 2026-10-31
+
+### Cambiado
+
+- **respuestas privadas y nonce 403**
+
 ## [0.21.2] — 2026-10-31
 
 ### Cambiado
