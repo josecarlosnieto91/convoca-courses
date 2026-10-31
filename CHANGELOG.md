@@ -1,3 +1,9 @@
+## [0.21.2] — 2026-10-31
+
+### Cambiado
+
+- **certificado centrado y QR en el PDF**
+
 ## [0.21.1] — 2026-10-31
 
 ### Cambiado
