@@ -1,3 +1,9 @@
+## [0.22.0] — 2026-10-31
+
+### Cambiado
+
+- **certificado con identidad del tema y una pagina**
+
 ## [0.21.3] — 2026-10-31
 
 ### Cambiado

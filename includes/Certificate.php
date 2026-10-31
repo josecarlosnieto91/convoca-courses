@@ -470,6 +470,10 @@ class Certificate {
 		// el texto alternativo en el hueco (courses#29).
 		$data['qr'] = Certificate_QR::image( (string) ( $data['verify'] ?? self::verify_url( $code ) ), true );
 
+		// Fuentes del tema empaquetadas: sin registrarlas, Dompdf vuelve a DejaVu y el CSS miente
+		// (courses#35).
+		$data['fuentes'] = 'file://' . CONVOCA_COURSES_DIR . 'assets/fonts/';
+
 		$html = self::render_template( 'certificado.php', $data, false );
 
 		try {
