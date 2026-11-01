@@ -1,3 +1,9 @@
+## [0.23.8] — 2026-11-01
+
+### Cambiado
+
+- **certificado con la banda uva (diseño B3c)**
+
 ## [0.23.7] — 2026-10-31
 
 ### Cambiado

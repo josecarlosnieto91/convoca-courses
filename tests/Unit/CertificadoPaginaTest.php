@@ -31,7 +31,8 @@ final class CertificadoPaginaTest extends TestCase {
 	public function test_la_hoja_no_se_pasa_de_la_pagina(): void {
 		$css = $this->plantilla();
 
-		$this->assertStringContainsString( 'height: 210mm', $css, 'A4 horizontal son 210 mm de alto' );
+		// 207 y no 210: el alto exacto de la página, con un borde o padding de más, parte el PDF.
+		$this->assertStringContainsString( 'height: 207mm', $css, 'la hoja deja 3 mm de aire sobre los 210 de A4' );
 		$this->assertStringContainsString( 'size: A4 landscape', $css );
 		$this->assertStringNotContainsString( 'height: 100%', $css, 'Dompdf no lo estira y descuadra el cálculo' );
 		$this->assertStringNotContainsString( '@font-face {', $css, 'las fuentes se registran desde PHP' );
@@ -40,22 +41,26 @@ final class CertificadoPaginaTest extends TestCase {
 	/**
 	 * El marco no lleva alto propio: fue lo que partió el PDF en tres páginas.
 	 */
-	public function test_el_marco_no_lleva_alto_propio(): void {
+	public function test_la_hoja_mide_lo_que_la_pagina(): void {
 		$css = $this->plantilla();
 
 		$this->assertMatchesRegularExpression(
-			'/\.frame\s*\{[^}]*\}/s',
+			'/\.sheet\s*\{[^}]*width:\s*297mm/s',
 			$css,
-			'falta la regla del marco'
+			'la hoja no ocupa el ancho de la página'
 		);
 
-		preg_match( '/\.frame\s*\{([^}]*)\}/s', $css, $regla );
+		preg_match( '/\.sheet\s*\{([^}]*)\}/s', $css, $regla );
 
-		$this->assertStringNotContainsString(
-			'height:',
+		// 207 y no 210: con el alto exacto, un borde o el padding de más parte el PDF en varias hojas.
+		$this->assertStringContainsString(
+			'height: 207mm',
 			(string) ( $regla[1] ?? '' ),
-			'el alto del marco desborda la hoja y añade páginas en blanco'
+			'la hoja no ocupa el alto de la página'
 		);
+
+		// Un `height: 100%` dentro de la hoja fue lo que partía el PDF en tres páginas (courses#34).
+		$this->assertStringNotContainsString( 'height: 100%', $css );
 	}
 
 	/**
