@@ -234,8 +234,14 @@ class Shortcodes {
 
 		$enrollment_id = Enrollment::find( $user_id, $course_id );
 		$status        = $enrollment_id > 0 ? CPT_Matricula::status( $enrollment_id ) : '';
-		$payment_url   = $enrollment_id > 0 ? Course_Payment::payment_url( $enrollment_id ) : '';
-		$receipt_url   = $enrollment_id > 0 ? Course_Payment::receipt_url( $enrollment_id ) : '';
+
+		// Emisión perezosa: el certificado se emitía solo al enviar el examen o al completar la
+		// matrícula, así que quien ya tenía el intento aprobado antes se quedaba sin él para siempre
+		// (courses#39). Aquí se vuelve a intentar cada vez que se pinta la ficha, sin usar intentos.
+		$matricula_alumno = Access::matricula_actual( $course_id );
+		$cert_codigo      = $matricula_alumno > 0 ? Certificate::maybe_issue( $matricula_alumno ) : '';
+		$payment_url      = $enrollment_id > 0 ? Course_Payment::payment_url( $enrollment_id ) : '';
+		$receipt_url      = $enrollment_id > 0 ? Course_Payment::receipt_url( $enrollment_id ) : '';
 
 		return Certificate::render_template(
 			'curso.php',
@@ -249,6 +255,15 @@ class Shortcodes {
 				'enrolled'          => $state['enrolled'],
 				'progress'          => $state,
 				'certificate'       => CPT_Curso::issues_certificate( $course_id ),
+				'cert_codigo'       => $cert_codigo,
+				'cert_pdf_url'      => '' !== $cert_codigo ? add_query_arg(
+					array(
+						'codigo'  => $cert_codigo,
+						'formato' => 'pdf',
+					),
+					home_url( '/verificar-curso/' )
+				) : '',
+				'cert_verify_url'   => '' !== $cert_codigo ? add_query_arg( 'codigo', $cert_codigo, home_url( '/verificar-curso/' ) ) : '',
 				'modules'           => self::modules_data( $course_id, $user_id ),
 				'logged_in'         => $user_id > 0,
 				'enroll_url'        => Handlers::enroll_form_action(),
@@ -284,14 +299,19 @@ class Shortcodes {
 
 		$user_id = get_current_user_id();
 
+		// En la ficha del curso el tema ya pinta el título en un <h1>: repetirlo en un <h3> deja dos
+		// encabezados iguales seguidos (courses#37). Fuera de la ficha, el shortcode sí lo necesita.
+		$en_ficha = is_singular() && get_queried_object_id() === $course_id;
+
 		return Certificate::render_template(
 			'lecciones.php',
 			array(
-				'course_id' => $course_id,
-				'title'     => (string) get_the_title( $course_id ),
-				'enrolled'  => Access::is_enrolled( $user_id, $course_id ),
-				'progress'  => Access::summary( $user_id, $course_id ),
-				'modules'   => self::modules_data( $course_id, $user_id ),
+				'course_id'      => $course_id,
+				'title'          => (string) get_the_title( $course_id ),
+				'mostrar_titulo' => ! $en_ficha,
+				'enrolled'       => Access::is_enrolled( $user_id, $course_id ),
+				'progress'       => Access::summary( $user_id, $course_id ),
+				'modules'        => self::modules_data( $course_id, $user_id ),
 			),
 			false
 		);

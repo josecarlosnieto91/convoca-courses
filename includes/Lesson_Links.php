@@ -307,9 +307,15 @@ class Lesson_Links {
 			add_filter(
 				'body_class',
 				static function ( $clases ) {
-					$clases[] = 'convoca-courses-leccion';
+					// La lección se sirve fuera del bucle principal, así que WordPress cree que es la
+					// portada del blog y arrastra `home blog`. Cualquier CSS o plugin que se guíe por
+					// el contexto se equivoca con eso (courses#36): se quitan y se pone la clase real.
+					$clases = array_diff( (array) $clases, array( 'home', 'blog', 'archive', 'error404', 'search' ) );
 
-					return $clases;
+					$clases[] = 'convoca-courses-leccion';
+					$clases[] = 'convoca-courses--leccion';
+
+					return array_values( array_unique( $clases ) );
 				}
 			);
 

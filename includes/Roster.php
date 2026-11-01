@@ -28,7 +28,7 @@ class Roster {
 	 * Alumnado de un curso.
 	 *
 	 * @param int $course_id Curso.
-	 * @return array<int, array{user_id: int, nombre: string, correo: string, progreso: float, estado: string}>
+	 * @return array<int, array{user_id: int, identidad: int, nombre: string, correo: string, progreso: float, estado: string, en_papelera: bool}>
 	 */
 	public static function students( int $course_id ): array {
 		if ( $course_id <= 0 ) {
@@ -38,7 +38,9 @@ class Roster {
 		$matriculas = get_posts(
 			array(
 				'post_type'      => CPT_Matricula::TYPE,
-				'post_status'    => 'any',
+				// `any` excluye `trash`: una matrícula en la papelera desaparecía del listado y no había
+				// forma de verla ni de restaurarla desde aquí (courses#43).
+				'post_status'    => array( 'publish', 'pending', 'private', 'draft', 'trash' ),
 				'posts_per_page' => 1000,
 				'fields'         => 'ids',
 				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- conjunto de un curso, una consulta por pantalla.
@@ -54,24 +56,39 @@ class Roster {
 
 		foreach ( $matriculas as $matricula_id ) {
 			$estado = CPT_Matricula::status( (int) $matricula_id );
-			if ( ! in_array( $estado, self::STATES, true ) ) {
+
+			// Lo que está en la papelera se lista igual, con su estado real: si no, desaparece y no hay
+			// desde dónde restaurarla (courses#43). Las canceladas fuera de la papelera siguen fuera.
+			$en_papelera = 'trash' === get_post_status( (int) $matricula_id );
+
+			if ( ! $en_papelera && ! in_array( $estado, self::STATES, true ) ) {
 				continue;
 			}
 
 			$user_id = CPT_Matricula::user_id( (int) $matricula_id );
-			if ( $user_id <= 0 ) {
+
+			// El alumnado por correo no tiene usuario de WordPress: antes se saltaba con un `continue`
+			// y su matrícula no aparecía en ningún listado (courses#43). Se muestra con su identidad.
+			$identidad_id = (int) get_post_meta( (int) $matricula_id, Identidad::META_MATRICULA, true );
+			$identidad    = $identidad_id > 0 ? Identidad::por_id( $identidad_id ) : null;
+
+			if ( $user_id <= 0 && null === $identidad ) {
 				continue;
 			}
 
-			$user     = get_userdata( $user_id );
-			$progreso = Progress::for_course( $user_id, $course_id );
+			$user     = $user_id > 0 ? get_userdata( $user_id ) : null;
+			$progreso = $identidad_id > 0
+				? Progress::for_course_identidad( $identidad_id, $course_id )
+				: Progress::for_course( $user_id, $course_id );
 
 			$alumnado[] = array(
-				'user_id'  => $user_id,
-				'nombre'   => $user ? (string) $user->display_name : '#' . $user_id,
-				'correo'   => $user ? (string) $user->user_email : '',
-				'progreso' => (float) $progreso['percent'],
-				'estado'   => $estado,
+				'user_id'     => $user_id,
+				'identidad'   => $identidad_id,
+				'nombre'      => $user ? (string) $user->display_name : (string) ( $identidad['nombre'] ?? '' ),
+				'correo'      => $user ? (string) $user->user_email : (string) ( $identidad['email'] ?? '' ),
+				'progreso'    => (float) $progreso['percent'],
+				'estado'      => $estado,
+				'en_papelera' => $en_papelera,
 			);
 		}
 

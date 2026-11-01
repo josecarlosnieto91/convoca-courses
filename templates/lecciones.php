@@ -4,7 +4,7 @@
  *
  * @package Convoca\Courses
  *
- * @var array<string, mixed> $course_id, $title, $enrolled, $progress, $modules.
+ * @var array<string, mixed> $course_id, $title, $mostrar_titulo, $enrolled, $progress, $modules.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,7 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="convoca-courses convoca-courses--index">
-	<h3 class="convoca-courses__subtitle"><?php echo esc_html( (string) $title ); ?></h3>
+	<?php if ( ! isset( $mostrar_titulo ) || $mostrar_titulo ) : ?>
+		<h3 class="convoca-courses__subtitle"><?php echo esc_html( (string) $title ); ?></h3>
+	<?php endif; ?>
 
 	<?php if ( $enrolled ) : ?>
 		<div class="convoca-courses__progress" role="status">

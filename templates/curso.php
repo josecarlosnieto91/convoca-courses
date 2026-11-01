@@ -4,7 +4,7 @@
  *
  * @package Convoca\Courses
  *
- * @var array<string, mixed> $course_id, $title, $content, $price, $seats, $enrolled, $progress, $certificate, $modules, $logged_in, $enroll_url, $enroll_nonce, $needs_payment, $enrollment_status, $payment_url, $receipt_url.
+ * @var array<string, mixed> $course_id, $title, $content, $price, $seats, $enrolled, $progress, $certificate, $cert_codigo, $cert_pdf_url, $cert_verify_url, $modules, $logged_in, $enroll_url, $enroll_nonce, $needs_payment, $enrollment_status, $payment_url, $receipt_url.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -99,6 +99,24 @@ if ( isset( $_GET['convoca_msg'] ) ) {
 				</p>
 			<?php endif; ?>
 		</div>
+
+		<?php if ( isset( $cert_codigo ) && '' !== (string) $cert_codigo ) : ?>
+			<div class="convoca-courses__certificate">
+				<h3 class="convoca-courses__subtitle"><?php esc_html_e( 'Tu certificado', 'convoca-courses' ); ?></h3>
+				<p>
+					<?php esc_html_e( 'Código de verificación:', 'convoca-courses' ); ?>
+					<code><?php echo esc_html( (string) $cert_codigo ); ?></code>
+				</p>
+				<p>
+					<a class="convoca-courses__button" href="<?php echo esc_url( (string) $cert_pdf_url ); ?>" target="_blank" rel="noopener">
+						<?php esc_html_e( 'Descargar el certificado (PDF)', 'convoca-courses' ); ?>
+					</a>
+					<a href="<?php echo esc_url( (string) $cert_verify_url ); ?>" target="_blank" rel="noopener">
+						<?php esc_html_e( 'Verificar', 'convoca-courses' ); ?>
+					</a>
+				</p>
+			</div>
+		<?php endif; ?>
 	<?php elseif ( $logged_in ) : ?>
 		<form class="convoca-courses__form" method="post" action="<?php echo esc_url( (string) $enroll_url ); ?>">
 			<input type="hidden" name="action" value="<?php echo esc_attr( \Convoca\Courses\Handlers::ACTION_ENROLL ); ?>" />

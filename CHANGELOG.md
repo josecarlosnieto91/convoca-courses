@@ -1,3 +1,9 @@
+## [0.23.10] — 2026-11-01
+
+### Cambiado
+
+- **el certificado que ya se emite, el titulo sin duplicar y las matriculas por identidad en el listado**
+
 ## [0.23.9] — 2026-11-01
 
 ### Cambiado
