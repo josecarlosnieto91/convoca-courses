@@ -192,6 +192,32 @@ class CPT_Curso extends CPT_Base {
 	}
 
 	/**
+	 * Los cursos para un desplegable: identificador => título, con un «selecciona» delante.
+	 *
+	 * Vivía duplicado en `class-admin-fields.php` y `class-admin-examen.php`, con el mismo cuerpo
+	 * y la misma consulta. Aquí es de donde salen los datos, así que aquí se queda.
+	 *
+	 * @return array<int, string>
+	 */
+	public static function opciones(): array {
+		$opciones = array( 0 => __( '— Selecciona un curso —', 'convoca-courses' ) );
+
+		foreach ( get_posts(
+			array(
+				'post_type'      => self::TYPE,
+				'post_status'    => array( 'publish', 'draft', 'pending' ),
+				'posts_per_page' => 300,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			)
+		) as $curso ) {
+			$opciones[ (int) $curso->ID ] = (string) $curso->post_title;
+		}
+
+		return $opciones;
+	}
+
+	/**
 	 * Precio del curso.
 	 *
 	 * @param int $course_id Identificador del curso.

@@ -162,7 +162,7 @@ class Admin_Fields {
 				'post_id'  => (int) $post->ID,
 				'curso_id' => CPT_Modulo::course_id( (int) $post->ID ),
 				'orden'    => CPT_Base::get_int( (int) $post->ID, 'orden', 0 ),
-				'cursos'   => $this->courses_options(),
+				'cursos'   => \Convoca\Courses\CPT_Curso::opciones(),
 				'prefix'   => CPT_Base::META_PREFIX,
 				'aviso'    => $this->hierarchy_errors_for( (int) $post->ID ),
 			)
@@ -460,28 +460,6 @@ class Admin_Fields {
 		return array();
 	}
 
-	/**
-	 * Cursos para el selector.
-	 *
-	 * @return array<int, string>
-	 */
-	private function courses_options(): array {
-		$options = array( 0 => __( '— Selecciona un curso —', 'convoca-courses' ) );
-
-		foreach ( get_posts(
-			array(
-				'post_type'      => CPT_Curso::TYPE,
-				'post_status'    => array( 'publish', 'draft', 'pending' ),
-				'posts_per_page' => 300,
-				'orderby'        => 'title',
-				'order'          => 'ASC',
-			)
-		) as $course ) {
-			$options[ (int) $course->ID ] = (string) $course->post_title;
-		}
-
-		return $options;
-	}
 
 	/**
 	 * Módulos para el selector, agrupados por curso.
@@ -491,7 +469,7 @@ class Admin_Fields {
 	private function modules_options(): array {
 		$groups = array();
 
-		foreach ( $this->courses_options() as $course_id => $course_title ) {
+		foreach ( \Convoca\Courses\CPT_Curso::opciones() as $course_id => $course_title ) {
 			if ( 0 === $course_id ) {
 				continue;
 			}

@@ -405,7 +405,7 @@ final class AdminFieldsTest extends TestCase {
 		);
 		$GLOBALS['convoca_test_meta'][70]['_convoca_curso_id'] = '61';
 
-		$cursos = $this->privado( 'courses_options' );
+		$cursos = CPT_Curso::opciones();
 		$this->assertArrayHasKey( 0, $cursos, 'la opción vacía va primera' );
 		$this->assertArrayHasKey( 61, $cursos );
 

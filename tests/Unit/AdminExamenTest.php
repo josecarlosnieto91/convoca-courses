@@ -360,7 +360,7 @@ final class AdminExamenTest extends TestCase {
 			61 => 'Módulo',
 		);
 
-		$cursos  = $this->privado( 'courses_options' );
+		$cursos  = CPT_Curso::opciones();
 		$modulos = $this->privado( 'modules_options' );
 
 		$this->assertArrayHasKey( 50, $cursos );

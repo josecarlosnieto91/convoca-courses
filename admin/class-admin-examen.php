@@ -95,7 +95,7 @@ class Admin_Examen {
 				'retro'         => CPT_Examen::feedback( (int) $post->ID ),
 				'peso'          => CPT_Examen::weight( (int) $post->ID ),
 				'retros'        => CPT_Examen::RETROALIMENTACION,
-				'cursos'        => $this->courses_options(),
+				'cursos'        => \Convoca\Courses\CPT_Curso::opciones(),
 				'modulos'       => $this->modules_options(),
 				'prefix'        => CPT_Base::META_PREFIX,
 			)
@@ -337,28 +337,6 @@ class Admin_Examen {
 		printf( '<div class="notice notice-info is-dismissible"><p>%s</p></div>', esc_html( $texto ) );
 	}
 
-	/**
-	 * Cursos para el selector.
-	 *
-	 * @return array<int, string>
-	 */
-	private function courses_options(): array {
-		$options = array( 0 => __( '— Selecciona un curso —', 'convoca-courses' ) );
-
-		foreach ( get_posts(
-			array(
-				'post_type'      => CPT_Curso::TYPE,
-				'post_status'    => array( 'publish', 'draft', 'pending' ),
-				'posts_per_page' => 300,
-				'orderby'        => 'title',
-				'order'          => 'ASC',
-			)
-		) as $course ) {
-			$options[ (int) $course->ID ] = (string) $course->post_title;
-		}
-
-		return $options;
-	}
 
 	/**
 	 * Módulos para el selector.

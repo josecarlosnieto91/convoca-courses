@@ -1,3 +1,12 @@
+## [0.23.14] — 2026-11-02
+
+### Cambiado
+
+- **la lista de cursos para los desplegables sale de un solo sitio**: estaba duplicada, con el
+  mismo cuerpo y la misma consulta, en `class-admin-fields.php` y `class-admin-examen.php`.
+  Ahora es `CPT_Curso::opciones()`. Tres pruebas nuevas: el marcador, los cursos y que ninguna
+  pantalla recupere su copia.
+
 ## [0.23.13] — 2026-11-02
 
 ### Cambiado
