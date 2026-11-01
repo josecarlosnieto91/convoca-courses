@@ -1,3 +1,9 @@
+## [0.23.9] — 2026-11-01
+
+### Cambiado
+
+- **la fecha del certificado, dentro de la hoja**
+
 ## [0.23.8] — 2026-11-01
 
 ### Cambiado

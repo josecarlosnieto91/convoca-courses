@@ -62,10 +62,15 @@ $convoca_nota   = isset( $nota ) ? (string) $nota : '';
 		.filete { background: #ff8700; height: 207mm; width: 3mm; }
 
 		/* ── Cuerpo ────────────────────────────────────────────────── */
-		.cuerpo { padding: 17mm 16mm 12mm 15mm; vertical-align: top; width: 252mm; }
+		/* Sin `width`: con 252 mm más el padding horizontal sumaba 283 mm y, con la banda y el filete,
+			la tabla se salía de los 297 de la hoja (la fecha acababa fuera del papel). */
+		.cuerpo { padding: 17mm 16mm 12mm 15mm; vertical-align: top; }
 
-		.cabecera { border-bottom: 0.3mm solid #e6dccd; padding-bottom: 3mm; width: 100%; }
+		/* `table-layout: fixed`: sin anchos, el rótulo del centro se comía la fecha y solo salía el «3». */
+		.cabecera { border-bottom: 0.3mm solid #e6dccd; padding-bottom: 3mm; table-layout: fixed; width: 100%; }
 		.cabecera td { padding: 0; vertical-align: bottom; }
+		.cabecera td:first-child { width: 68%; }
+		.cabecera td:last-child { width: 32%; }
 		.cabecera__centro { color: #a65d24; font-size: 8.5px; font-weight: 700; letter-spacing: 2.4px; text-align: left; text-transform: uppercase; }
 		.cabecera__fecha { color: #6d7773; font-size: 9px; letter-spacing: 0.8px; text-align: right; white-space: nowrap; }
 
