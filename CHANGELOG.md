@@ -1,3 +1,9 @@
+## [0.23.11] — 2026-11-01
+
+### Cambiado
+
+- **restaurar una matricula antigua la deja publicada**
+
 ## [0.23.10] — 2026-11-01
 
 ### Cambiado

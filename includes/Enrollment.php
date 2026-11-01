@@ -401,6 +401,13 @@ class Enrollment {
 
 		$previo = (string) get_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado_antes_papelera', true );
 
+		// Las matrículas que se movieron a la papelera antes de que existiera este meta no lo tienen.
+		// Sin esta caída, la restauración las dejaba en `draft` y el control de acceso —que solo mira
+		// `publish`, `pending` y `private`— no las encontraba (courses#43).
+		if ( '' === $previo ) {
+			$previo = (string) get_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado', true );
+		}
+
 		if ( '' !== $previo ) {
 			update_post_meta( $post_id, CPT_Base::META_PREFIX . 'estado', $previo );
 
