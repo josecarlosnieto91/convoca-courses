@@ -1,3 +1,12 @@
+## [0.24.1] — 2026-11-04
+
+### Corregido
+
+- **La plantilla llamaba a `Curso_View` sin su espacio de nombres.** Las plantillas se incluyen en el
+  ámbito global, así que en cuanto se encendió la ficha propia en producción las dos URLs de curso
+  devolvieron **500** (`Class "Curso_View" not found`). Ahora va con el nombre completo y hay una
+  prueba que lo vigila (el defecto no se ve en las pruebas de la vista, solo al pintar la plantilla).
+
 ## [0.24.0] — 2026-11-04
 
 ### Añadido

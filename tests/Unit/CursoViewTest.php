@@ -178,4 +178,18 @@ class CursoViewTest extends TestCase {
 
 		$this->assertStringNotContainsString( 'Actividades de práctica', Curso_View::render( 100 ) );
 	}
+
+	/**
+	 * La plantilla se incluye en el ámbito global: la clase tiene que ir con su nombre completo.
+	 *
+	 * Sin esto, el sitio devolvió un 500 («Class "Curso_View" not found») en cuanto se encendió la
+	 * plantilla propia en producción.
+	 */
+	public function test_la_plantilla_llama_a_la_vista_con_su_nombre_completo(): void {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lectura de un fichero del propio plugin.
+		$plantilla = (string) file_get_contents( dirname( __DIR__, 2 ) . '/templates/curso-completo.php' );
+
+		$this->assertStringContainsString( '\\Convoca\\Courses\\Curso_View::render', $plantilla );
+		$this->assertStringNotContainsString( '<?php echo Curso_View::', $plantilla );
+	}
 }

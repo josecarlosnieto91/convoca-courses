@@ -37,7 +37,7 @@ get_header();
 			the_content();
 			?>
 
-			<?php echo Curso_View::render( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML ya construido y escapado por la vista. ?>
+			<?php echo \Convoca\Courses\Curso_View::render( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML ya construido y escapado por la vista. ?>
 		</article>
 		<?php
 	endwhile;
