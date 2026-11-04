@@ -31,7 +31,13 @@ get_header();
 				<?php endif; ?>
 			</header>
 
-			<?php echo do_shortcode( '[convoca_curso id="' . (int) get_the_ID() . '"]' ); ?>
+			<?php
+			// Lo editorial del curso (intro, a quién va dirigido). La estructura —módulos, lecciones,
+			// tareas y examen— no se escribe aquí: la compone Curso_View desde sus relaciones.
+			the_content();
+			?>
+
+			<?php echo Curso_View::render( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML ya construido y escapado por la vista. ?>
 		</article>
 		<?php
 	endwhile;

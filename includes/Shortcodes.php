@@ -40,6 +40,7 @@ class Shortcodes {
 	 */
 	public static function register(): void {
 		add_shortcode( 'convoca_curso', array( __CLASS__, 'course' ) );
+		add_shortcode( 'convoca_curso_completo', array( __CLASS__, 'complete' ) );
 		add_shortcode( 'convoca_curso_lecciones', array( __CLASS__, 'lessons' ) );
 		add_shortcode( 'convoca_curso_leccion', array( __CLASS__, 'lesson' ) );
 		add_shortcode( 'convoca_curso_examen', array( __CLASS__, 'exam' ) );
@@ -218,6 +219,32 @@ class Shortcodes {
 		self::$renderizando = false;
 
 		return $html;
+	}
+
+	/**
+	 * Ficha completa del curso: portada, programa, tareas y evaluación.
+	 *
+	 * Es la misma composición que usa la plantilla propia del curso, expuesta como shortcode para
+	 * reutilizarla en una landing o en un patrón.
+	 *
+	 * @param array<string, string>|string $atts Atributos (`id` = curso).
+	 * @return string
+	 */
+	public static function complete( $atts ): string {
+		$atts = shortcode_atts(
+			array(
+				'id' => '0',
+			),
+			$atts,
+			'convoca_curso_completo'
+		);
+
+		$course_id = self::resolve_course_id( (int) $atts['id'] );
+		if ( 0 === $course_id ) {
+			return self::error_box();
+		}
+
+		return Curso_View::render( $course_id );
 	}
 
 	/**

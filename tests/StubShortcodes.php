@@ -56,6 +56,25 @@ if ( ! function_exists( 'wp_mail' ) ) {
 	}
 }
 
+if ( ! function_exists( 'do_shortcode' ) ) {
+	/**
+	 * Doble de `do_shortcode`: apunta lo que se pide y devuelve un marcador con el propio shortcode.
+	 *
+	 * Así una prueba puede comprobar **qué** shortcode y **con qué id** se pintó, y en qué orden,
+	 * sin montar el renderizador entero.
+	 *
+	 * @param string $content Contenido con shortcodes.
+	 * @return string
+	 */
+	function do_shortcode( $content ) {
+		$content                                   = (string) $content;
+		$GLOBALS['convoca_courses_do_shortcode'][] = $content;
+
+		// Sin escapar: el marcador tiene que poder compararse tal cual en una aserción.
+		return '<span class="convoca-stub-shortcode">' . $content . '</span>';
+	}
+}
+
 if ( ! function_exists( 'shortcode_atts' ) ) {
 	/**
 	 * Une atributos con sus valores por defecto (doble fiel).

@@ -1,3 +1,24 @@
+## [0.24.0] — 2026-11-04
+
+### Añadido
+
+- **La ficha del curso se compone desde sus relaciones.** El curso ya no necesita llevar la estructura
+  escrita en el contenido: `Curso_View` junta portada y matrícula, programa en acordeón, actividades y
+  evaluación a partir de los módulos, lecciones, tareas y exámenes ya vinculados. La plantilla propia
+  pinta lo editorial con `the_content()` y deja la estructura a la vista.
+- **Acordeón nativo** (`<details>/<summary>`, sin JavaScript) por módulo, con estado por lección
+  (completada, pendiente, bloqueada), número, duración y barra de progreso. Se abre el módulo de la
+  primera lección pendiente.
+- **El examen se coloca donde toca**: dentro de su módulo si tiene `modulo_id`, al final del curso si es
+  del curso. Se resuelve por `curso_id`, no por un id pegado en el contenido.
+- **`[convoca_curso_completo]`**: la misma composición como shortcode, para reutilizarla en una landing
+  o un patrón sin duplicarla.
+
+### Pruebas
+
+- `CursoViewTest` (6 casos): curso inexistente, orden de las secciones, examen en su módulo, curso sin
+  módulos, tareas presentes y ausentes.
+
 ## [0.23.14] — 2026-11-02
 
 ### Cambiado

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Courses 0.23.14\n"
+"Project-Id-Version: Convoca Courses 0.24.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-courses\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-01T07:09:05+00:00\n"
+"POT-Creation-Date: 2026-11-04T23:07:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-courses\n"
@@ -190,13 +190,7 @@ msgstr ""
 msgid "No se ha podido guardar la pregunta."
 msgstr ""
 
-#: admin/class-admin-examen.php:346
-#: admin/class-admin-fields.php:469
-#: templates/entregas.php:26
-msgid "— Selecciona un curso —"
-msgstr ""
-
-#: admin/class-admin-examen.php:369
+#: admin/class-admin-examen.php:347
 msgid "— Todo el curso —"
 msgstr ""
 
@@ -240,7 +234,7 @@ msgstr ""
 msgid "El módulo no cuelga de ningún curso."
 msgstr ""
 
-#: admin/class-admin-fields.php:530
+#: admin/class-admin-fields.php:508
 msgid "Módulos sin curso"
 msgstr ""
 
@@ -464,6 +458,11 @@ msgstr ""
 msgid "Cursos"
 msgstr ""
 
+#: includes/CPT_Curso.php:203
+#: templates/entregas.php:26
+msgid "— Selecciona un curso —"
+msgstr ""
+
 #: includes/CPT_Examen.php:54
 msgid "Examen"
 msgstr ""
@@ -496,6 +495,23 @@ msgstr ""
 
 #: includes/CPT_Tarea.php:46
 msgid "Tareas"
+msgstr ""
+
+#: includes/Curso_View.php:35
+msgid "Este curso no existe."
+msgstr ""
+
+#: includes/Curso_View.php:81
+#: templates/lecciones.php:39
+msgid "Este curso todavía no tiene lecciones publicadas."
+msgstr ""
+
+#: includes/Curso_View.php:128
+msgid "Actividades de práctica"
+msgstr ""
+
+#: includes/Curso_View.php:143
+msgid "Evaluación final"
 msgstr ""
 
 #: includes/Desistimiento.php:111
@@ -636,7 +652,7 @@ msgid "El vídeo no está configurado."
 msgstr ""
 
 #: includes/Handlers.php:568
-#: includes/Shortcodes.php:118
+#: includes/Shortcodes.php:119
 msgid "El acta de notas solo la ve quien gestiona el curso."
 msgstr ""
 
@@ -1017,7 +1033,7 @@ msgstr ""
 msgid "El CSV no tiene preguntas legibles."
 msgstr ""
 
-#: includes/Shortcodes.php:547
+#: includes/Shortcodes.php:574
 msgid "No se ha encontrado el curso o la lección indicados."
 msgstr ""
 
@@ -1305,6 +1321,7 @@ msgstr ""
 
 #. translators: 1: completed lessons, 2: total lessons, 3: percentage.
 #: templates/curso.php:87
+#: templates/lecciones-acordeon.php:29
 #: templates/lecciones.php:28
 #, php-format
 msgid "%1$d de %2$d lecciones completadas (%3$s %%)."
@@ -1535,6 +1552,7 @@ msgstr ""
 
 #. translators: %d: minutes.
 #: templates/leccion.php:26
+#: templates/lecciones-acordeon.php:95
 #, php-format
 msgid "%d min"
 msgstr ""
@@ -1579,20 +1597,32 @@ msgstr ""
 msgid "Volver al curso"
 msgstr ""
 
-#: templates/lecciones.php:39
-msgid "Este curso todavía no tiene lecciones publicadas."
+#: templates/lecciones-acordeon.php:18
+msgid "Programa del curso"
 msgstr ""
 
-#: templates/lecciones.php:60
-msgid "sin página"
+#. translators: 1: completed lessons, 2: total lessons.
+#: templates/lecciones-acordeon.php:60
+#, php-format
+msgid "%1$d/%2$d"
 msgstr ""
 
+#: templates/lecciones-acordeon.php:75
+msgid "Este módulo todavía no tiene lecciones."
+msgstr ""
+
+#: templates/lecciones-acordeon.php:102
 #: templates/lecciones.php:64
 msgid "completada"
 msgstr ""
 
+#: templates/lecciones-acordeon.php:104
 #: templates/lecciones.php:66
 msgid "bloqueada"
+msgstr ""
+
+#: templates/lecciones.php:60
+msgid "sin página"
 msgstr ""
 
 #: templates/metabox-curso.php:22

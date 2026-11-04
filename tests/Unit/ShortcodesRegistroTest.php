@@ -60,8 +60,9 @@ class ShortcodesRegistroTest extends TestCase {
 
 		$registrados = $GLOBALS['convoca_courses_shortcodes'];
 
-		$this->assertCount( 8, $registrados );
+		$this->assertCount( 9, $registrados );
 		$this->assertArrayHasKey( 'convoca_curso', $registrados );
+		$this->assertArrayHasKey( 'convoca_curso_completo', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_lecciones', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_leccion', $registrados );
 		$this->assertArrayHasKey( 'convoca_curso_examen', $registrados );
