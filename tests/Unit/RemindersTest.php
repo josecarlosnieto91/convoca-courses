@@ -35,7 +35,8 @@ class RemindersTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$this->limpiar();
-		$GLOBALS['convoca_courses_ahora'] = self::AHORA;
+		$GLOBALS['convoca_courses_ahora']                            = self::AHORA;
+		$GLOBALS['convoca_courses_filtros']['convoca_courses_ahora'] = self::AHORA;
 		require_once dirname( __DIR__, 2 ) . '/includes/Access.php';
 		require_once dirname( __DIR__, 2 ) . '/includes/License.php';
 		require_once dirname( __DIR__, 2 ) . '/includes/Pro.php';

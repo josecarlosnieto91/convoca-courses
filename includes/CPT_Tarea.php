@@ -142,9 +142,7 @@ class CPT_Tarea extends CPT_Base {
 			return 0;
 		}
 
-		$ts = strtotime( $plazo . ' 23:59:59' );
-
-		return false === $ts ? 0 : $ts;
+		return Fechas::a_timestamp( (string) $plazo, '23:59:59' );
 	}
 
 	/**

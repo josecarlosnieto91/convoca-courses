@@ -156,7 +156,7 @@ class Reminders {
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora = (int) current_time( 'timestamp' );
+		$ahora = Fechas::ahora();
 
 		return ( $ahora - $ultima ) >= ( self::INACTIVE_DAYS * DAY_IN_SECONDS );
 	}
@@ -217,8 +217,8 @@ class Reminders {
 
 		$marcas = array_filter(
 			array(
-				is_string( $progreso ) ? strtotime( $progreso ) : false,
-				is_string( $intento ) ? strtotime( $intento ) : false,
+				is_string( $progreso ) ? Fechas::a_timestamp( $progreso ) : false,
+				is_string( $intento ) ? Fechas::a_timestamp( $intento ) : false,
 			)
 		);
 
@@ -254,7 +254,7 @@ class Reminders {
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora = (int) current_time( 'timestamp' );
+		$ahora = Fechas::ahora();
 
 		return ( $ahora - (int) $registro[ $clave ] ) < ( self::COOLDOWN_DAYS * DAY_IN_SECONDS );
 	}
@@ -274,7 +274,7 @@ class Reminders {
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- marca de tiempo guardada.
-		$registro[ $user_id . ':' . $course_id . ':' . $regla ] = (int) current_time( 'timestamp' );
+		$registro[ $user_id . ':' . $course_id . ':' . $regla ] = Fechas::ahora();
 
 		// Tope de 500 entradas: el registro no puede crecer sin fin en una opción.
 		if ( count( $registro ) > 500 ) {

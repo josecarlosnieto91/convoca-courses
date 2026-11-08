@@ -260,10 +260,10 @@ class Access {
 		$apertura = CPT_Curso::enrollment_open_date( $course_id );
 		$cierre   = CPT_Curso::enrollment_close_date( $course_id );
 
-		$desde = '' !== $apertura ? (int) strtotime( $apertura . ' 00:00:00' ) : 0;
-		$hasta = '' !== $cierre ? (int) strtotime( $cierre . ' 23:59:59' ) : 0;
+		$desde = '' !== $apertura ? Fechas::a_timestamp( (string) $apertura ) : 0;
+		$hasta = '' !== $cierre ? Fechas::a_timestamp( (string) $cierre, '23:59:59' ) : 0;
 
-		return self::enrollment_window_open( $desde, $hasta, (int) current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo, no fecha mostrada.
+		return self::enrollment_window_open( $desde, $hasta, Fechas::ahora() ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo, no fecha mostrada.
 	}
 
 	/**
@@ -285,11 +285,11 @@ class Access {
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora = (int) current_time( 'timestamp' );
+		$ahora = Fechas::ahora();
 
 		$fin = CPT_Curso::end_date( $course_id );
 		if ( '' !== $fin ) {
-			$hasta = (int) strtotime( $fin . ' 23:59:59' );
+			$hasta = Fechas::a_timestamp( (string) $fin, '23:59:59' );
 			if ( $hasta > 0 && $ahora > $hasta ) {
 				return true;
 			}

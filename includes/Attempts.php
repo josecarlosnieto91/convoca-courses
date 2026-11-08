@@ -194,8 +194,8 @@ class Attempts {
 		$exam_id   = (int) $attempt['exam_id'];
 		$course_id = (int) $attempt['course_id'];
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora  = (int) current_time( 'timestamp' );
-		$inicio = (int) strtotime( $attempt['iniciado_en'] );
+		$ahora  = Fechas::ahora();
+		$inicio = Fechas::a_timestamp( (string) $attempt['iniciado_en'] );
 
 		$table = Installer::table( Installer::ATTEMPTS_TABLE );
 

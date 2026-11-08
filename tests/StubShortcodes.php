@@ -551,6 +551,18 @@ if ( ! function_exists( 'current_time' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_timezone' ) ) {
+	/**
+	 * Zona del sitio (doble: UTC, para que las fechas de las pruebas sean predecibles).
+	 *
+	 * @return DateTimeZone
+	 */
+	function wp_timezone() {
+		// La zona se puede fijar desde la prueba; por defecto, UTC.
+		return new DateTimeZone( $GLOBALS['convoca_courses_tz'] ?? 'UTC' );
+	}
+}
+
 if ( ! function_exists( 'get_post_meta' ) ) {
 	/**
 	 * Meta de una entrada (doble que lee del mismo almacén que get_posts: convoca_test_meta).

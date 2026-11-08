@@ -1,3 +1,13 @@
+## [0.24.2] — 2026-11-08
+
+### Corregido
+
+- **las fechas se leen en la zona del sitio** (#47): `current_time( 'timestamp' )` devolvía la hora local
+  como si fuera UTC y `strtotime()` interpretaba en UTC, así que una ventana que cierra a las 23:59 se
+  cerraba una o dos horas antes según la estación. Pasa a `Fechas::a_timestamp()` (con `wp_timezone()`) y
+  `Fechas::ahora()` (`time()`, con filtro `convoca_courses_ahora` para las pruebas). Ocho pruebas nuevas,
+  incluidas las dos estaciones en Madrid.
+
 ## [0.24.1] — 2026-11-04
 
 ### Corregido

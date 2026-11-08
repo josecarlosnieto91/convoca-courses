@@ -113,7 +113,7 @@ class Task {
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora  = (int) current_time( 'timestamp' );
+		$ahora  = Fechas::ahora();
 		$estado = self::status_for( $ahora, CPT_Tarea::deadline_ts( $task_id ) );
 		$table  = Installer::table( Installer::SUBMISSIONS_TABLE );
 		$existe = self::submission( $task_id, $user_id );

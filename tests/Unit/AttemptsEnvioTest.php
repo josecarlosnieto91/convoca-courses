@@ -34,7 +34,8 @@ class AttemptsEnvioTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$this->limpiar();
-		$GLOBALS['convoca_courses_ahora'] = self::AHORA;
+		$GLOBALS['convoca_courses_ahora']                            = self::AHORA;
+		$GLOBALS['convoca_courses_filtros']['convoca_courses_ahora'] = self::AHORA;
 		require_once dirname( __DIR__, 2 ) . '/includes/Installer.php';
 		require_once dirname( __DIR__, 2 ) . '/includes/CPT_Base.php';
 		require_once dirname( __DIR__, 2 ) . '/includes/CPT_Curso.php';

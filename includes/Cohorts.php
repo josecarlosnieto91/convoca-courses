@@ -144,8 +144,8 @@ class Cohorts {
 	 * @return bool
 	 */
 	public static function window_open( string $apertura, string $cierre, int $ahora ): bool {
-		$desde = '' !== $apertura ? (int) strtotime( $apertura . ' 00:00:00' ) : 0;
-		$hasta = '' !== $cierre ? (int) strtotime( $cierre . ' 23:59:59' ) : 0;
+		$desde = '' !== $apertura ? Fechas::a_timestamp( (string) $apertura ) : 0;
+		$hasta = '' !== $cierre ? Fechas::a_timestamp( (string) $cierre, '23:59:59' ) : 0;
 
 		return Access::enrollment_window_open( $desde, $hasta, $ahora );
 	}
@@ -158,7 +158,7 @@ class Cohorts {
 	 */
 	public static function open_for( int $course_id ): int {
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora = (int) current_time( 'timestamp' );
+		$ahora = Fechas::ahora();
 
 		$candidatas = array();
 
