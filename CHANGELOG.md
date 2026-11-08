@@ -1,3 +1,22 @@
+## [0.24.3] — 2026-11-08
+
+### Añadido
+
+- **catálogo en inglés completo**: las 229 cadenas que faltaban, traducidas (412/412). Incluye la
+  información legal de desistimiento, las pantallas de examen, la corrección de tareas y los ajustes del
+  curso. Los marcadores (`%s`, `%d`, `%1$s`, `{{nombre}}`) se conservan tal cual.
+
+### Corregido
+
+- **el catálogo no se podía cargar**: las 412 entradas llevaban `msgctxt "convoca-courses"`, y WordPress
+  busca por `msgid` sin contexto: la traducción estaba escrita pero no se aplicaba. Se han quitado los
+  `msgctxt` que solo repetían el dominio y recompilado el `.mo`.
+- **184 entradas marcadas `fuzzy`** por una fusión anterior: se han revisado y desmarcado; `.mo`
+  recompilado con 412 mensajes.
+
+Compatible con WPML, Polylang y Loco Translate: `msgid` sin contexto, dominio `convoca-courses` en las
+259 llamadas, `.pot` regenerado y `load_plugin_textdomain` activo.
+
 ## [0.24.2] — 2026-11-08
 
 ### Corregido
