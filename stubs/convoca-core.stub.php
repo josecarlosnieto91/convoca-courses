@@ -33,6 +33,21 @@ class Utils {
 	}
 
 	/**
+	 * Limita la frecuencia de una acción.
+	 *
+	 * @param string $action   Acción.
+	 * @param int    $max      Intentos permitidos.
+	 * @param int    $window   Ventana en segundos.
+	 * @param string $identity Identidad opcional.
+	 * @return bool
+	 *
+	 * @phpstan-impure
+	 */
+	public static function check_rate_limit( string $action, int $max = 10, int $window = 300, string $identity = '' ): bool {
+		return true;
+	}
+
+	/**
 	 * Libera un lock.
 	 *
 	 * @param string $key Clave.

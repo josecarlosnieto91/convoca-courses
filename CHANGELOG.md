@@ -1,3 +1,12 @@
+## [0.24.4] — 2026-11-09
+
+### Seguridad
+
+- El acceso público del alumnado limita a **20 intentos cada 10 minutos** por IP y acción antes de
+  dar de alta la identidad o enviar un código. Sin límite se podía tantear el código o usar la web
+  para inundar de correos una dirección.
+- El stub del núcleo declara `check_rate_limit()` para que PHPStan analice la llamada real.
+
 ## [0.24.3] — 2026-11-08
 
 ### Añadido

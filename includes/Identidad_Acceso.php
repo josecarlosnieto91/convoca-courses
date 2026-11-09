@@ -122,6 +122,16 @@ class Identidad_Acceso {
 			);
 		}
 
+		// El acceso por correo es público: sin límite, se puede tantear el código o inundar de
+		// correos a una dirección. 20 intentos cada 10 minutos por IP y acción.
+		if ( class_exists( '\\Convoca\\Core\\Utils' ) && ! \Convoca\Core\Utils::check_rate_limit( 'convoca_courses_acceso_' . $accion, 20, 600 ) ) {
+			wp_die(
+				esc_html__( 'Demasiados intentos. Espera unos minutos y vuelve a probar.', 'convoca-courses' ),
+				'',
+				array( 'response' => 429 )
+			);
+		}
+
 		$id = Identidad::alta( $email );
 
 		if ( $id <= 0 ) {
