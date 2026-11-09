@@ -1,3 +1,11 @@
+## [0.24.5] — 2026-11-09
+
+### Seguridad
+
+- El acceso del alumnado incorpora **honeypot y trampa de tiempo** de Convoca Core: un bot que rellena
+  el campo oculto o envía en menos de 3 segundos recibe 400 antes de crear identidad o enviar código.
+  Sin sello no se bloquea (página cacheada); el límite por IP sigue detrás.
+
 ## [0.24.4] — 2026-11-09
 
 ### Seguridad

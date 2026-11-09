@@ -4,7 +4,7 @@ Tags: courses, elearning, lessons, certificate, enrollment
 Requires at least: 6.4
 Tested up to: 7.1.4
 Requires PHP: 8.2
-Stable tag: 0.24.4
+Stable tag: 0.24.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

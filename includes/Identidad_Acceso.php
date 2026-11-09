@@ -122,6 +122,20 @@ class Identidad_Acceso {
 			);
 		}
 
+		// Honeypot y trampa de tiempo: corta el primer envío de un bot sin servicios externos. Va
+		// después del nonce y antes del limitador; sin sello no bloquea (página cacheada).
+		if ( class_exists( '\\Convoca\\Core\\Anti_Bot' ) ) {
+			$motivo_bot = \Convoca\Core\Anti_Bot::motivo( $_POST );
+
+			if ( null !== $motivo_bot ) {
+				wp_die(
+					esc_html__( 'No hemos podido validar el formulario. Vuelve a intentarlo.', 'convoca-courses' ),
+					'',
+					array( 'response' => 400 )
+				);
+			}
+		}
+
 		// El acceso por correo es público: sin límite, se puede tantear el código o inundar de
 		// correos a una dirección. 20 intentos cada 10 minutos por IP y acción.
 		if ( class_exists( '\\Convoca\\Core\\Utils' ) && ! \Convoca\Core\Utils::check_rate_limit( 'convoca_courses_acceso_' . $accion, 20, 600 ) ) {
@@ -391,6 +405,9 @@ class Identidad_Acceso {
 		$html .= '<p><label>' . esc_html__( 'Tu correo', 'convoca-courses' ) . '</label>';
 		$html .= '<input type="email" name="email" required autocomplete="email" /></p>';
 		$html .= '<p><button type="submit" class="convoca-boton">' . esc_html__( 'Enviarme el acceso', 'convoca-courses' ) . '</button></p>';
+		if ( class_exists( '\\Convoca\\Core\\Anti_Bot' ) ) {
+			$html .= \Convoca\Core\Anti_Bot::campos();
+		}
 		$html .= '</form>';
 
 		$html .= '<form class="convoca-acceso__form" method="post" action="' . $accion . '">';
@@ -398,8 +415,10 @@ class Identidad_Acceso {
 		$html .= wp_nonce_field( self::ACCION . '_codigo', '_convoca_nonce', true, false );
 		$html .= '<p><label>' . esc_html__( '¿Ya tienes un código?', 'convoca-courses' ) . '</label>';
 		$html .= '<input type="email" name="email" required autocomplete="email" />';
-		$html .= '<input type="text" name="codigo" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required />';
-		$html .= '</p><p><button type="submit" class="convoca-boton">' . esc_html__( 'Entrar con el código', 'convoca-courses' ) . '</button></p>';
+		$html .= '<input type="text" name="codigo" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required /></p><p><button type="submit" class="convoca-boton">' . esc_html__( 'Entrar con el código', 'convoca-courses' ) . '</button></p>';
+		if ( class_exists( '\\Convoca\\Core\\Anti_Bot' ) ) {
+			$html .= \Convoca\Core\Anti_Bot::campos();
+		}
 		$html .= '</form>';
 
 		return '<div class="convoca-acceso">' . $html . '</div>';
