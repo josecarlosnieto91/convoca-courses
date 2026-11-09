@@ -5,6 +5,7 @@ Hace lo que haría una persona: inicia sesión, abre la portada del curso, se ma
 formulario, abre una lección, la marca como completada. Todo por HTTP y sin ejecutar JavaScript.
 """
 import json
+import os
 import pathlib
 import re
 import sys
@@ -13,7 +14,9 @@ import requests
 
 BASE = "http://localhost:8080"
 USER = "alumno2-prueba"
-PASSWORD = "Prueba-Segura-2026"
+PASSWORD = os.environ.get("CONVOCA_DEV_PASSWORD", "").strip()
+if not PASSWORD:
+    raise SystemExit("Define CONVOCA_DEV_PASSWORD con la contraseña del usuario de desarrollo.")
 
 # Los identificadores salen de lo que acaba de sembrar dev-tools/verificar.php: fijarlos a mano en
 # este fichero es exactamente cómo se escriben pruebas que pasan sin comprobar nada.
