@@ -249,6 +249,20 @@ final class ProPantallasTest extends TestCase {
 	}
 
 	/**
+	 * SCORM con PRO y una lección pinta el selector.
+	 */
+	public function test_scorm_con_leccion(): void {
+		$GLOBALS['convoca_test_post_types'][33] = 'convoca_leccion';
+		$GLOBALS['convoca_test_titulos'][33]    = 'Lección SCORM';
+
+		ob_start();
+		( new Admin_SCORM() )->render();
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'Lección SCORM', $html );
+	}
+
+	/**
 	 * Encuesta desactivada no pinta nada.
 	 */
 	public function test_encuesta_desactivada_no_pinta(): void {
