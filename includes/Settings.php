@@ -193,6 +193,18 @@ class Settings {
 				'default'           => false,
 			)
 		);
+
+		register_setting(
+			self::GROUP,
+			Access_Log::OPTION_RETENTION,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => static function ( $value ) {
+					return max( 30, min( 3650, (int) $value ) );
+				},
+				'default'           => Access_Log::RETENTION_DEFAULT,
+			)
+		);
 	}
 
 	/**
@@ -243,6 +255,8 @@ class Settings {
 				'config'                  => $config,
 				'pro'                     => $pro,
 				'keep_data'               => (bool) get_option( Installer::KEEP_DATA_OPTION, false ),
+				'retention_days'          => (int) get_option( Access_Log::OPTION_RETENTION, Access_Log::RETENTION_DEFAULT ),
+				'retention_option'        => Access_Log::OPTION_RETENTION,
 				'video_option'            => Video::OPTION,
 				'keep_option'             => Installer::KEEP_DATA_OPTION,
 				'entidad'                 => Entidad::datos(),

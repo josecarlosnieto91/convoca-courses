@@ -24,13 +24,17 @@ class Pro {
 	 * Funciones PRO y su nombre legible.
 	 */
 	public const FEATURES = array(
-		'precio_socio'     => 'Precio distinto para socios',
-		'convocatorias'    => 'Convocatorias con plazas y fechas',
-		'recordatorios'    => 'Recordatorios automáticos',
-		'tutores'          => 'Varios correctores y corrección en lote',
-		'certificado_qr'   => 'Certificado con QR y plantilla propia',
-		'banco_compartido' => 'Banco de preguntas compartido e importación CSV',
-		'correo_grupo'     => 'Correo al grupo de alumnado',
+		'precio_socio'        => 'Precio distinto para socios',
+		'convocatorias'       => 'Convocatorias con plazas y fechas',
+		'recordatorios'       => 'Recordatorios automáticos',
+		'tutores'             => 'Varios correctores y corrección en lote',
+		'certificado_qr'      => 'Certificado con QR y plantilla propia',
+		'banco_compartido'    => 'Banco de preguntas compartido e importación CSV',
+		'correo_grupo'        => 'Correo al grupo de alumnado',
+		'registro_conexiones' => 'Registro inalterable de conexiones',
+		'scorm'               => 'Paquetes SCORM 1.2 y 2004',
+		'informes_alumno'     => 'Informes por alumno',
+		'encuesta_calidad'    => 'Encuesta de calidad',
 	);
 
 	/**

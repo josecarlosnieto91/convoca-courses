@@ -77,6 +77,21 @@ class Installer {
 	public const CERTIFICADOS_TABLE = 'convoca_certificados';
 
 	/**
+	 * Registro inalterable de conexiones y actividad.
+	 */
+	public const ACCESS_LOG_TABLE = 'convoca_course_access_log';
+
+	/**
+	 * Estado SCORM por lección y persona.
+	 */
+	public const SCORM_STATE_TABLE = 'convoca_course_scorm_state';
+
+	/**
+	 * Respuestas de la encuesta de calidad.
+	 */
+	public const SURVEYS_TABLE = 'convoca_course_surveys';
+
+	/**
 	 * Activación: crea tablas, capabilities y reescribe reglas.
 	 *
 	 * @return void
@@ -96,6 +111,8 @@ class Installer {
 		// Sin esta página, quien recibe un enlace caducado no tiene dónde pedir otro (courses#31).
 		Identidad_Acceso::asegurar_pagina();
 
+		Access_Log::schedule();
+
 		update_option( self::DB_OPTION, CONVOCA_COURSES_DB_VERSION, false );
 	}
 
@@ -105,6 +122,7 @@ class Installer {
 	 * @return void
 	 */
 	public static function deactivate(): void {
+		Access_Log::unschedule();
 		flush_rewrite_rules();
 	}
 
@@ -253,6 +271,63 @@ class Installer {
 			emitido_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY  (id),
 			UNIQUE KEY codigo (codigo)
+		) {$collate};";
+
+		$sql[ self::ACCESS_LOG_TABLE ] = "CREATE TABLE {$prefix}" . self::ACCESS_LOG_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			created_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			event varchar(40) NOT NULL DEFAULT '',
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			identidad_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			course_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			lesson_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			object_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			ip varchar(45) NOT NULL DEFAULT '',
+			user_agent varchar(255) NOT NULL DEFAULT '',
+			session_id char(64) NOT NULL DEFAULT '',
+			duration int(11) unsigned NOT NULL DEFAULT 0,
+			data longtext NOT NULL,
+			prev_hash char(64) NOT NULL DEFAULT '',
+			hash char(64) NOT NULL DEFAULT '',
+			PRIMARY KEY  (id),
+			KEY course_created (course_id,created_utc),
+			KEY user_created (user_id,created_utc),
+			KEY identidad_created (identidad_id,created_utc),
+			KEY event_created (event,created_utc)
+		) {$collate};";
+
+		$sql[ self::SCORM_STATE_TABLE ] = "CREATE TABLE {$prefix}" . self::SCORM_STATE_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			lesson_id bigint(20) unsigned NOT NULL,
+			course_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			identidad_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			lesson_status varchar(40) NOT NULL DEFAULT '',
+			score_raw decimal(8,2) NOT NULL DEFAULT 0.00,
+			score_max decimal(8,2) NOT NULL DEFAULT 0.00,
+			score_min decimal(8,2) NOT NULL DEFAULT 0.00,
+			session_time varchar(40) NOT NULL DEFAULT '',
+			suspend_data longtext NOT NULL,
+			location varchar(255) NOT NULL DEFAULT '',
+			updated_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY leccion_persona (lesson_id,user_id,identidad_id),
+			KEY course_user (course_id,user_id),
+			KEY course_identidad (course_id,identidad_id)
+		) {$collate};";
+
+		$sql[ self::SURVEYS_TABLE ] = "CREATE TABLE {$prefix}" . self::SURVEYS_TABLE . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			course_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			identidad_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			answers longtext NOT NULL,
+			comentario text NOT NULL,
+			created_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			updated_utc datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY curso_persona (course_id,user_id,identidad_id),
+			KEY course_created (course_id,created_utc)
 		) {$collate};";
 
 		return $sql;

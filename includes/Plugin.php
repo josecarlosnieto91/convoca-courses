@@ -59,6 +59,12 @@ final class Plugin {
 		Shortcodes::register();
 		Handlers::register();
 
+		// Funciones PRO: registro, SCORM, encuesta e informes.
+		Access_Log::register();
+		SCORM::register();
+		Survey::register();
+		Reports::register();
+
 		// Aprobar el examen tiene que cerrar el círculo: completar las lecciones pide el certificado
 		// antes de que exista nota, y hasta ahora nadie volvía a preguntar después.
 		add_action( 'convoca_courses_exam_submitted', array( Certificate::class, 'on_exam_submitted' ), 10, 4 );
@@ -107,6 +113,10 @@ final class Plugin {
 		if ( is_admin() ) {
 			Settings::register();
 			Admin_Embudo::register();
+
+			( new Admin_SCORM() )->register();
+			( new Admin_Registro() )->register();
+			( new Admin_Informes() )->register();
 		}
 
 		// Resultado del cobro: los ganchos que ya dispara Convoca Gateway. Si el gateway no está, no

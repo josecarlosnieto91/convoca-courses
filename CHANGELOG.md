@@ -1,3 +1,10 @@
+## [0.25.0] — 2026-11-12
+
+### Cambiado
+
+- **Functions PRO: registro de conexiones, SCORM, informes y encuesta**
+- Registro encadenado por HMAC, paquetes SCORM 1.2/2004, informes PDF/CSV y encuesta por curso.
+
 ## [0.24.6] — 2026-11-11
 
 ### Corregido

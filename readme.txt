@@ -4,7 +4,7 @@ Tags: courses, elearning, lessons, certificate, enrollment
 Requires at least: 6.4
 Tested up to: 7.1.4
 Requires PHP: 8.2
-Stable tag: 0.24.6
+Stable tag: 0.25.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,11 @@ cobrar la matrícula; sin él, el curso es gratuito o se cobra fuera y se marca 
 
 **PRO**
 
+* Registro inalterable de conexiones: accesos, entregas, exámenes y SCORM, con IP, navegador,
+  cadena HMAC verificable y retención configurable (365 días por defecto).
+* Paquetes SCORM 1.2 y SCORM 2004 4ª edición, alojados y servidos desde el propio sitio.
+* Informes por alumno en PDF y CSV: progreso, notas, conexiones, SCORM y encuesta.
+* Encuesta de calidad por curso, vinculada al alumno, con preguntas configurables y comentario.
 * Lecciones de vídeo con URL firmada de corta duración contra un almacenamiento compatible con S3
   (Cloudflare R2, Backblaze B2, Wasabi, MinIO...) o con una URL externa.
 * El vídeo no se aloja en el plugin: no hay transcodificación, ni DRM, ni bloqueo de descarga.

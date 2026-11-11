@@ -242,6 +242,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><label for="convoca-retention"><?php esc_html_e( 'Retención del registro', 'convoca-courses' ); ?></label></th>
+				<td>
+					<input type="number" min="30" max="3650" step="1" id="convoca-retention"
+						name="<?php echo esc_attr( (string) $retention_option ); ?>"
+						value="<?php echo esc_attr( (string) $retention_days ); ?>" />
+					<p class="description"><?php esc_html_e( 'Días que se conservan las conexiones. La purga diaria deja un ancla para verificar la cadena.', 'convoca-courses' ); ?></p>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><?php esc_html_e( 'Al desinstalar', 'convoca-courses' ); ?></th>
 				<td>
 					<label>

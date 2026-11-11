@@ -55,7 +55,8 @@ class Curso_View {
 		return self::portada( $course_id )
 			. self::programa( $course_id, $modules, $exams_por_modulo )
 			. self::tareas( $course_id, $tasks )
-			. self::evaluacion( $exams_sueltos );
+			. self::evaluacion( $exams_sueltos )
+			. Survey::render( $course_id );
 	}
 
 	/**

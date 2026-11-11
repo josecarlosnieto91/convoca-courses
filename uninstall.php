@@ -33,15 +33,25 @@ if ( ! $convoca_courses_keep ) {
 		wp_delete_post( (int) $convoca_courses_post_id, true );
 	}
 
-	// Tabla de progreso.
-	$convoca_courses_table = $wpdb->prefix . 'convoca_course_progress';
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombre de tabla propio y desinstalación explícita.
-	$wpdb->query( "DROP TABLE IF EXISTS {$convoca_courses_table}" );
+	// Tabla de progreso y tablas PRO.
+	$convoca_courses_tables = array(
+		'convoca_course_progress',
+		'convoca_course_access_log',
+		'convoca_course_scorm_state',
+		'convoca_course_surveys',
+	);
+
+	foreach ( $convoca_courses_tables as $convoca_courses_table ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombre de tabla propio y desinstalación explícita.
+		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$convoca_courses_table}" );
+	}
 
 	// Opciones.
 	delete_option( 'convoca_courses_db_version' );
 	delete_option( 'convoca_courses_video' );
 	delete_option( 'convoca_courses_keep_data' );
+	delete_option( 'convoca_courses_access_log_retention' );
+	delete_option( 'convoca_courses_access_log_anchor' );
 
 	// Capabilities.
 	foreach ( array( 'administrator', 'editor' ) as $convoca_courses_role_name ) {
