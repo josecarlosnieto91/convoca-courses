@@ -83,6 +83,38 @@ final class ProPantallasTest extends TestCase {
 			}
 
 			/**
+			 * Sin columna.
+			 *
+			 * @param string $query Consulta.
+			 * @return array<int, mixed>
+			 */
+			public function get_col( $query ) {
+				unset( $query );
+				return array();
+			}
+
+			/**
+			 * Fila de prueba.
+			 *
+			 * @param string $query Consulta.
+			 * @param string $output Salida.
+			 * @return array<string, mixed>
+			 */
+			public function get_row( $query, $output = 'OBJECT' ) {
+				unset( $query, $output );
+				return array(
+					'id'            => 11,
+					'identidad_id'  => 0,
+					'user_id'       => 1,
+					'answers'       => '[5,4]',
+					'comentario'    => 'Bien',
+					'lesson_status' => 'completed',
+					'score_raw'     => 90,
+					'session_time'  => '00:10:00',
+				);
+			}
+
+			/**
 			 * Inserta.
 			 *
 			 * @param string $tabla Tabla.
@@ -357,6 +389,38 @@ final class ProPantallasTest extends TestCase {
 
 		$this->assertSame( 'index.html', \Convoca\Courses\SCORM::paquete( 5 )['entry'] );
 		$this->assertStringContainsString( 'convoca_scorm=5', \Convoca\Courses\SCORM::player_url( 5 ) );
+	}
+
+	/**
+	 * Informes con un alumno: pinta la fila y el enlace PDF.
+	 */
+	public function test_informes_con_alumno(): void {
+		$GLOBALS['convoca_test_post_types']      = array(
+			5  => 'convoca_curso',
+			11 => 'convoca_matricula',
+		);
+		$GLOBALS['convoca_test_post_status'][11] = 'publish';
+		$GLOBALS['convoca_test_meta'][11]        = array(
+			'_convoca_curso_id' => '5',
+			'_convoca_estado'   => 'activa',
+			'_convoca_user_id'  => '1',
+		);
+		$GLOBALS['convoca_courses_usuarios'][1]  = (object) array(
+			'ID'           => 1,
+			'display_name' => 'Alumno de prueba',
+			'user_email'   => 'alumno@example.test',
+		);
+		$_GET['course_id']                       = 5;
+
+		ob_start();
+		( new Admin_Informes() )->render();
+		$html = (string) ob_get_clean();
+
+		unset( $_GET['course_id'] );
+
+		$this->assertStringContainsString( 'Alumno de prueba', $html );
+		$this->assertStringContainsString( 'PDF', $html );
+		$this->assertStringContainsString( 'Encuesta de calidad', $html );
 	}
 
 	/**
