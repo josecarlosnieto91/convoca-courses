@@ -229,6 +229,14 @@ final class ProDatosTest extends TestCase {
 	}
 
 	/**
+	 * Lee el estado SCORM de la base.
+	 */
+	public function test_estado_scorm(): void {
+		$estado = SCORM::estado( 33, 1, 0 );
+		$this->assertSame( 'completed', $estado['lesson_status'] );
+	}
+
+	/**
 	 * Guarda el estado SCORM y marca la lección.
 	 */
 	public function test_guarda_estado_scorm_y_marca_progreso(): void {
