@@ -571,3 +571,22 @@ if ( ! function_exists( 'wp_rand' ) ) {
 		return (int) ( ( (int) $min + (int) $max ) / 2 );
 	}
 }
+
+if ( ! function_exists( 'wp_upload_dir' ) ) {
+	/**
+	 * Directorio de subidas para las pruebas.
+	 *
+	 * @return array<string, mixed>
+	 */
+	function wp_upload_dir() {
+		$base = sys_get_temp_dir() . '/convoca-courses-test-uploads';
+		return array(
+			'path'    => $base,
+			'url'     => 'https://example.org/uploads',
+			'subdir'  => '',
+			'basedir' => $base,
+			'baseurl' => 'https://example.org/uploads',
+			'error'   => false,
+		);
+	}
+}
