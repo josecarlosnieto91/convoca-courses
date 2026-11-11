@@ -25,6 +25,28 @@ final class SurveyTest extends TestCase {
 	}
 
 	/**
+	 * La configuración del curso se normaliza.
+	 */
+	public function test_config_del_curso(): void {
+		update_post_meta(
+			5,
+			Survey::META,
+			array(
+				'enabled'    => true,
+				'titulo'     => 'Calidad',
+				'preguntas'  => array( 'Uno', 'Dos' ),
+				'comentario' => false,
+			)
+		);
+		$config = Survey::config( 5 );
+
+		$this->assertTrue( $config['enabled'] );
+		$this->assertSame( 'Calidad', $config['titulo'] );
+		$this->assertSame( array( 'Uno', 'Dos' ), $config['preguntas'] );
+		$this->assertFalse( $config['comentario'] );
+	}
+
+	/**
 	 * Si no hay texto, vuelven las preguntas por defecto.
 	 */
 	public function test_sin_texto_usa_las_preguntas_por_defecto(): void {
