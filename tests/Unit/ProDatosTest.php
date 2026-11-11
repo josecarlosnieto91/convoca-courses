@@ -91,7 +91,7 @@ final class ProDatosTest extends TestCase {
 				return array(
 					'id'            => 1,
 					'hash'          => 'hash-viejo',
-					'answers'       => '{"answers":[5,4]}',
+					'answers'       => '[5,4]',
 					'comentario'    => 'Bien',
 					'lesson_status' => 'completed',
 					'score_raw'     => 90,
@@ -214,6 +214,41 @@ final class ProDatosTest extends TestCase {
 		$resultados      = Survey::results( 5 );
 		$this->assertSame( 1, $resultados['total'] );
 		$this->assertSame( 5.0, $resultados['medias'][0] );
+	}
+
+	/**
+	 * La respuesta de encuesta se decodifica.
+	 */
+	public function test_respuesta_de_encuesta(): void {
+		$respuesta = Survey::respuesta( 5, 1, 0 );
+		$this->assertIsArray( $respuesta );
+		$this->assertSame( 5, $respuesta['answers'][0] );
+	}
+
+	/**
+	 * La verificación lee las filas de la base.
+	 */
+	public function test_verify_lee_las_filas(): void {
+		$this->db->filas = array(
+			array(
+				'created_utc'  => '2026-11-12 00:00:00',
+				'event'        => 'login',
+				'user_id'      => 1,
+				'identidad_id' => 0,
+				'course_id'    => 0,
+				'lesson_id'    => 0,
+				'object_id'    => 0,
+				'ip'           => '',
+				'user_agent'   => '',
+				'session_id'   => '',
+				'duration'     => 0,
+				'data'         => '{}',
+				'prev_hash'    => '',
+				'hash'         => 'no-coincide',
+			),
+		);
+
+		$this->assertFalse( Access_Log::verify() );
 	}
 
 	/**

@@ -26,13 +26,43 @@ final class ReportsTest extends TestCase {
 	}
 
 	/**
-	 * El CSV lleva la cabecera del informe.
+	 * CSV con una fila completa.
 	 */
-	public function test_csv_incluye_cabecera(): void {
-		$csv = Reports::csv( array() );
+	public function test_csv_con_una_fila(): void {
+		$csv = Reports::csv(
+			array(
+				array(
+					'nombre'     => 'Alumno de prueba',
+					'correo'     => 'alumno@example.test',
+					'estado'     => 'activa',
+					'progreso'   => 100.0,
+					'notas'      => array(
+						'nota'     => 8.0,
+						'aprobado' => true,
+					),
+					'conexiones' => array(
+						'total'    => 2,
+						'ultima'   => '2026-11-12 00:00:00',
+						'duracion' => 60,
+						'eventos'  => array(),
+					),
+					'scorm'      => array(
+						array(
+							'leccion' => 'Lección 1',
+							'estado'  => 'completed',
+							'tiempo'  => '00:10:00',
+						),
+					),
+					'encuesta'   => array(
+						'answers'    => array( 5, 4 ),
+						'comentario' => 'Bien',
+					),
+				),
+			)
+		);
 
-		$this->assertStringContainsString( 'Alumno', $csv );
-		$this->assertStringContainsString( 'Conexiones', $csv );
-		$this->assertStringContainsString( 'Encuesta', $csv );
+		$this->assertStringContainsString( 'Alumno de prueba', $csv );
+		$this->assertStringContainsString( 'Lección 1: completed', $csv );
+		$this->assertStringContainsString( '4.5', $csv );
 	}
 }
