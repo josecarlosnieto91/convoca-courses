@@ -14,34 +14,48 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-get_header();
-?>
-<main id="convoca-curso" class="convoca-curso convoca-curso--propia">
-	<?php
-	while ( have_posts() ) :
-		the_post();
-		?>
-		<article class="convoca-curso__articulo">
-			<header class="convoca-curso__cabecera">
-				<h1 class="convoca-curso__titulo"><?php the_title(); ?></h1>
-				<?php if ( has_post_thumbnail() ) : ?>
-					<div class="convoca-curso__portada">
-						<?php the_post_thumbnail( 'large' ); ?>
-					</div>
-				<?php endif; ?>
-			</header>
-
-			<?php
-			// Lo editorial del curso (intro, a quién va dirigido). La estructura —módulos, lecciones,
-			// tareas y examen— no se escribe aquí: la compone Curso_View desde sus relaciones.
-			the_content();
-			?>
-
-			<?php echo \Convoca\Courses\Curso_View::render( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML ya construido y escapado por la vista. ?>
-		</article>
-		<?php
-	endwhile;
+/**
+ * Cuerpo común para los dos tipos de tema.
+ */
+$convoca_contenido = static function (): void {
 	?>
-</main>
-<?php
+	<main id="convoca-curso" class="convoca-curso convoca-curso--propia">
+		<?php
+		while ( have_posts() ) :
+			the_post();
+			?>
+			<article class="convoca-curso__articulo">
+				<header class="convoca-curso__cabecera">
+					<h1 class="convoca-curso__titulo"><?php the_title(); ?></h1>
+					<?php if ( has_post_thumbnail() ) : ?>
+						<div class="convoca-curso__portada">
+							<?php the_post_thumbnail( 'large' ); ?>
+						</div>
+					<?php endif; ?>
+				</header>
+
+				<?php
+				// Lo editorial del curso (intro, a quién va dirigido). La estructura —módulos, lecciones,
+				// tareas y examen— no se escribe aquí: la compone Curso_View desde sus relaciones.
+				the_content();
+				?>
+
+				<?php echo \Convoca\Courses\Curso_View::render( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML ya construido y escapado por la vista. ?>
+			</article>
+			<?php
+		endwhile;
+		?>
+	</main>
+	<?php
+};
+
+// En un tema FSE no hay header.php/footer.php: se pinta el documento con las partes del tema. En un
+// tema clásico se mantiene `get_header()` / `get_footer()` (courses#49).
+if ( \Convoca\Courses\Documento_FSE::es_fse() ) {
+	\Convoca\Courses\Documento_FSE::render( (int) get_the_ID(), $convoca_contenido, array( 'convoca-courses--curso' ) );
+	return;
+}
+
+get_header();
+$convoca_contenido();
 get_footer();

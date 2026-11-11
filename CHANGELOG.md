@@ -1,3 +1,13 @@
+## [0.24.6] — 2026-11-11
+
+### Corregido
+
+- **#49 — la ficha del curso se sirve con el documento del tema FSE.** `templates/curso-completo.php`
+  usa el andamiaje compartido `Documento_FSE` cuando el tema es de bloques: cabecera, pie, `wp_head()`
+  y `wp_footer()`; en temas clásicos sigue con `get_header()` / `get_footer()`. Se acaban las dos
+  deprecaciones por vista y la ficha recupera la cabecera y el pie del tema.
+- La lección usa el mismo helper, sin duplicar el andamiaje.
+
 ## [0.24.5] — 2026-11-09
 
 ### Seguridad

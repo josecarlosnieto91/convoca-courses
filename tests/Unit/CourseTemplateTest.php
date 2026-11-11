@@ -57,6 +57,8 @@ final class CourseTemplateTest extends TestCase {
 		$contenido = (string) file_get_contents( $ruta );
 
 		$this->assertStringContainsString( 'convoca_curso', $contenido );
+		$this->assertStringContainsString( 'Documento_FSE::es_fse', $contenido );
+		$this->assertStringContainsString( 'Documento_FSE::render', $contenido );
 		$this->assertStringContainsString( 'get_header', $contenido );
 		$this->assertStringContainsString( 'get_footer', $contenido );
 	}

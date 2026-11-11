@@ -293,64 +293,16 @@ class Lesson_Links {
 
 		status_header( 200 );
 
-		// El theme del sitio puede ser FSE (block theme): allí `get_header()` no existe y la lección
-		// salía sin menú, sin pie y con body_class de «home blog» (courses#36). En un block theme se
-		// pintan las partes de plantilla y el título del documento a mano.
-		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
-			add_filter(
-				'pre_get_document_title',
-				static function () use ( $lesson_id ) {
-					return (string) get_the_title( $lesson_id );
-				}
+		// En un block theme no existen header.php/footer.php: se pinta el documento FSE compartido.
+		if ( Documento_FSE::es_fse() ) {
+			Documento_FSE::render(
+				$lesson_id,
+				static function () use ( $html ): void {
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML del shortcode, escapado en su plantilla.
+					echo '<main class="convoca-courses convoca-courses--leccion">' . $html . '</main>';
+				},
+				array( 'convoca-courses-leccion', 'convoca-courses--leccion' )
 			);
-
-			add_filter(
-				'body_class',
-				static function ( $clases ) {
-					// La lección se sirve fuera del bucle principal, así que WordPress cree que es la
-					// portada del blog y arrastra `home blog`. Cualquier CSS o plugin que se guíe por
-					// el contexto se equivoca con eso (courses#36): se quitan y se pone la clase real.
-					$clases = array_diff( (array) $clases, array( 'home', 'blog', 'archive', 'error404', 'search' ) );
-
-					$clases[] = 'convoca-courses-leccion';
-					$clases[] = 'convoca-courses--leccion';
-
-					return array_values( array_unique( $clases ) );
-				}
-			);
-
-			// `wp_head()` solo emite el CONTENIDO del head: el andamiaje del documento hay que
-			// imprimirlo aquí. Antes no se imprimía y la lección salía empezando por un `<meta>`,
-			// sin `<html>`, sin `<head>` y sin `<title>`: el título genérico y la ausencia de `h1`
-			// eran el síntoma de un documento que no se había abierto (courses#19).
-			?>
-<!DOCTYPE html>
-<html <?php language_attributes(); ?>>
-<head>
-<meta charset="<?php bloginfo( 'charset' ); ?>" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<?php
-			// El tema no emite `<title>` en el head (el título lo pinta la plantilla), así que la
-			// lección salía sin ninguno. Se imprime aquí y se quita el de WordPress para no duplicar.
-			remove_action( 'wp_head', '_wp_render_title_tag', 1 );
-			echo '<title>' . esc_html( (string) get_the_title( $lesson_id ) ) . '</title>' . "\n";
-			wp_head();
-			?>
-</head>
-<body <?php body_class(); ?>>
-			<?php
-			wp_body_open();
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lo genera WordPress.
-			echo do_blocks( '<!-- wp:template-part {"slug":"header","theme":"' . esc_attr( (string) get_stylesheet() ) . '"} /-->' );
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML del shortcode, escapado en su plantilla.
-			echo '<main class="convoca-courses convoca-courses--leccion">' . $html . '</main>';
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lo genera WordPress.
-			echo do_blocks( '<!-- wp:template-part {"slug":"footer","theme":"' . esc_attr( (string) get_stylesheet() ) . '"} /-->' );
-			wp_footer();
-			?>
-</body>
-</html>
-			<?php
 			exit;
 		}
 

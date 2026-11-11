@@ -1324,3 +1324,136 @@ if ( ! function_exists( 'wp_insert_post' ) ) {
 		return 0;
 	}
 }
+
+if ( ! function_exists( 'wp_is_block_theme' ) ) {
+	/**
+	 * ¿Tema FSE? (doble controlado por la prueba).
+	 *
+	 * @return bool
+	 */
+	function wp_is_block_theme() {
+		return (bool) ( $GLOBALS['convoca_test_block_theme'] ?? false );
+	}
+}
+
+if ( ! function_exists( 'remove_action' ) ) {
+	/**
+	 * Quita una acción (doble: no hay registro de acciones en el arnés).
+	 *
+	 * @param string   $hook     Hook.
+	 * @param callable $callback Callback.
+	 * @param int      $priority Prioridad.
+	 * @return bool
+	 */
+	function remove_action( $hook, $callback, $priority = 10 ) {
+		unset( $hook, $callback, $priority );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'language_attributes' ) ) {
+	/**
+	 * Atributos del documento.
+	 *
+	 * @return void
+	 */
+	function language_attributes() {
+		echo 'lang="es-ES"';
+	}
+}
+
+if ( ! function_exists( 'bloginfo' ) ) {
+	/**
+	 * Datos del sitio.
+	 *
+	 * @param string $campo Campo.
+	 * @return void
+	 */
+	function bloginfo( $campo = '' ) {
+		if ( 'charset' === $campo ) {
+			echo 'UTF-8';
+		}
+	}
+}
+
+if ( ! function_exists( 'wp_head' ) ) {
+	/**
+	 * Head de WordPress.
+	 *
+	 * @return void
+	 */
+	function wp_head() {
+		echo '<meta name="wp-head" />';
+	}
+}
+
+if ( ! function_exists( 'wp_body_open' ) ) {
+	/**
+	 * Apertura del body.
+	 *
+	 * @return void
+	 */
+	function wp_body_open() {
+		echo '<a id="wp-body-open"></a>';
+	}
+}
+
+if ( ! function_exists( 'body_class' ) ) {
+	/**
+	 * Clases del body, pasando por los filtros.
+	 *
+	 * @return void
+	 */
+	function body_class() {
+		$clases = array( 'home', 'blog' );
+		$filtro = $GLOBALS['convoca_courses_filtros']['body_class'] ?? null;
+
+		if ( is_array( $filtro ) && isset( $filtro['callback'] ) && is_callable( $filtro['callback'] ) ) {
+			$clases = (array) call_user_func( $filtro['callback'], $clases );
+		}
+
+		echo 'class="' . esc_attr( implode( ' ', $clases ) ) . '"';
+	}
+}
+
+if ( ! function_exists( 'do_blocks' ) ) {
+	/**
+	 * Partes de plantilla del tema.
+	 *
+	 * @param string $bloque Bloque.
+	 * @return string
+	 */
+	function do_blocks( $bloque ) {
+		if ( false !== strpos( (string) $bloque, '"slug":"header"' ) ) {
+			return '<header class="site-header">Cabecera</header>';
+		}
+
+		if ( false !== strpos( (string) $bloque, '"slug":"footer"' ) ) {
+			return '<footer>Pie</footer>';
+		}
+
+		return '';
+	}
+}
+
+if ( ! function_exists( 'get_stylesheet' ) ) {
+	/**
+	 * Tema activo.
+	 *
+	 * @return string
+	 */
+	function get_stylesheet() {
+		return 'convoca';
+	}
+}
+
+if ( ! function_exists( 'wp_footer' ) ) {
+	/**
+	 * Footer de WordPress.
+	 *
+	 * @return void
+	 */
+	function wp_footer() {
+		echo '<script id="wp-footer"></script>';
+	}
+}
