@@ -9,6 +9,7 @@ namespace Convoca\Courses\Tests;
 
 use Convoca\Courses\Access_Log;
 use Convoca\Courses\Admin_SCORM;
+use Convoca\Courses\SCORM;
 use Convoca\Courses\Survey;
 use PHPUnit\Framework\TestCase;
 
@@ -109,6 +110,17 @@ final class ProDatosTest extends TestCase {
 			public function get_results( $query, $output = 'OBJECT' ) {
 				unset( $query, $output );
 				return $this->filas;
+			}
+
+			/**
+			 * Sin valor.
+			 *
+			 * @param string $query Consulta.
+			 * @return null
+			 */
+			public function get_var( $query ) {
+				unset( $query );
+				return null;
 			}
 
 			/**
@@ -214,6 +226,27 @@ final class ProDatosTest extends TestCase {
 		$resultados      = Survey::results( 5 );
 		$this->assertSame( 1, $resultados['total'] );
 		$this->assertSame( 5.0, $resultados['medias'][0] );
+	}
+
+	/**
+	 * Guarda el estado SCORM y marca la lección.
+	 */
+	public function test_guarda_estado_scorm_y_marca_progreso(): void {
+		$GLOBALS['convoca_test_post_types'][33] = 'convoca_leccion';
+		$GLOBALS['convoca_test_post_types'][44] = 'convoca_modulo';
+		$GLOBALS['convoca_test_meta'][33]       = array( '_convoca_modulo_id' => '44' );
+		$GLOBALS['convoca_test_meta'][44]       = array( '_convoca_curso_id' => '5' );
+
+		SCORM::guardar_estado(
+			33,
+			array(
+				'cmi.core.lesson_status' => 'completed',
+				'cmi.core.score.raw'     => '90',
+				'cmi.core.session_time'  => '00:10:00',
+			)
+		);
+
+		$this->assertCount( 1, $this->db->filas );
 	}
 
 	/**
