@@ -65,6 +65,18 @@ final class SurveyTest extends TestCase {
 	}
 
 	/**
+	 * Sin matrícula, el envío se rechaza.
+	 */
+	public function test_handle_sin_matricula(): void {
+		$GLOBALS['convoca_courses_filtros'] = array( 'convoca_courses_has_pro' => true );
+		$_POST['course_id']                 = 5;
+		$_POST['_convoca_nonce']            = 'nonce';
+
+		$this->expectException( \RuntimeException::class );
+		Survey::handle();
+	}
+
+	/**
 	 * Si no hay texto, vuelven las preguntas por defecto.
 	 */
 	public function test_sin_texto_usa_las_preguntas_por_defecto(): void {
