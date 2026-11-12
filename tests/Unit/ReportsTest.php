@@ -26,6 +26,22 @@ final class ReportsTest extends TestCase {
 	}
 
 	/**
+	 * Sin la librería de PDF devuelve vacío.
+	 */
+	public function test_pdf_sin_libreria(): void {
+		$this->assertSame(
+			'',
+			Reports::pdf(
+				array(
+					'course_id'    => 5,
+					'user_id'      => 1,
+					'identidad_id' => 0,
+				)
+			)
+		);
+	}
+
+	/**
 	 * CSV con una fila completa.
 	 */
 	public function test_csv_con_una_fila(): void {

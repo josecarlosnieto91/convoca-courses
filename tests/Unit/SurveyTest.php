@@ -47,6 +47,24 @@ final class SurveyTest extends TestCase {
 	}
 
 	/**
+	 * Sin matrícula no se pinta la encuesta.
+	 */
+	public function test_render_sin_matricula(): void {
+		$GLOBALS['convoca_courses_filtros'] = array( 'convoca_courses_has_pro' => true );
+		update_post_meta(
+			5,
+			Survey::META,
+			array(
+				'enabled'   => true,
+				'titulo'    => 'Calidad',
+				'preguntas' => array( 'Uno' ),
+			)
+		);
+
+		$this->assertSame( '', Survey::render( 5 ) );
+	}
+
+	/**
 	 * Si no hay texto, vuelven las preguntas por defecto.
 	 */
 	public function test_sin_texto_usa_las_preguntas_por_defecto(): void {
