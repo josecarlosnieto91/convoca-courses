@@ -88,9 +88,10 @@ class Notifications {
 	 * @param int    $course_id Curso.
 	 * @param float  $nota      Nota puesta.
 	 * @param string $comentario Comentario del corrector.
+	 * @param int    $identidad_id Identidad (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function task_graded( int $user_id, int $task_id, int $course_id, float $nota, string $comentario ): bool {
+	public static function task_graded( int $user_id, int $task_id, int $course_id, float $nota, string $comentario, int $identidad_id = 0 ): bool {
 		$subject = sprintf(
 			/* translators: %s: task title. */
 			__( 'Tarea corregida: %s', 'convoca-courses' ),
@@ -117,8 +118,9 @@ class Notifications {
 
 		$course_url = $course_id > 0 ? (string) get_permalink( $course_id ) : '';
 
-		return self::send(
+		return self::send_to_alumno(
 			$user_id,
+			$identidad_id,
 			$subject,
 			implode( "\n\n", $lineas ),
 			'tarea-corregida',
@@ -245,14 +247,15 @@ class Notifications {
 	/**
 	 * Mensaje del profesorado al alumnado de un curso.
 	 *
-	 * @param int    $user_id   Alumno.
-	 * @param int    $course_id Curso.
-	 * @param string $subject   Asunto.
-	 * @param string $body      Cuerpo.
+	 * @param int    $user_id      Alumno (0 si va por identidad).
+	 * @param int    $course_id    Curso.
+	 * @param string $subject      Asunto.
+	 * @param string $body         Cuerpo.
+	 * @param int    $identidad_id Identidad cuando no hay usuario de WordPress.
 	 * @return bool
 	 */
-	public static function group_message( int $user_id, int $course_id, string $subject, string $body ): bool {
-		return self::send( $user_id, $subject, $body, 'mensaje-grupo', array( 'course_id' => $course_id ) );
+	public static function group_message( int $user_id, int $course_id, string $subject, string $body, int $identidad_id = 0 ): bool {
+		return self::send_to_alumno( $user_id, $identidad_id, $subject, $body, 'mensaje-grupo', array( 'course_id' => $course_id ) );
 	}
 
 	/**

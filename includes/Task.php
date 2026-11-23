@@ -57,14 +57,15 @@ class Task {
 	/**
 	 * Entrega de una persona en una tarea.
 	 *
-	 * @param int $task_id Tarea.
-	 * @param int $user_id Persona.
+	 * @param int $task_id      Tarea.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $identidad_id Identidad (0 si va con usuario).
 	 * @return array<string, mixed>|null
 	 */
-	public static function submission( int $task_id, int $user_id ): ?array {
+	public static function submission( int $task_id, int $user_id, int $identidad_id = 0 ): ?array {
 		global $wpdb;
 
-		if ( $task_id <= 0 || $user_id <= 0 ) {
+		if ( $task_id <= 0 || ( $user_id <= 0 && $identidad_id <= 0 ) ) {
 			return null;
 		}
 
@@ -73,9 +74,10 @@ class Task {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE task_id = %d AND user_id = %d",
+				"SELECT * FROM {$table} WHERE task_id = %d AND user_id = %d AND identidad_id = %d",
 				$task_id,
-				$user_id
+				$user_id,
+				$identidad_id
 			),
 			'ARRAY_A'
 		);
@@ -90,17 +92,22 @@ class Task {
 	 * Reentregar reabre la entrega y **borra la nota anterior**: lo que se corrige es lo último que
 	 * hay, no una mezcla de dos versiones.
 	 *
-	 * @param int    $task_id     Tarea.
-	 * @param int    $user_id     Persona.
-	 * @param string $texto       Texto de la entrega.
-	 * @param int    $adjunto_id  Adjunto de la biblioteca (0 = sin fichero).
+	 * @param int    $task_id      Tarea.
+	 * @param int    $user_id      Persona (0 si va por identidad).
+	 * @param string $texto        Texto de la entrega.
+	 * @param int    $adjunto_id   Adjunto de la biblioteca (0 = sin fichero).
+	 * @param int    $identidad_id Identidad (0 si va con usuario).
 	 * @return true|\WP_Error
 	 */
-	public static function deliver( int $task_id, int $user_id, string $texto, int $adjunto_id = 0 ) {
+	public static function deliver( int $task_id, int $user_id, string $texto, int $adjunto_id = 0, int $identidad_id = 0 ) {
 		global $wpdb;
 
 		if ( ! Hierarchy::is_type( $task_id, CPT_Tarea::TYPE ) ) {
 			return new \WP_Error( 'convoca_courses_no_task', __( 'La tarea no existe.', 'convoca-courses' ) );
+		}
+
+		if ( $user_id <= 0 && $identidad_id <= 0 ) {
+			return new \WP_Error( 'convoca_courses_task_locked', __( 'No puedes entregar esta tarea.', 'convoca-courses' ) );
 		}
 
 		$course_id = CPT_Tarea::course_id( $task_id );
@@ -113,17 +120,21 @@ class Task {
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- comparación de marcas de tiempo.
-		$ahora  = Fechas::ahora();
-		$estado = self::status_for( $ahora, CPT_Tarea::deadline_ts( $task_id ) );
-		$table  = Installer::table( Installer::SUBMISSIONS_TABLE );
-		$existe = self::submission( $task_id, $user_id );
+		$ahora     = Fechas::ahora();
+		$estado    = self::status_for( $ahora, CPT_Tarea::deadline_ts( $task_id ) );
+		$table     = Installer::table( Installer::SUBMISSIONS_TABLE );
+		$existe    = self::submission( $task_id, $user_id, $identidad_id );
+		$matricula = $identidad_id > 0
+			? Enrollment::find_por_identidad( $identidad_id, $course_id, true )
+			: Enrollment::active_id( $user_id, $course_id );
 
 		$fila = self::row(
 			array(
 				'task_id'       => $task_id,
 				'course_id'     => $course_id,
 				'user_id'       => $user_id,
-				'enrollment_id' => Enrollment::active_id( $user_id, $course_id ),
+				'identidad_id'  => $identidad_id,
+				'enrollment_id' => $matricula,
 				'contenido'     => $texto,
 				'adjunto_id'    => max( 0, $adjunto_id ),
 				'entregada_en'  => (string) current_time( 'mysql' ),
@@ -137,19 +148,20 @@ class Task {
 		} else {
 			$para_actualizar = $fila['datos'];
 			$formatos        = $fila['formatos'];
-			unset( $para_actualizar['task_id'], $para_actualizar['user_id'] );
-			unset( $formatos[0], $formatos[2] );
+			unset( $para_actualizar['task_id'], $para_actualizar['user_id'], $para_actualizar['identidad_id'] );
+			unset( $formatos[0], $formatos[2], $formatos[3] );
 			$formatos = array_values( $formatos );
 
 			$ok = $wpdb->update(
 				$table,
 				$para_actualizar,
 				array(
-					'task_id' => $task_id,
-					'user_id' => $user_id,
+					'task_id'      => $task_id,
+					'user_id'      => $user_id,
+					'identidad_id' => $identidad_id,
 				),
 				$formatos,
-				array( '%d', '%d' )
+				array( '%d', '%d', '%d' )
 			);
 		}
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery
@@ -186,6 +198,7 @@ class Task {
 			'task_id'       => '%d',
 			'course_id'     => '%d',
 			'user_id'       => '%d',
+			'identidad_id'  => '%d',
 			'enrollment_id' => '%d',
 			'contenido'     => '%s',
 			'adjunto_id'    => '%d',
@@ -277,7 +290,7 @@ class Task {
 		$task_id   = (int) $entrega['task_id'];
 		$course_id = (int) $entrega['course_id'];
 
-		Notifications::task_graded( (int) $entrega['user_id'], $task_id, $course_id, $nota, $comentario );
+		Notifications::task_graded( (int) $entrega['user_id'], $task_id, $course_id, $nota, $comentario, (int) $entrega['identidad_id'] );
 
 		/**
 		 * Tarea corregida.
@@ -356,14 +369,15 @@ class Task {
 	 *
 	 * Solo cuentan las corregidas: una entrega sin nota no es un cero, es una pieza que falta.
 	 *
-	 * @param int $user_id   Persona.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Persona (0 si va por identidad).
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad (0 si va con usuario).
 	 * @return array<int, float>
 	 */
-	public static function grades_by_task( int $user_id, int $course_id ): array {
+	public static function grades_by_task( int $user_id, int $course_id, int $identidad_id = 0 ): array {
 		global $wpdb;
 
-		if ( $user_id <= 0 || $course_id <= 0 ) {
+		if ( ( $user_id <= 0 && $identidad_id <= 0 ) || $course_id <= 0 ) {
 			return array();
 		}
 
@@ -372,8 +386,9 @@ class Task {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla propia, valores preparados.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT task_id, nota FROM {$table} WHERE user_id = %d AND course_id = %d AND estado = 'corregida'",
+				"SELECT task_id, nota FROM {$table} WHERE user_id = %d AND identidad_id = %d AND course_id = %d AND estado = 'corregida'",
 				$user_id,
+				$identidad_id,
 				$course_id
 			),
 			'ARRAY_A'
@@ -402,6 +417,7 @@ class Task {
 			'task_id'       => isset( $row['task_id'] ) ? (int) $row['task_id'] : 0,
 			'course_id'     => isset( $row['course_id'] ) ? (int) $row['course_id'] : 0,
 			'user_id'       => isset( $row['user_id'] ) ? (int) $row['user_id'] : 0,
+			'identidad_id'  => isset( $row['identidad_id'] ) ? (int) $row['identidad_id'] : 0,
 			'enrollment_id' => isset( $row['enrollment_id'] ) ? (int) $row['enrollment_id'] : 0,
 			'contenido'     => isset( $row['contenido'] ) ? (string) $row['contenido'] : '',
 			'adjunto_id'    => isset( $row['adjunto_id'] ) ? (int) $row['adjunto_id'] : 0,

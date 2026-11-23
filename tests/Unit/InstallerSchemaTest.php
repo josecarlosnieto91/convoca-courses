@@ -122,12 +122,12 @@ class InstallerSchemaTest extends TestCase {
 	/**
 	 * Una entrega por tarea y alumno, con su nota y su comentario.
 	 */
-	public function test_entregas_unicas_por_tarea_y_alumno(): void {
+	public function test_entregas_unicas_por_tarea_y_persona(): void {
 		$sql = $this->esquema()[ Installer::SUBMISSIONS_TABLE ];
 
-		$this->assertStringContainsString( 'UNIQUE KEY tarea_alumno (task_id,user_id)', $sql );
+		$this->assertStringContainsString( 'UNIQUE KEY tarea_persona (task_id,user_id,identidad_id)', $sql, 'sin la identidad en la clave, solo la primera identidad puede entregar cada tarea' );
 
-		foreach ( array( 'contenido', 'adjunto_id', 'entregada_en', 'estado', 'nota', 'comentario', 'corregida_por', 'corregida_en' ) as $columna ) {
+		foreach ( array( 'identidad_id', 'contenido', 'adjunto_id', 'entregada_en', 'estado', 'nota', 'comentario', 'corregida_por', 'corregida_en' ) as $columna ) {
 			$this->assertStringContainsString( $columna . ' ', $sql, 'Falta la columna ' . $columna . '.' );
 		}
 	}

@@ -136,7 +136,7 @@ class Gradebook {
 	 */
 	public static function for_user( int $user_id, int $course_id, int $identidad_id = 0 ): array {
 		$notas_examen = Attempts::best_by_exam( $user_id, $course_id, $identidad_id );
-		$notas_tarea  = Task::grades_by_task( $user_id, $course_id );
+		$notas_tarea  = Task::grades_by_task( $user_id, $course_id, $identidad_id );
 		$piezas       = array();
 
 		foreach ( self::pieces( $course_id ) as $pieza ) {

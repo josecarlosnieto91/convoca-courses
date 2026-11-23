@@ -24,11 +24,12 @@ class Task_View {
 	 * @return array<string, mixed>
 	 */
 	public static function data( int $course_id, int $user_id ): array {
-		$tareas = array();
+		$tareas    = array();
+		$identidad = Access::identidad_actual();
 
 		foreach ( CPT_Tarea::of_course( $course_id ) as $tarea ) {
 			$task_id = (int) $tarea->ID;
-			$entrega = $user_id > 0 ? Task::submission( $task_id, $user_id ) : null;
+			$entrega = ( $user_id > 0 || $identidad > 0 ) ? Task::submission( $task_id, $user_id, $identidad ) : null;
 			$adjunto = null !== $entrega ? (int) $entrega['adjunto_id'] : 0;
 			$plazo   = CPT_Tarea::deadline( $task_id );
 
@@ -48,7 +49,7 @@ class Task_View {
 		return array(
 			'course_id'  => $course_id,
 			'title'      => $course_id > 0 ? (string) get_the_title( $course_id ) : '',
-			'logged_in'  => $user_id > 0,
+			'logged_in'  => $user_id > 0 || $identidad > 0,
 			'enrolled'   => $course_id > 0 && Access::is_enrolled( $user_id, $course_id ),
 			'can_submit' => $course_id > 0 && Access::can_submit_task( $user_id, $course_id ),
 			'manage'     => Access::can_manage(),

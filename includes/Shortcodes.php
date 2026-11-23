@@ -70,8 +70,9 @@ class Shortcodes {
 			return self::error_box();
 		}
 
-		$user_id = get_current_user_id();
-		$notas   = Gradebook::for_user( $user_id, $course_id );
+		$user_id   = get_current_user_id();
+		$identidad = Access::identidad_actual();
+		$notas     = Gradebook::for_user( $user_id, $course_id, $identidad );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo lectura del aviso a pintar.
 		$aviso = isset( $_GET['convoca_msg'] ) ? sanitize_key( wp_unslash( (string) $_GET['convoca_msg'] ) ) : '';
@@ -80,7 +81,7 @@ class Shortcodes {
 			'notas.php',
 			array(
 				'course_id' => $course_id,
-				'logged_in' => $user_id > 0,
+				'logged_in' => $user_id > 0 || $identidad > 0,
 				'enrolled'  => Access::is_enrolled( $user_id, $course_id ),
 				'pieces'    => $notas['piezas'],
 				'final'     => $notas['nota'],

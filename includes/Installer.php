@@ -224,6 +224,7 @@ class Installer {
 			task_id bigint(20) unsigned NOT NULL,
 			course_id bigint(20) unsigned NOT NULL,
 			user_id bigint(20) unsigned NOT NULL,
+			identidad_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			enrollment_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			contenido longtext NOT NULL,
 			adjunto_id bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -234,8 +235,9 @@ class Installer {
 			corregida_por bigint(20) unsigned NOT NULL DEFAULT 0,
 			corregida_en datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY  (id),
-			UNIQUE KEY tarea_alumno (task_id,user_id),
-			KEY course_user (course_id,user_id)
+			UNIQUE KEY tarea_persona (task_id,user_id,identidad_id),
+			KEY course_user (course_id,user_id),
+			KEY course_identidad (course_id,identidad_id)
 		) {$collate};";
 
 		$sql[ self::PRUEBAS_TABLE ] = "CREATE TABLE {$prefix}" . self::PRUEBAS_TABLE . " (
@@ -345,15 +347,22 @@ class Installer {
 		global $wpdb;
 
 		$cambios = array(
-			$wpdb->prefix . self::PROGRESS_TABLE => array(
+			$wpdb->prefix . self::PROGRESS_TABLE    => array(
 				'viejo'    => 'user_lesson',
 				'nuevo'    => 'quien_lesson',
 				'columnas' => '(user_id,identidad_id,lesson_id)',
 			),
-			$wpdb->prefix . self::ATTEMPTS_TABLE => array(
+			$wpdb->prefix . self::ATTEMPTS_TABLE    => array(
 				'viejo'    => 'intento',
 				'nuevo'    => 'intento_identidad',
 				'columnas' => '(exam_id,user_id,identidad_id,intento)',
+			),
+			$wpdb->prefix . self::SUBMISSIONS_TABLE => array(
+				// Sin esto, todas las identidades comparten (task_id, user_id = 0) y solo la primera
+				// puede entregar cada tarea (courses#53).
+				'viejo'    => 'tarea_alumno',
+				'nuevo'    => 'tarea_persona',
+				'columnas' => '(task_id,user_id,identidad_id)',
 			),
 		);
 

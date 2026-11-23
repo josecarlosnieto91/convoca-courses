@@ -1,3 +1,26 @@
+## [0.26.0] — 2026-11-23
+
+### Corregido
+
+- **El correo al grupo llega al alumnado matriculado por correo (#52).** `Group_Email` mandaba a
+  `user_id = 0` y el aviso se quedaba en el registro sin salir. Ahora pasa también la identidad y usa
+  el mismo camino que los recordatorios: identidad → su correo, usuario → su cuenta.
+- **El alumnado por identidad puede entregar tareas (#53).** El formulario de entrega exigía sesión de
+  WordPress y la tabla de entregas no tenía identidad. Ahora:
+  - `convoca_course_submissions` gana `identidad_id` y la clave única pasa a
+    `(task_id, user_id, identidad_id)`: dos identidades pueden entregar la misma tarea sin pisarse.
+  - `Task::submission()`, `deliver()` y `grades_by_task()` aceptan identidad, y la entrega queda ligada
+    a su matrícula.
+  - El formulario de tareas se abre con la sesión de identidad; el panel de entregas enseña nombre y
+    correo de quien entregó, aunque no tenga cuenta.
+  - La corrección avisa por `send_to_alumno()`: la nota llega a su correo.
+  - La página de notas cuenta las tareas corregidas de las identidades en la nota final.
+
+### Notas
+
+- La actualización de la tabla es automática (versión de esquema 2.5.0): añade la columna y sustituye
+  el índice antiguo. No borra ninguna entrega.
+
 ## [0.25.1] — 2026-11-23
 
 ### Corregido

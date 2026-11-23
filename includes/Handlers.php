@@ -458,7 +458,12 @@ class Handlers {
 			return;
 		}
 
-		if ( ! is_user_logged_in() ) {
+		$user_id   = get_current_user_id();
+		$identidad = Access::identidad_actual();
+
+		// El alumnado matriculado por correo no tiene sesión de WordPress: entra con su identidad
+		// (courses#53). Sin usuario ni identidad no hay a quién apuntar la entrega.
+		if ( $user_id <= 0 && $identidad <= 0 ) {
 			self::redirect_to_login( '' );
 			return;
 		}
@@ -481,7 +486,7 @@ class Handlers {
 			$adjunto = (int) $subido;
 		}
 
-		$result = Task::deliver( $task_id, get_current_user_id(), $texto, $adjunto );
+		$result = Task::deliver( $task_id, $user_id, $texto, $adjunto, $identidad );
 
 		if ( is_wp_error( $result ) ) {
 			self::redirect_back( $course_id, 'task_error', $result->get_error_code() );

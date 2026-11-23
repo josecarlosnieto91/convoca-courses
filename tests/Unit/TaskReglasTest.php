@@ -90,7 +90,7 @@ class TaskReglasTest extends TestCase {
 		$this->assertSame( 'Mi trabajo', $fila['datos']['contenido'] );
 		$this->assertSame( 'entregada', $fila['datos']['estado'], 'sin estado se asume entregada' );
 		$this->assertSame( 0, $fila['datos']['adjunto_id'] );
-		$this->assertCount( 12, $fila['formatos'], 'cada columna lleva su formato: sin eso la base recibe un string' );
+		$this->assertCount( 13, $fila['formatos'], 'cada columna lleva su formato: sin eso la base recibe un string' );
 		$this->assertSame( '%d', $fila['formatos'][0] );
 	}
 
@@ -103,7 +103,7 @@ class TaskReglasTest extends TestCase {
 		$this->assertSame( 0, $fila['datos']['task_id'] );
 		$this->assertSame( '', $fila['datos']['contenido'] );
 		$this->assertSame( 0.0, $fila['datos']['nota'] );
-		$this->assertCount( 12, $fila['formatos'] );
+		$this->assertCount( 13, $fila['formatos'] );
 	}
 
 	/**
