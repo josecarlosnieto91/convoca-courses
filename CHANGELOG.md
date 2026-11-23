@@ -1,3 +1,19 @@
+## [0.25.1] — 2026-11-23
+
+### Corregido
+
+- **#50 — los recordatorios atienden al alumnado matriculado por identidad.** `Reminders` usaba el
+  `user_id` de la matrícula, que es `0` en las matrículas por correo: el aviso no salía, `mark_sent()`
+  no se ejecutaba y cada pasada apuntaba otra entrada «sin correo» en
+  `convoca_courses_pending_notices` (71 en un sitio, una por aviso y día). Ahora el recordatorio de
+  inactividad mide la actividad por `identidad_id`, el de examen consulta los intentos de la
+  identidad y el envío sale por su correo; el registro de enviados usa una clave distinta para
+  usuarios (`9:3:inactividad`) y para identidades (`i7:3:inactividad`), para que el aviso de una
+  persona no apague el de las demás.
+- **Un aviso sin destinatario ya no se encola.** `Notifications::send( 0, … )` no puede salir nunca;
+  ahora deja un `WARNING` en el registro y no añade basura a la cola de pendientes.
+- Una fila del alumnado sin usuario ni identidad se salta: no hay a quién avisar.
+
 ## [0.25.0] — 2026-11-12
 
 ### Cambiado

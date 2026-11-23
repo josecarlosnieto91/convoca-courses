@@ -14,6 +14,7 @@ use Convoca\Core\Mailer;
 use Convoca\Courses\CPT_Base;
 use Convoca\Courses\CPT_Examen;
 use Convoca\Courses\CPT_Matricula;
+use Convoca\Courses\Notifications;
 use Convoca\Courses\Pro;
 use Convoca\Courses\Reminders;
 use PHPUnit\Framework\TestCase;
@@ -78,6 +79,8 @@ class RemindersTest extends TestCase {
 		$GLOBALS['convoca_test_meta']         = array();
 		$GLOBALS['wpdb']->vars                = array();
 		$GLOBALS['wpdb']->consultas           = array();
+		$GLOBALS['wpdb']->filas               = array();
+		$GLOBALS['wpdb']->cols                = array();
 		// El buzón del doble es una PROPIEDAD ESTÁTICA: no la limpia nadie y los correos de un caso se veían en el
 		// siguiente. `test_la_pasada_con_un_curso_no_rompe` esperaba 1 envío y encontraba 2 según qué hubiera
 		// corrido antes (courses#12).
@@ -375,6 +378,80 @@ class RemindersTest extends TestCase {
 		$this->assertCount( 500, $registro, 'una opción sin tope se lleva la fila de wp_options por delante' );
 		$this->assertArrayNotHasKey( 'antiguo0', $registro, 'se tira lo viejo' );
 		$this->assertArrayHasKey( '9:3:inactividad', $registro, 'y lo nuevo se queda' );
+	}
+
+	/**
+	 * Un alumno matriculado con identidad (sin usuario de WordPress) recibe su recordatorio.
+	 *
+	 * Antes se trataba como `user_id = 0`, el aviso no salía y quedaba en la cola de pendientes
+	 * en cada pasada (courses#50).
+	 */
+	public function test_un_alumno_por_identidad_recibe_su_recordatorio(): void {
+		$GLOBALS['convoca_courses_filtros']['convoca_courses_has_pro'] = true;
+		$this->curso_con_alumna_por_identidad();
+
+		$this->assertSame( 1, Reminders::run(), 'la identidad inactiva recibe su recordatorio' );
+		$this->assertCount( 1, Mailer::$enviados );
+		$this->assertSame( 'identidad@example.test', Mailer::$enviados[0][0] );
+		$this->assertArrayHasKey(
+			'i7:3:inactividad',
+			$GLOBALS['convoca_courses_opciones'][ Reminders::SENT_OPTION ],
+			'el registro distingue identidad de usuario'
+		);
+		$this->assertSame(
+			array(),
+			Notifications::pending(),
+			'un aviso que sí salió no deja basura en la cola'
+		);
+	}
+
+	/**
+	 * El aviso de examen de una identidad busca sus intentos por identidad, no por usuario 0.
+	 */
+	public function test_el_aviso_de_examen_de_una_identidad_consulta_sus_intentos(): void {
+		$this->examen( 5, 3 );
+		$GLOBALS['wpdb']->vars = array( 0 );
+
+		$this->assertTrue( Reminders::should_remind_exam( 0, 3, 7 ) );
+		$this->assertStringContainsString( 'identidad_id = 7', $GLOBALS['wpdb']->consultas[0] );
+	}
+
+	/**
+	 * La última actividad de una identidad se mide con su identidad.
+	 */
+	public function test_la_ultima_actividad_de_una_identidad(): void {
+		$progreso              = gmdate( 'Y-m-d H:i:s', self::AHORA - ( 20 * 86400 ) );
+		$GLOBALS['wpdb']->vars = array( $progreso, null );
+
+		$this->assertSame( (int) strtotime( $progreso ), Reminders::last_activity( 0, 3, 7 ) );
+		$this->assertStringContainsString( 'identidad_id = 7', $GLOBALS['wpdb']->consultas[0] );
+		$this->assertStringContainsString( 'identidad_id = 7', $GLOBALS['wpdb']->consultas[1] );
+	}
+
+	/**
+	 * Monta un curso con una alumna inactiva matriculada por identidad.
+	 */
+	private function curso_con_alumna_por_identidad(): void {
+		$this->examen( 5, 3 );
+		$GLOBALS['convoca_test_post_types'][3]                                  = \Convoca\Courses\CPT_Curso::TYPE;
+		$GLOBALS['convoca_test_post_types'][44]                                 = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'curso_id' ] = '3';
+		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'user_id' ]  = '0';
+		$GLOBALS['convoca_test_meta'][44][ CPT_Base::META_PREFIX . 'estado' ]   = 'activa';
+		$GLOBALS['convoca_test_meta'][44]['_convoca_identidad_id']              = '7';
+		$GLOBALS['convoca_courses_fechas'][44]                                  = self::AHORA - ( 30 * 86400 );
+
+		// Roster pide la identidad dos veces (para el listado y para enviar), y el progreso no tiene
+		// lecciones completadas: la rama es la de inactividad.
+		$identidad                = array(
+			'id'     => 7,
+			'email'  => 'identidad@example.test',
+			'nombre' => 'Una identidad',
+		);
+		$GLOBALS['wpdb']->filas[] = $identidad;
+		$GLOBALS['wpdb']->filas[] = $identidad;
+		$GLOBALS['wpdb']->cols    = array( array() );
+		$GLOBALS['wpdb']->vars    = array( gmdate( 'Y-m-d H:i:s', self::AHORA - ( 30 * 86400 ) ), null );
 	}
 
 	/**

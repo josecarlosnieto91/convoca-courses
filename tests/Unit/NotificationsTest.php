@@ -31,6 +31,9 @@ class NotificationsTest extends TestCase {
 		$GLOBALS['convoca_courses_titulos']   = array();
 		Mailer::$enviados                     = array();
 		Logger::$escritos                     = array();
+		$GLOBALS['wpdb']->filas               = array();
+		$GLOBALS['wpdb']->vars                = array();
+		$GLOBALS['wpdb']->consultas           = array();
 		require_once dirname( __DIR__, 2 ) . '/includes/Notifications.php';
 	}
 
@@ -170,6 +173,37 @@ class NotificationsTest extends TestCase {
 		$this->assertContains( 'recordatorio-inactividad', $plantillas );
 		$this->assertContains( 'recordatorio-examen', $plantillas );
 		$this->assertContains( 'mensaje-grupo', $plantillas );
+	}
+
+	/**
+	 * Un aviso sin destinatario no puede quedar en la cola: no hay a quién reenviarlo.
+	 *
+	 * En un curso con alumnado por identidad, los recordatorios se apuntaban como «sin correo» con
+	 * `user_id = 0` en cada pasada y la opción crecía sola (courses#50).
+	 */
+	public function test_un_aviso_sin_destinatario_no_llena_la_cola(): void {
+		$this->assertFalse( Notifications::send( 0, 'Asunto', 'Cuerpo', 'plantilla' ) );
+
+		$this->assertSame( array(), Notifications::pending(), 'un aviso sin destinatario no se puede reenviar nunca' );
+		$this->assertNotEmpty( Logger::$escritos, 'pero queda en el registro para poder verlo' );
+	}
+
+	/**
+	 * Un recordatorio a una identidad sale por su correo, sin usuario de WordPress.
+	 */
+	public function test_un_recordatorio_a_una_identidad_sale_por_su_correo(): void {
+		$GLOBALS['wpdb']->filas[]           = array(
+			'id'     => 7,
+			'email'  => 'identidad@example.test',
+			'nombre' => 'Una identidad',
+		);
+		$GLOBALS['convoca_courses_titulos'] = array( 3 => 'Curso de setas' );
+
+		$this->assertTrue( Notifications::reminder_inactive( 0, 3, 7 ) );
+
+		$this->assertCount( 1, Mailer::$enviados );
+		$this->assertSame( 'identidad@example.test', Mailer::$enviados[0][0] );
+		$this->assertSame( 'recordatorio-inactividad', Mailer::$enviados[0][3]['template'] );
 	}
 
 	/**
