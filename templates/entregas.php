@@ -52,12 +52,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<tbody>
 				<?php foreach ( $entregas as $convoca_entrega ) : ?>
 					<?php
-					$convoca_usuario = get_userdata( (int) $convoca_entrega['user_id'] );
-					$convoca_nombre  = $convoca_usuario ? (string) $convoca_usuario->display_name : '#' . (int) $convoca_entrega['user_id'];
-					$convoca_adjunto = (int) $convoca_entrega['adjunto_id'] > 0 ? (string) wp_get_attachment_url( (int) $convoca_entrega['adjunto_id'] ) : '';
+					$convoca_usuario   = (int) $convoca_entrega['user_id'] > 0 ? get_userdata( (int) $convoca_entrega['user_id'] ) : false;
+					$convoca_identidad = (int) ( $convoca_entrega['identidad_id'] ?? 0 );
+					$convoca_fila      = $convoca_identidad > 0 ? \Convoca\Courses\Identidad::por_id( $convoca_identidad ) : null;
+					$convoca_nombre    = $convoca_usuario
+						? (string) $convoca_usuario->display_name
+						: (string) ( $convoca_fila['nombre'] ?? ( $convoca_identidad > 0 ? '#' . $convoca_identidad : '#' . (int) $convoca_entrega['user_id'] ) );
+					$convoca_correo    = $convoca_usuario
+						? (string) $convoca_usuario->user_email
+						: (string) ( $convoca_fila['email'] ?? '' );
+					$convoca_adjunto   = (int) $convoca_entrega['adjunto_id'] > 0 ? (string) wp_get_attachment_url( (int) $convoca_entrega['adjunto_id'] ) : '';
 					?>
 					<tr>
-						<td><?php echo esc_html( $convoca_nombre ); ?></td>
+						<td>
+							<?php echo esc_html( $convoca_nombre ); ?>
+							<?php if ( '' !== $convoca_correo ) : ?>
+								<br /><small><?php echo esc_html( $convoca_correo ); ?></small>
+							<?php endif; ?>
+						</td>
 						<td><?php echo esc_html( (string) get_the_title( (int) $convoca_entrega['task_id'] ) ); ?></td>
 						<td><?php echo esc_html( (string) $convoca_entrega['entregada_en'] ); ?></td>
 						<td>

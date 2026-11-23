@@ -55,7 +55,11 @@ class Group_Email {
 		$enviados = 0;
 
 		foreach ( Roster::students( $course_id ) as $alumno ) {
-			if ( Notifications::group_message( (int) $alumno['user_id'], $course_id, $subject, $body ) ) {
+			// El alumnado matriculado por correo no tiene usuario de WordPress: se avisa por su
+			// identidad, igual que los recordatorios (courses#52).
+			$identidad = (int) $alumno['identidad'];
+
+			if ( Notifications::group_message( (int) $alumno['user_id'], $course_id, $subject, $body, $identidad ) ) {
 				++$enviados;
 			}
 		}

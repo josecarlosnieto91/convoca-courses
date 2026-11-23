@@ -30,6 +30,7 @@ final class TaskRowTest extends TestCase {
 				'task_id'       => 9,
 				'course_id'     => 5,
 				'user_id'       => 12,
+				'identidad_id'  => 0,
 				'enrollment_id' => 33,
 				'contenido'     => 'Texto de la entrega',
 				'adjunto_id'    => 77,
@@ -39,12 +40,12 @@ final class TaskRowTest extends TestCase {
 		);
 
 		$this->assertSame(
-			array( 'task_id', 'course_id', 'user_id', 'enrollment_id', 'contenido', 'adjunto_id', 'entregada_en', 'estado', 'nota', 'comentario', 'corregida_por', 'corregida_en' ),
+			array( 'task_id', 'course_id', 'user_id', 'identidad_id', 'enrollment_id', 'contenido', 'adjunto_id', 'entregada_en', 'estado', 'nota', 'comentario', 'corregida_por', 'corregida_en' ),
 			array_keys( $fila['datos'] )
 		);
 
 		$this->assertSame(
-			array( '%d', '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%f', '%s', '%d', '%s' ),
+			array( '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%f', '%s', '%d', '%s' ),
 			$fila['formatos']
 		);
 

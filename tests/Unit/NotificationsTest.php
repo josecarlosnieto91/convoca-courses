@@ -176,6 +176,27 @@ class NotificationsTest extends TestCase {
 	}
 
 	/**
+	 * La corrección de una tarea llega por correo a quien no tiene cuenta (courses#53).
+	 */
+	public function test_el_aviso_de_tarea_corregida_llega_a_una_identidad(): void {
+		$GLOBALS['convoca_courses_titulos'] = array(
+			4 => 'Tarea 4',
+			3 => 'Curso 3',
+		);
+		$GLOBALS['wpdb']->filas[]           = array(
+			'id'     => 12,
+			'email'  => 'identidad@example.test',
+			'nombre' => 'Sin cuenta',
+		);
+
+		$this->assertTrue( Notifications::task_graded( 0, 4, 3, 8.5, 'Buen trabajo', 12 ) );
+
+		$this->assertCount( 1, Mailer::$enviados );
+		$this->assertSame( 'identidad@example.test', Mailer::$enviados[0][0] );
+		$this->assertSame( 'tarea-corregida', Mailer::$enviados[0][3]['template'] );
+	}
+
+	/**
 	 * Un aviso sin destinatario no puede quedar en la cola: no hay a quién reenviarlo.
 	 *
 	 * En un curso con alumnado por identidad, los recordatorios se apuntaban como «sin correo» con

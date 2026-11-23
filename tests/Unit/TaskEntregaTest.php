@@ -70,6 +70,7 @@ class TaskEntregaTest extends TestCase {
 	 * Deja el arnés como estaba.
 	 */
 	private function limpiar(): void {
+		unset( $_COOKIE[ \Convoca\Courses\Identidad::COOKIE ] );
 		foreach ( array( 'convoca_test_meta', 'convoca_test_post_types', 'convoca_test_posts', 'convoca_courses_opciones', 'convoca_courses_acciones' ) as $clave ) {
 			$GLOBALS[ $clave ] = array();
 		}
@@ -146,6 +147,39 @@ class TaskEntregaTest extends TestCase {
 		$this->assertSame( 44, $insertada['enrollment_id'], 'la entrega queda ligada a la matrícula' );
 		$this->assertSame( 'Mi trabajo', $insertada['contenido'] );
 		$this->assertSame( 'entregada', $insertada['estado'], 'sin plazo, entregada' );
+	}
+
+	/**
+	 * El alumnado matriculado por correo entrega con su identidad (courses#53).
+	 */
+	public function test_una_identidad_entrega_sin_usuario_de_wordpress(): void {
+		$this->tarea( 5, 3 );
+		$this->matricula_identidad( 55, 3, 12 );
+		$this->entrar_como_identidad( 12 );
+
+		$this->assertTrue( Task::deliver( 5, 0, 'Mi trabajo', 0, 12 ) );
+
+		$insertada = $GLOBALS['wpdb']->inserts[0][1];
+		$this->assertSame( 0, $insertada['user_id'] );
+		$this->assertSame( 12, $insertada['identidad_id'], 'la entrega tiene que saber de quién es' );
+		$this->assertSame( 55, $insertada['enrollment_id'], 'queda ligada a su matrícula' );
+	}
+
+	/**
+	 * Dos identidades pueden entregar la misma tarea sin pisarse.
+	 */
+	public function test_dos_identidades_entregan_la_misma_tarea(): void {
+		$this->tarea( 5, 3 );
+		$this->matricula_identidad( 55, 3, 12 );
+		$this->matricula_identidad( 56, 3, 13 );
+		$this->entrar_como_identidad( 13 );
+
+		$this->assertTrue( Task::deliver( 5, 0, 'Trabajo de la 13', 0, 13 ) );
+
+		$insertada = $GLOBALS['wpdb']->inserts[0][1];
+		$this->assertSame( 13, $insertada['identidad_id'] );
+		$this->assertSame( 56, $insertada['enrollment_id'] );
+		$this->assertSame( array(), $GLOBALS['wpdb']->actualizados, 'no hay entrega previa que actualizar' );
 	}
 
 	/**
@@ -304,6 +338,30 @@ class TaskEntregaTest extends TestCase {
 		$GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . 'curso_id' ] = (string) $curso;
 		$GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . 'user_id' ]  = (string) $persona;
 		$GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . 'estado' ]   = 'activa';
+	}
+
+	/**
+	 * Da de alta una matrícula por identidad.
+	 *
+	 * @param int $id        Matrícula.
+	 * @param int $curso     Curso.
+	 * @param int $identidad Identidad.
+	 */
+	private function matricula_identidad( int $id, int $curso, int $identidad ): void {
+		$GLOBALS['convoca_test_post_types'][ $id ]                                 = CPT_Matricula::TYPE;
+		$GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . 'curso_id' ] = (string) $curso;
+		$GLOBALS['convoca_test_meta'][ $id ]['_convoca_identidad_id']              = (string) $identidad;
+		$GLOBALS['convoca_test_meta'][ $id ][ CPT_Base::META_PREFIX . 'estado' ]   = 'activa';
+	}
+
+	/**
+	 * Pone la cookie de identidad como la pondría el enlace de acceso.
+	 *
+	 * @param int $identidad Identidad.
+	 */
+	private function entrar_como_identidad( int $identidad ): void {
+		$expira                                        = time() + 3600;
+		$_COOKIE[ \Convoca\Courses\Identidad::COOKIE ] = $identidad . '|' . $expira . '|' . \Convoca\Courses\Identidad::firma_cookie( $identidad, $expira );
 	}
 
 	/**
