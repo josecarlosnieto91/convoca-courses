@@ -37,7 +37,21 @@ class Notifications {
 	 * @return bool Verdadero si salió.
 	 */
 	public static function send( int $user_id, string $subject, string $body, string $template, array $extra = array() ): bool {
-		$user = $user_id > 0 ? get_userdata( $user_id ) : false;
+		// Sin destinatario no hay nada que encolar: `send(0, …)` no puede salir nunca y llenaba la
+		// cola de pendientes en cada pasada del cron (courses#50). Queda en el registro.
+		if ( $user_id <= 0 ) {
+			if ( class_exists( '\Convoca\Core\Logger' ) ) {
+				\Convoca\Core\Logger::warning(
+					sprintf( 'Aviso "%s" sin destinatario: no se encola.', $subject ),
+					'Convoca Courses',
+					0
+				);
+			}
+
+			return false;
+		}
+
+		$user = get_userdata( $user_id );
 		if ( ! $user || '' === (string) $user->user_email ) {
 			self::record_pending( $user_id, $subject, $body, $template, $extra, 'sin correo' );
 			return false;
@@ -159,11 +173,12 @@ class Notifications {
 	/**
 	 * Recordatorio de inactividad.
 	 *
-	 * @param int $user_id   Alumno.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Alumno.
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad cuando no hay usuario de WordPress (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function reminder_inactive( int $user_id, int $course_id ): bool {
+	public static function reminder_inactive( int $user_id, int $course_id, int $identidad_id = 0 ): bool {
 		$subject = sprintf(
 			/* translators: %s: course title. */
 			__( 'Te esperamos en %s', 'convoca-courses' ),
@@ -177,17 +192,18 @@ class Notifications {
 			$body .= "\n\n" . $course_url;
 		}
 
-		return self::send( $user_id, $subject, $body, 'recordatorio-inactividad', array( 'course_id' => $course_id ) );
+		return self::send_to_alumno( $user_id, $identidad_id, $subject, $body, 'recordatorio-inactividad', array( 'course_id' => $course_id ) );
 	}
 
 	/**
 	 * Recordatorio de examen pendiente.
 	 *
-	 * @param int $user_id   Alumno.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Alumno.
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad cuando no hay usuario de WordPress (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function reminder_exam( int $user_id, int $course_id ): bool {
+	public static function reminder_exam( int $user_id, int $course_id, int $identidad_id = 0 ): bool {
 		$subject = sprintf(
 			/* translators: %s: course title. */
 			__( 'Te queda el examen de %s', 'convoca-courses' ),
@@ -201,7 +217,29 @@ class Notifications {
 			$body .= "\n\n" . $course_url;
 		}
 
-		return self::send( $user_id, $subject, $body, 'recordatorio-examen', array( 'course_id' => $course_id ) );
+		return self::send_to_alumno( $user_id, $identidad_id, $subject, $body, 'recordatorio-examen', array( 'course_id' => $course_id ) );
+	}
+
+	/**
+	 * Envía al alumno por donde se le pueda avisar: usuario o identidad.
+	 *
+	 * El alumnado matriculado por correo no tiene cuenta de WordPress; antes se intentaba con
+	 * `user_id = 0`, no salía y quedaba en la cola para siempre (courses#50).
+	 *
+	 * @param int                 $user_id      Usuario (0 si va con identidad).
+	 * @param int                 $identidad_id Identidad (0 si va con usuario).
+	 * @param string              $subject      Asunto.
+	 * @param string              $body         Cuerpo.
+	 * @param string              $template     Plantilla.
+	 * @param array<string,mixed> $extra        Datos extra.
+	 * @return bool
+	 */
+	private static function send_to_alumno( int $user_id, int $identidad_id, string $subject, string $body, string $template, array $extra = array() ): bool {
+		if ( $identidad_id > 0 ) {
+			return self::send_to_identidad( $identidad_id, $subject, $body, $template, $extra );
+		}
+
+		return self::send( $user_id, $subject, $body, $template, $extra );
 	}
 
 	/**

@@ -116,20 +116,28 @@ class Reminders {
 		$enviados = 0;
 
 		foreach ( Roster::students( $course_id ) as $alumno ) {
-			$user_id  = (int) $alumno['user_id'];
+			$user_id   = (int) $alumno['user_id'];
+			$identidad = (int) $alumno['identidad'];
+
+			// Una fila sin usuario ni identidad no tiene destinatario: no es un alumno al que avisar
+			// (courses#50). El alumnado por identidad sí lo es y se avisa por su correo.
+			if ( $user_id <= 0 && $identidad <= 0 ) {
+				continue;
+			}
+
 			$progreso = (float) $alumno['progreso'];
 
-			if ( $progreso < 100.0 && self::should_remind_inactive( $user_id, $course_id ) ) {
-				if ( Notifications::reminder_inactive( $user_id, $course_id ) ) {
-					self::mark_sent( $user_id, $course_id, 'inactividad' );
+			if ( $progreso < 100.0 && self::should_remind_inactive( $user_id, $course_id, $identidad ) ) {
+				if ( Notifications::reminder_inactive( $user_id, $course_id, $identidad ) ) {
+					self::mark_sent( $user_id, $course_id, 'inactividad', $identidad );
 					++$enviados;
 				}
 				continue;
 			}
 
-			if ( 100.0 <= $progreso && self::should_remind_exam( $user_id, $course_id ) ) {
-				if ( Notifications::reminder_exam( $user_id, $course_id ) ) {
-					self::mark_sent( $user_id, $course_id, 'examen' );
+			if ( 100.0 <= $progreso && self::should_remind_exam( $user_id, $course_id, $identidad ) ) {
+				if ( Notifications::reminder_exam( $user_id, $course_id, $identidad ) ) {
+					self::mark_sent( $user_id, $course_id, 'examen', $identidad );
 					++$enviados;
 				}
 			}
@@ -141,16 +149,17 @@ class Reminders {
 	/**
 	 * ¿Toca avisar de inactividad?
 	 *
-	 * @param int $user_id   Persona.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Persona.
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad cuando no hay usuario de WordPress (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function should_remind_inactive( int $user_id, int $course_id ): bool {
-		if ( self::recently_sent( $user_id, $course_id, 'inactividad' ) ) {
+	public static function should_remind_inactive( int $user_id, int $course_id, int $identidad_id = 0 ): bool {
+		if ( self::recently_sent( $user_id, $course_id, 'inactividad', $identidad_id ) ) {
 			return false;
 		}
 
-		$ultima = self::last_activity( $user_id, $course_id );
+		$ultima = self::last_activity( $user_id, $course_id, $identidad_id );
 		if ( $ultima <= 0 ) {
 			return false;
 		}
@@ -164,17 +173,18 @@ class Reminders {
 	/**
 	 * ¿Toca avisar de examen pendiente?
 	 *
-	 * @param int $user_id   Persona.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Persona.
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad cuando no hay usuario de WordPress (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function should_remind_exam( int $user_id, int $course_id ): bool {
-		if ( self::recently_sent( $user_id, $course_id, 'examen' ) ) {
+	public static function should_remind_exam( int $user_id, int $course_id, int $identidad_id = 0 ): bool {
+		if ( self::recently_sent( $user_id, $course_id, 'examen', $identidad_id ) ) {
 			return false;
 		}
 
 		foreach ( CPT_Examen::of_course( $course_id ) as $examen ) {
-			if ( ! Attempts::has_passed( $user_id, (int) $examen->ID ) ) {
+			if ( ! Attempts::has_passed( $user_id, (int) $examen->ID, $identidad_id ) ) {
 				return true;
 			}
 		}
@@ -187,29 +197,36 @@ class Reminders {
 	 *
 	 * La marca más reciente entre progreso e intentos; si no hay ninguna, la fecha de matrícula.
 	 *
-	 * @param int $user_id   Persona.
-	 * @param int $course_id Curso.
+	 * @param int $user_id      Persona.
+	 * @param int $course_id    Curso.
+	 * @param int $identidad_id Identidad cuando no hay usuario de WordPress (0 si va con usuario).
 	 * @return int Marca de tiempo (0 si no hay datos).
 	 */
-	public static function last_activity( int $user_id, int $course_id ): int {
+	public static function last_activity( int $user_id, int $course_id, int $identidad_id = 0 ): int {
 		global $wpdb;
+
+		if ( $user_id <= 0 && $identidad_id <= 0 ) {
+			return 0;
+		}
 
 		$tabla_progreso = Installer::progress_table();
 		$tabla_intentos = Installer::table( Installer::ATTEMPTS_TABLE );
+		$dueno          = $identidad_id > 0 ? 'identidad_id' : 'user_id';
+		$quien          = $identidad_id > 0 ? $identidad_id : $user_id;
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tablas propias, valores preparados.
 		$progreso = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT MAX(completed_at) FROM {$tabla_progreso} WHERE user_id = %d AND course_id = %d",
-				$user_id,
+				"SELECT MAX(completed_at) FROM {$tabla_progreso} WHERE {$dueno} = %d AND course_id = %d",
+				$quien,
 				$course_id
 			)
 		);
 
 		$intento = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT MAX(iniciado_en) FROM {$tabla_intentos} WHERE user_id = %d AND course_id = %d",
-				$user_id,
+				"SELECT MAX(iniciado_en) FROM {$tabla_intentos} WHERE {$dueno} = %d AND course_id = %d",
+				$quien,
 				$course_id
 			)
 		);
@@ -226,7 +243,10 @@ class Reminders {
 			return (int) max( $marcas );
 		}
 
-		$matricula = Enrollment::active_id( $user_id, $course_id );
+		$matricula = $identidad_id > 0
+			? Enrollment::find_por_identidad( $identidad_id, $course_id, true )
+			: Enrollment::active_id( $user_id, $course_id );
+
 		if ( $matricula > 0 ) {
 			return (int) get_post_time( 'U', true, $matricula );
 		}
@@ -237,18 +257,19 @@ class Reminders {
 	/**
 	 * ¿Se avisó de esta regla hace poco?
 	 *
-	 * @param int    $user_id   Persona.
-	 * @param int    $course_id Curso.
-	 * @param string $regla     Regla.
+	 * @param int    $user_id      Persona.
+	 * @param int    $course_id    Curso.
+	 * @param string $regla        Regla.
+	 * @param int    $identidad_id Identidad cuando no hay usuario (0 si va con usuario).
 	 * @return bool
 	 */
-	public static function recently_sent( int $user_id, int $course_id, string $regla ): bool {
+	public static function recently_sent( int $user_id, int $course_id, string $regla, int $identidad_id = 0 ): bool {
 		$registro = get_option( self::SENT_OPTION, array() );
 		if ( ! is_array( $registro ) ) {
 			return false;
 		}
 
-		$clave = $user_id . ':' . $course_id . ':' . $regla;
+		$clave = self::clave( $user_id, $course_id, $regla, $identidad_id );
 		if ( ! isset( $registro[ $clave ] ) ) {
 			return false;
 		}
@@ -262,19 +283,20 @@ class Reminders {
 	/**
 	 * Apunta que se avisó.
 	 *
-	 * @param int    $user_id   Persona.
-	 * @param int    $course_id Curso.
-	 * @param string $regla     Regla.
+	 * @param int    $user_id      Persona.
+	 * @param int    $course_id    Curso.
+	 * @param string $regla        Regla.
+	 * @param int    $identidad_id Identidad cuando no hay usuario (0 si va con usuario).
 	 * @return void
 	 */
-	private static function mark_sent( int $user_id, int $course_id, string $regla ): void {
+	private static function mark_sent( int $user_id, int $course_id, string $regla, int $identidad_id = 0 ): void {
 		$registro = get_option( self::SENT_OPTION, array() );
 		if ( ! is_array( $registro ) ) {
 			$registro = array();
 		}
 
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- marca de tiempo guardada.
-		$registro[ $user_id . ':' . $course_id . ':' . $regla ] = Fechas::ahora();
+		$registro[ self::clave( $user_id, $course_id, $regla, $identidad_id ) ] = Fechas::ahora();
 
 		// Tope de 500 entradas: el registro no puede crecer sin fin en una opción.
 		if ( count( $registro ) > 500 ) {
@@ -282,5 +304,23 @@ class Reminders {
 		}
 
 		update_option( self::SENT_OPTION, $registro, false );
+	}
+
+	/**
+	 * Clave del registro de avisos: distingue usuario de identidad.
+	 *
+	 * El alumnado por identidad no tiene `user_id`, y usar `0` mezclaría a todas las personas sin
+	 * cuenta en una sola clave: la primera que recibiera el aviso lo apagaría para las demás (courses#50).
+	 *
+	 * @param int    $user_id      Persona.
+	 * @param int    $course_id    Curso.
+	 * @param string $regla        Regla.
+	 * @param int    $identidad_id Identidad cuando no hay usuario.
+	 * @return string
+	 */
+	private static function clave( int $user_id, int $course_id, string $regla, int $identidad_id ): string {
+		$quien = $user_id > 0 ? (string) $user_id : 'i' . $identidad_id;
+
+		return $quien . ':' . $course_id . ':' . $regla;
 	}
 }
